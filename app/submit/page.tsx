@@ -283,6 +283,8 @@ export default function SubmitPage() {
                                 );
                             })()}
 
+
+                            {/* Priority Selection - Currently not needed
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
                                     Priority <span className="text-red-500">*</span>
@@ -307,6 +309,8 @@ export default function SubmitPage() {
                                     ))}
                                 </div>
                             </div>
+                            */}
+
 
                             <Textarea
                                 label="Description"
