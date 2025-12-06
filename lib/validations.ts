@@ -36,7 +36,7 @@ export const complaintFormSchema = z.object({
         .min(1, 'Please select an issue type'),
 
     priority: z.enum(['Low', 'Medium', 'High'], {
-        errorMap: () => ({ message: 'Please select a priority level' }),
+        message: 'Please select a priority level',
     }),
 
     description: z.string()
