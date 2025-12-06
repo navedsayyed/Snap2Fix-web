@@ -11,10 +11,12 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
+import { GroupedSelect } from '@/components/ui/GroupedSelect';
 import { Textarea } from '@/components/ui/Textarea';
 import { FileUpload } from '@/components/ui/FileUpload';
 import { getLocationById } from '@/lib/locations';
-import { ISSUE_TYPES, FLOORS } from '@/lib/types';
+import { FLOORS } from '@/lib/types';
+import { COMPLAINT_TYPES, getComplaintTypesByCategory } from '@/lib/complaintTypes';
 
 export default function SubmitPage() {
     const router = useRouter();
@@ -32,6 +34,7 @@ export default function SubmitPage() {
         floor: '',
         room_number: '',
         issue_type: '',
+        custom_type: '',
         priority: 'Medium' as 'Low' | 'Medium' | 'High',
         description: '',
         photo: null as File | null,
@@ -82,6 +85,12 @@ export default function SubmitPage() {
                 newErrors.issue_type = 'Please select an issue type';
             }
 
+            // Check if custom type is required
+            const selectedType = COMPLAINT_TYPES.find(t => t.value === formData.issue_type);
+            if (selectedType?.requiresCustomType && !formData.custom_type) {
+                newErrors.custom_type = 'Please specify the issue type';
+            }
+
             if (!formData.description || formData.description.length < 10) {
                 newErrors.description = 'Description must be at least 10 characters';
             }
@@ -100,6 +109,7 @@ export default function SubmitPage() {
             submitData.append('floor', formData.floor);
             submitData.append('room_number', formData.room_number);
             submitData.append('issue_type', formData.issue_type);
+            if (formData.custom_type) submitData.append('custom_type', formData.custom_type);
             submitData.append('priority', formData.priority);
             submitData.append('description', formData.description);
             if (formData.photo) submitData.append('photo', formData.photo);
@@ -231,17 +241,47 @@ export default function SubmitPage() {
                     <div>
                         <h2 className="text-xl font-semibold text-gray-900 mb-4">Issue Details</h2>
                         <div className="space-y-6">
-                            <Select
-                                label="Issue Type"
-                                required
-                                value={formData.issue_type}
-                                onChange={(e) => setFormData({ ...formData, issue_type: e.target.value })}
-                                error={errors.issue_type}
-                                options={[
-                                    { value: '', label: 'Select issue type' },
-                                    ...ISSUE_TYPES.map(type => ({ value: type, label: type }))
-                                ]}
-                            />
+                            {/* Prepare grouped options */}
+                            {(() => {
+                                const grouped = getComplaintTypesByCategory();
+                                const groups = Object.keys(grouped).map(category => ({
+                                    label: category,
+                                    options: grouped[category].map(type => ({
+                                        value: type.value,
+                                        label: type.label
+                                    }))
+                                }));
+
+                                const selectedType = COMPLAINT_TYPES.find(t => t.value === formData.issue_type);
+                                const requiresCustomType = selectedType?.requiresCustomType;
+
+                                return (
+                                    <>
+                                        <GroupedSelect
+                                            label="Issue Type"
+                                            required
+                                            value={formData.issue_type}
+                                            onChange={(e) => {
+                                                setFormData({ ...formData, issue_type: e.target.value, custom_type: '' });
+                                            }}
+                                            error={errors.issue_type}
+                                            groups={groups}
+                                        />
+
+                                        {requiresCustomType && (
+                                            <Input
+                                                label="Specify Issue Type"
+                                                required
+                                                value={formData.custom_type}
+                                                onChange={(e) => setFormData({ ...formData, custom_type: e.target.value })}
+                                                error={errors.custom_type}
+                                                placeholder="Please specify the issue type"
+                                                helperText="Provide more details about the issue"
+                                            />
+                                        )}
+                                    </>
+                                );
+                            })()}
 
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
