@@ -5,14 +5,15 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { getCurrentUser, signOut } from '@/lib/auth';
 import { getUserComplaints } from '@/lib/supabase';
-import Button from '@/components/ui/Button';
-import StatusBadge from '@/components/ui/StatusBadge';
+import { Button } from '@/components/ui/Button';
+import { StatusBadge } from '@/components/ui/StatusBadge';
+import { ComplaintStatus } from '@/lib/types';
 
 interface Complaint {
     id: string;
     issue_type: string;
     priority: string;
-    status: string;
+    status: ComplaintStatus;
     floor: string;
     room_number: string;
     description: string;
