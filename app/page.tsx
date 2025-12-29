@@ -3,10 +3,32 @@
  * Landing page with navigation to submit and track complaints
  */
 
+'use client';
+
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
+import { getCurrentUser } from '@/lib/auth';
 
 export default function HomePage() {
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    checkAuth();
+  }, []);
+
+  const checkAuth = async () => {
+    try {
+      const currentUser = await getCurrentUser();
+      setUser(currentUser);
+    } catch (err) {
+      console.log('Not logged in');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-blue-50">
       {/* Header */}
@@ -24,11 +46,28 @@ export default function HomePage() {
                 <p className="text-sm text-gray-500">Quick & Easy Issue Reporting</p>
               </div>
             </div>
-            <Link href="/track">
-              <Button variant="outline" size="sm">
-                Track Complaint
-              </Button>
-            </Link>
+            <div className="flex gap-3">
+              <Link href="/track">
+                <Button variant="outline" size="sm">
+                  Track Complaint
+                </Button>
+              </Link>
+              {!loading && (
+                user ? (
+                  <Link href="/profile">
+                    <Button size="sm">
+                      My Profile
+                    </Button>
+                  </Link>
+                ) : (
+                  <Link href="/login">
+                    <Button size="sm">
+                      Login
+                    </Button>
+                  </Link>
+                )
+              )}
+            </div>
           </div>
         </div>
       </header>

@@ -14,7 +14,9 @@ if (!supabaseUrl || !supabaseAnonKey) {
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     auth: {
-        persistSession: false, // Web app doesn't need session persistence
+        persistSession: true, // Enable session persistence for user login
+        autoRefreshToken: true,
+        detectSessionInUrl: true,
     },
 });
 
@@ -112,4 +114,17 @@ export function subscribeToComplaint(
         .subscribe();
 
     return channel;
+}
+
+/**
+ * Get all complaints for a specific user
+ */
+export async function getUserComplaints(userId: string) {
+    const { data, error } = await supabase
+        .from('complaints')
+        .select('*')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false });
+
+    return { data, error };
 }

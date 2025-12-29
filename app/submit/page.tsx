@@ -17,6 +17,7 @@ import { FileUpload } from '@/components/ui/FileUpload';
 import { getLocationById } from '@/lib/locations';
 import { FLOORS } from '@/lib/types';
 import { COMPLAINT_TYPES, getComplaintTypesByCategory } from '@/lib/complaintTypes';
+import { getCurrentUser } from '@/lib/auth';
 
 export default function SubmitPage() {
     const router = useRouter();
@@ -25,6 +26,7 @@ export default function SubmitPage() {
 
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [errors, setErrors] = useState<Record<string, string>>({});
+    const [currentUser, setCurrentUser] = useState<any>(null);
 
     // Form state
     const [formData, setFormData] = useState({
@@ -40,6 +42,27 @@ export default function SubmitPage() {
         photo: null as File | null,
         location_department: '',
     });
+
+    // Load current user
+    useEffect(() => {
+        loadUser();
+    }, []);
+
+    const loadUser = async () => {
+        try {
+            const user = await getCurrentUser();
+            if (user) {
+                setCurrentUser(user);
+                setFormData(prev => ({
+                    ...prev,
+                    name: user.user_metadata?.name || '',
+                    email: user.email || '',
+                }));
+            }
+        } catch (err) {
+            console.log('User not logged in');
+        }
+    };
 
     // Pre-fill location from QR code
     useEffect(() => {

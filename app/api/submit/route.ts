@@ -4,13 +4,16 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { insertComplaint, uploadImage } from '@/lib/supabase';
+import { insertComplaint, uploadImage, supabase } from '@/lib/supabase';
 import { determineDepartment } from '@/lib/departmentMapping';
 import { sendConfirmationEmail } from '@/lib/email';
 import { submitComplaintApiSchema } from '@/lib/validations';
 
 export async function POST(request: NextRequest) {
     try {
+        // Get current user if authenticated
+        const { data: { user } } = await supabase.auth.getUser();
+        
         // Parse form data
         const formData = await request.formData();
 
@@ -85,7 +88,7 @@ export async function POST(request: NextRequest) {
 
         // Prepare complaint data
         const complaintData = {
-            user_id: null, // Web submissions don't have user accounts
+            user_id: user?.id || null, // Set user_id if authenticated, null for guest
             title,
             description,
             department,
