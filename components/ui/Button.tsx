@@ -15,14 +15,14 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ({ className, variant = 'primary', size = 'md', isLoading = false, disabled, children, ...props }, ref) => {
-        const baseStyles = 'inline-flex items-center justify-center rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
+        const baseStyles = 'inline-flex items-center justify-center rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#121212] disabled:opacity-50 disabled:cursor-not-allowed';
 
         const variants = {
-            primary: 'bg-[#4CAF50] text-white hover:bg-[#45a049] focus:ring-[#4CAF50] shadow-sm hover:shadow-md',
-            secondary: 'bg-[#2196F3] text-white hover:bg-[#1976D2] focus:ring-[#2196F3] shadow-sm hover:shadow-md',
-            outline: 'border-2 border-[#4CAF50] text-[#4CAF50] hover:bg-[#4CAF50] hover:text-white focus:ring-[#4CAF50]',
-            ghost: 'text-gray-700 hover:bg-gray-100 focus:ring-gray-300',
-            danger: 'bg-[#F44336] text-white hover:bg-[#D32F2F] focus:ring-[#F44336] shadow-sm hover:shadow-md',
+            primary: 'bg-[#00BFFF] text-white hover:shadow-lg focus:ring-[#00BFFF] shadow-sm',
+            secondary: 'bg-[#1E90FF] text-white hover:shadow-lg focus:ring-[#1E90FF] shadow-sm',
+            outline: 'border-2 border-[#00BFFF] text-[#00BFFF] hover:bg-[#00BFFF] hover:text-white focus:ring-[#00BFFF]',
+            ghost: 'text-[#B0B0B0] hover:bg-[#2C2C2C] hover:text-white focus:ring-[#404040]',
+            danger: 'bg-[#F44336] text-white hover:shadow-lg focus:ring-[#F44336] shadow-sm',
         };
 
         const sizes = {

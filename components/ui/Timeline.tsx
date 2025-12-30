@@ -19,7 +19,7 @@ export const Timeline: React.FC<TimelineProps> = ({ events }) => {
     return (
         <div className="relative">
             {/* Vertical line */}
-            <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-gray-200" />
+            <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-[#404040]" />
 
             {/* Timeline events */}
             <div className="space-y-6">
@@ -31,10 +31,10 @@ export const Timeline: React.FC<TimelineProps> = ({ events }) => {
                         <div key={index} className="relative flex gap-4">
                             {/* Icon */}
                             <div className={`relative z-10 flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${isCompleted
-                                ? 'bg-green-500'
+                                ? 'bg-[#4CAF50]'
                                 : isLast
-                                    ? 'bg-blue-500'
-                                    : 'bg-gray-400'
+                                    ? 'bg-[#00BFFF]'
+                                    : 'bg-[#404040]'
                                 }`}>
                                 {isCompleted ? (
                                     <svg width="20" height="20" className="text-white" fill="currentColor" viewBox="0 0 20 20">
@@ -51,17 +51,17 @@ export const Timeline: React.FC<TimelineProps> = ({ events }) => {
                             <div className="flex-1 pb-6">
                                 <div className="flex items-start justify-between gap-4">
                                     <div>
-                                        <h4 className="font-semibold text-gray-900">{event.status}</h4>
+                                        <h4 className="font-semibold text-white">{event.status}</h4>
                                         {event.description && (
-                                            <p className="text-sm text-gray-600 mt-0.5">{event.description}</p>
+                                            <p className="text-sm text-[#B0B0B0] mt-0.5">{event.description}</p>
                                         )}
                                         {event.technician && (
-                                            <p className="text-sm text-gray-500 mt-1">
+                                            <p className="text-sm text-[#B0B0B0] mt-1">
                                                 👤 {event.technician.name}
                                             </p>
                                         )}
                                     </div>
-                                    <time className="text-sm text-gray-500 whitespace-nowrap">
+                                    <time className="text-sm text-[#B0B0B0] whitespace-nowrap">
                                         {formatDateTime(event.timestamp)}
                                     </time>
                                 </div>

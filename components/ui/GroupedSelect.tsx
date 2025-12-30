@@ -37,9 +37,9 @@ export const GroupedSelect: React.FC<GroupedSelectProps> = ({
 }) => {
     return (
         <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+            <label className="block text-sm font-medium text-white mb-1.5">
                 {label}
-                {required && <span className="text-red-500 ml-1">*</span>}
+                {required && <span className="text-[#F44336] ml-1">*</span>}
             </label>
             <div className="relative">
                 <select
@@ -48,32 +48,32 @@ export const GroupedSelect: React.FC<GroupedSelectProps> = ({
                     required={required}
                     className={cn(
                         'w-full px-4 py-2.5 pr-10 rounded-lg border transition-all',
-                        'focus:outline-none focus:ring-2 focus:ring-offset-0',
-                        'appearance-none bg-white',
+                        'focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-offset-[#121212]',
+                        'appearance-none bg-[#2C2C2C] text-white',
                         error
-                            ? 'border-red-300 focus:border-red-500 focus:ring-red-200'
-                            : 'border-gray-300 focus:border-[#4CAF50] focus:ring-green-100'
+                            ? 'border-[#F44336] focus:border-[#F44336] focus:ring-[#F44336]/20'
+                            : 'border-[#404040] focus:border-[#00BFFF] focus:ring-[#00BFFF]/20'
                     )}
                 >
-                    <option value="">Select {label.toLowerCase()}</option>
+                    <option value="" className="bg-[#2C2C2C] text-white">Select {label.toLowerCase()}</option>
                     {groups.map((group) => (
-                        <optgroup key={group.label} label={group.label}>
+                        <optgroup key={group.label} label={group.label} className="bg-[#2C2C2C] text-white">
                             {group.options.map((option) => (
-                                <option key={option.value} value={option.value}>
+                                <option key={option.value} value={option.value} className="bg-[#2C2C2C] text-white">
                                     {option.label}
                                 </option>
                             ))}
                         </optgroup>
                     ))}
                 </select>
-                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-[#B0B0B0]">
                     <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
                     </svg>
                 </div>
             </div>
             {error && (
-                <p className="mt-1.5 text-sm text-red-600 flex items-center gap-1">
+                <p className="mt-1.5 text-sm text-[#F44336] flex items-center gap-1">
                     <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                     </svg>
@@ -81,7 +81,7 @@ export const GroupedSelect: React.FC<GroupedSelectProps> = ({
                 </p>
             )}
             {helperText && !error && (
-                <p className="mt-1.5 text-sm text-gray-500">{helperText}</p>
+                <p className="mt-1.5 text-sm text-[#B0B0B0]">{helperText}</p>
             )}
         </div>
     );

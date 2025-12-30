@@ -97,9 +97,9 @@ export const FileUpload: React.FC<FileUploadProps> = ({
     return (
         <div className="w-full">
             {label && (
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                <label className="block text-sm font-medium text-white mb-1.5">
                     {label}
-                    {required && <span className="text-red-500 ml-1">*</span>}
+                    {required && <span className="text-[#F44336] ml-1">*</span>}
                 </label>
             )}
 
@@ -112,14 +112,14 @@ export const FileUpload: React.FC<FileUploadProps> = ({
                     className={cn(
                         'border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-all duration-200',
                         isDragging
-                            ? 'border-[#4CAF50] bg-green-50'
+                            ? 'border-[#00BFFF] bg-[#2C2C2C]'
                             : error
-                                ? 'border-red-300 bg-red-50'
-                                : 'border-gray-300 hover:border-[#4CAF50] hover:bg-gray-50'
+                                ? 'border-[#F44336] bg-[#2C2C2C]'
+                                : 'border-[#404040] hover:border-[#00BFFF] hover:bg-[#2C2C2C]'
                     )}
                 >
                     <svg
-                        className="mx-auto h-12 w-12 text-gray-400"
+                        className="mx-auto h-12 w-12 text-[#B0B0B0]"
                         stroke="currentColor"
                         fill="none"
                         viewBox="0 0 48 48"
@@ -131,10 +131,10 @@ export const FileUpload: React.FC<FileUploadProps> = ({
                             strokeLinejoin="round"
                         />
                     </svg>
-                    <p className="mt-2 text-sm text-gray-600">
-                        <span className="font-semibold text-[#4CAF50]">Click to upload</span> or drag and drop
+                    <p className="mt-2 text-sm text-[#B0B0B0]">
+                        <span className="font-semibold text-[#00BFFF]">Click to upload</span> or drag and drop
                     </p>
-                    <p className="mt-1 text-xs text-gray-500">
+                    <p className="mt-1 text-xs text-[#B0B0B0]">
                         PNG or JPEG (max {maxSize}MB)
                     </p>
                 </div>
@@ -143,24 +143,24 @@ export const FileUpload: React.FC<FileUploadProps> = ({
                     <img
                         src={preview}
                         alt="Preview"
-                        className="w-full h-64 object-cover rounded-lg border-2 border-gray-200"
+                        className="w-full h-64 object-cover rounded-lg border-2 border-[#404040]"
                     />
-                    <div className="mt-2 flex items-center justify-between bg-gray-50 p-3 rounded-lg">
+                    <div className="mt-2 flex items-center justify-between bg-[#2C2C2C] p-3 rounded-lg border border-[#404040]">
                         <div className="flex items-center gap-2 flex-1 min-w-0">
-                            <svg width="20" height="20" className="text-gray-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <svg width="20" height="20" className="text-[#B0B0B0] flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                 <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
                             </svg>
                             <div className="flex-1 min-w-0">
-                                <p className="text-sm font-medium text-gray-900 truncate">{fileName}</p>
-                                <p className="text-xs text-gray-500">{fileSize && formatFileSize(fileSize)}</p>
+                                <p className="text-sm font-medium text-white truncate">{fileName}</p>
+                                <p className="text-xs text-[#B0B0B0]">{fileSize && formatFileSize(fileSize)}</p>
                             </div>
                         </div>
                         <button
                             type="button"
                             onClick={handleRemove}
-                            className="ml-2 p-1.5 rounded-full hover:bg-gray-200 transition-colors"
+                            className="ml-2 p-1.5 rounded-full hover:bg-[#404040] transition-colors"
                         >
-                            <svg width="20" height="20" className="text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+                            <svg width="20" height="20" className="text-[#B0B0B0] hover:text-white" fill="currentColor" viewBox="0 0 20 20">
                                 <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
                             </svg>
                         </button>
@@ -177,7 +177,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
             />
 
             {error && (
-                <p className="mt-1.5 text-sm text-red-600 flex items-center gap-1">
+                <p className="mt-1.5 text-sm text-[#F44336] flex items-center gap-1">
                     <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                     </svg>
@@ -185,7 +185,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
                 </p>
             )}
             {helperText && !error && (
-                <p className="mt-1.5 text-sm text-gray-500">{helperText}</p>
+                <p className="mt-1.5 text-sm text-[#B0B0B0]">{helperText}</p>
             )}
         </div>
     );

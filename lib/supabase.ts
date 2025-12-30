@@ -84,6 +84,9 @@ export async function getComplaintById(id: string) {
       technician:users!technician_id(
         full_name,
         email
+      ),
+      complaint_images(
+        url
       )
     `)
         .eq('id', id)

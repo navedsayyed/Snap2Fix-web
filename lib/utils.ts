@@ -104,8 +104,10 @@ export function truncate(text: string, maxLength: number): string {
  * @param uuid - Full UUID
  * @returns Short ID (first 8 characters)
  */
-export function shortId(uuid: string): string {
-    return uuid.substring(0, 8).toUpperCase();
+export function shortId(uuid: string | number | undefined | null): string {
+    if (!uuid) return 'N/A';
+    const idStr = String(uuid);
+    return idStr.substring(0, 8).toUpperCase();
 }
 
 /**

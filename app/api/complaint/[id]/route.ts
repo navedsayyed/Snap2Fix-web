@@ -14,15 +14,6 @@ export async function GET(
     try {
         const { id } = await params;
 
-        // Validate UUID format
-        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-        if (!uuidRegex.test(id)) {
-            return NextResponse.json(
-                { success: false, error: 'Invalid complaint ID format' },
-                { status: 400 }
-            );
-        }
-
         // Fetch complaint from database
         const { data: complaint, error } = await getComplaintById(id);
 
@@ -91,8 +82,11 @@ export async function GET(
             floor: complaint.floor,
             room_number: complaint.room_number,
             department: complaint.department,
-            image_url: complaint.image_url,
-            proof_image: complaint.proof_image,
+            // Support multiple field name variations for images
+            // Check complaint_images table first, then fallback to image field
+            image_url: complaint.complaint_images?.[0]?.url || complaint.image_url || complaint.image || null,
+            proof_image: complaint.proof_image || complaint.completion_image_url || null,
+            completed_notes: complaint.completed_notes || complaint.completion_notes || null,
             created_at: complaint.created_at,
             updated_at: complaint.updated_at,
             assigned_at: complaint.assigned_at,

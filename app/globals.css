@@ -2,23 +2,60 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Custom scrollbar */
+@layer base {
+  :root {
+    /* Primary Colors */
+    --primary: #00BFFF;
+    --secondary: #0099CC;
+    --accent: #FF9800;
+    --primary-transparent: rgba(0, 191, 255, 0.1);
+    
+    /* Background Colors */
+    --background: #121212;
+    --surface: #1A1A1A;
+    --card: #1E1E1E;
+    
+    /* Text Colors */
+    --text: #FFFFFF;
+    --text-secondary: #A0A0A0;
+    
+    /* Status Colors */
+    --success: #4CAF50;
+    --error: #F44336;
+    --warning: #FFC107;
+    --info: #2196F3;
+    
+    /* Other Colors */
+    --border: #2A2A2A;
+  }
+  
+  body {
+    @apply bg-[#121212] text-white;
+    font-smooth: antialiased;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* Custom scrollbar - Dark theme */
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f5f5f5;
+  background: #1A1A1A;
+  border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.3);
-  border-radius: 5px;
+  background: rgba(0, 191, 255, 0.4);
+  border-radius: 10px;
+  border: 2px solid #1A1A1A;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 191, 255, 0.6);
 }
 
 /* Animations */
@@ -70,31 +107,31 @@
 
 /* Status badge colors */
 .status-pending {
-  background-color: #fef3c7;
-  color: #92400e;
-  border-color: #fde68a;
+  background-color: rgba(255, 193, 7, 0.1);
+  color: #FFC107;
+  border-color: rgba(255, 193, 7, 0.3);
 }
 
 .status-assigned {
-  background-color: #dbeafe;
-  color: #1e40af;
-  border-color: #bfdbfe;
+  background-color: rgba(33, 150, 243, 0.1);
+  color: #2196F3;
+  border-color: rgba(33, 150, 243, 0.3);
 }
 
 .status-in-progress {
-  background-color: #fed7aa;
-  color: #c2410c;
-  border-color: #fdba74;
+  background-color: rgba(255, 152, 0, 0.1);
+  color: #FF9800;
+  border-color: rgba(255, 152, 0, 0.3);
 }
 
 .status-completed {
-  background-color: #d1fae5;
-  color: #065f46;
-  border-color: #a7f3d0;
+  background-color: rgba(76, 175, 80, 0.1);
+  color: #4CAF50;
+  border-color: rgba(76, 175, 80, 0.3);
 }
 
 .status-rejected {
-  background-color: #fee2e2;
-  color: #991b1b;
-  border-color: #fecaca;
+  background-color: rgba(244, 67, 54, 0.1);
+  color: #F44336;
+  border-color: rgba(244, 67, 54, 0.3);
 }

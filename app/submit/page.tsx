@@ -27,6 +27,7 @@ export default function SubmitPage() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [currentUser, setCurrentUser] = useState<any>(null);
+    const [isInputFocused, setIsInputFocused] = useState(false);
 
     // Form state
     const [formData, setFormData] = useState({
@@ -161,83 +162,102 @@ export default function SubmitPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-[#121212] overflow-hidden">
             {/* Header */}
-            <header className="bg-white shadow-sm border-b border-gray-200">
-                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-                    <div className="flex items-center justify-between">
-                        <Link href="/" className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-[#4CAF50] rounded-lg flex items-center justify-center">
-                                <svg width="24" height="24" className="text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <header className="bg-[#0A0A0A]/80 backdrop-blur-xl border-b border-white/10 sticky top-0 z-50">
+                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="flex items-center h-16 sm:h-20">
+                        <Link href="/" className="flex items-center gap-2 sm:gap-3 text-gray-400 hover:text-white transition-colors group">
+                            <div className="w-9 h-9 sm:w-10 sm:h-10 bg-white/5 hover:bg-white/10 rounded-lg flex items-center justify-center transition-all group-hover:scale-105">
+                                <svg width="20" height="20" className="text-gray-400 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                                 </svg>
                             </div>
-                            <span className="text-lg font-semibold text-gray-900">Back to Home</span>
+                            <span className="text-sm sm:text-base font-medium">Back to Home</span>
                         </Link>
                     </div>
                 </div>
             </header>
 
             {/* Main Content */}
-            <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                <div className="mb-8">
-                    <h1 className="text-4xl font-bold text-gray-900 mb-2">Submit a Complaint</h1>
-                    <p className="text-lg text-gray-600">
+            <main className={`max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-500 ${isInputFocused ? 'py-6 sm:py-12' : 'py-8 sm:py-12'}`}>
+                <div className={`mb-6 sm:mb-8 transition-all duration-500 ${isInputFocused ? 'scale-95 sm:scale-100' : 'scale-100'}`}>
+                    <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2">Submit a Complaint</h1>
+                    <p className="text-base sm:text-lg text-gray-400">
                         Fill out the form below to report an issue. We'll get back to you within 24-48 hours.
                     </p>
                     {locationId && (
-                        <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg flex items-start gap-3">
-                            <svg width="20" height="20" className="text-green-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                        <div className="mt-4 p-4 bg-[#1E1E1E] border border-[#00BFFF]/30 rounded-lg flex items-start gap-3">
+                            <svg width="20" height="20" className="text-[#00BFFF] flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                             </svg>
                             <div>
-                                <p className="text-sm font-medium text-green-900">QR Code Scanned</p>
-                                <p className="text-sm text-green-700">Location details have been pre-filled for you</p>
+                                <p className="text-sm font-medium text-white">QR Code Scanned</p>
+                                <p className="text-sm text-gray-400">Location details have been pre-filled for you</p>
                             </div>
                         </div>
                     )}
                 </div>
 
-                <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 space-y-6">
+                <form onSubmit={handleSubmit} className="bg-[#1E1E1E] rounded-2xl sm:rounded-3xl shadow-2xl border border-[#333333] p-6 sm:p-8 space-y-6 sm:space-y-8">
                     {/* Personal Information */}
                     <div>
-                        <h2 className="text-xl font-semibold text-gray-900 mb-4">Personal Information</h2>
-                        <div className="grid md:grid-cols-2 gap-6">
-                            <Input
-                                label="Full Name"
-                                required
-                                value={formData.name}
-                                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                error={errors.name}
-                                placeholder="John Doe"
-                            />
-                            <Input
-                                label="Email Address"
-                                type="email"
-                                required
-                                value={formData.email}
-                                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                error={errors.email}
-                                placeholder="john@example.com"
-                            />
+                        <h2 className="text-xl font-bold text-white mb-5">Personal Information</h2>
+                        <div className="grid md:grid-cols-2 gap-5 sm:gap-6">
+                            <div>
+                                <label className="block text-sm font-medium text-white mb-2">
+                                    Full Name <span className="text-[#00BFFF]">*</span>
+                                </label>
+                                <input
+                                    type="text"
+                                    required
+                                    value={formData.name}
+                                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                    onFocus={() => setIsInputFocused(true)}
+                                    onBlur={() => setIsInputFocused(false)}
+                                    placeholder="John Doe"
+                                    className="w-full px-4 py-3 bg-[#2C2C2C] border border-[#404040] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#00BFFF] focus:ring-2 focus:ring-[#00BFFF]/50 transition-all duration-300"
+                                />
+                                {errors.name && <p className="mt-2 text-sm text-[#F44336]">{errors.name}</p>}
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-white mb-2">
+                                    Email Address <span className="text-[#00BFFF]">*</span>
+                                </label>
+                                <input
+                                    type="email"
+                                    required
+                                    value={formData.email}
+                                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                    onFocus={() => setIsInputFocused(true)}
+                                    onBlur={() => setIsInputFocused(false)}
+                                    placeholder="john@example.com"
+                                    className="w-full px-4 py-3 bg-[#2C2C2C] border border-[#404040] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#00BFFF] focus:ring-2 focus:ring-[#00BFFF]/50 transition-all duration-300"
+                                />
+                                {errors.email && <p className="mt-2 text-sm text-[#F44336]">{errors.email}</p>}
+                            </div>
                         </div>
-                        <div className="mt-6">
-                            <Input
-                                label="Phone Number"
+                        <div className="mt-5 sm:mt-6">
+                            <label className="block text-sm font-medium text-white mb-2">
+                                Phone Number
+                            </label>
+                            <input
                                 type="tel"
                                 value={formData.phone}
                                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                                error={errors.phone}
+                                onFocus={() => setIsInputFocused(true)}
+                                onBlur={() => setIsInputFocused(false)}
                                 placeholder="+1 (555) 123-4567"
-                                helperText="Optional - for urgent follow-ups"
+                                className="w-full px-4 py-3 bg-[#2C2C2C] border border-[#404040] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#00BFFF] focus:ring-2 focus:ring-[#00BFFF]/50 transition-all duration-300"
                             />
+                            <p className="mt-2 text-xs text-gray-500">Optional - for urgent follow-ups</p>
                         </div>
                     </div>
 
                     {/* Location Information */}
-                    <div>
-                        <h2 className="text-xl font-semibold text-gray-900 mb-4">Location</h2>
-                        <div className="grid md:grid-cols-2 gap-6">
+                    <div className="pt-6 border-t border-[#333333]">
+                        <h2 className="text-xl font-bold text-white mb-5">Location</h2>
+                        <div className="grid md:grid-cols-2 gap-5 sm:gap-6">
                             <Select
                                 label="Floor"
                                 required
@@ -249,21 +269,29 @@ export default function SubmitPage() {
                                     ...FLOORS.map(floor => ({ value: floor, label: floor }))
                                 ]}
                             />
-                            <Input
-                                label="Room Number"
-                                required
-                                value={formData.room_number}
-                                onChange={(e) => setFormData({ ...formData, room_number: e.target.value })}
-                                error={errors.room_number}
-                                placeholder="e.g., Lab 101, Classroom 201"
-                            />
+                            <div>
+                                <label className="block text-sm font-medium text-white mb-2">
+                                    Room Number <span className="text-[#00BFFF]">*</span>
+                                </label>
+                                <input
+                                    type="text"
+                                    required
+                                    value={formData.room_number}
+                                    onChange={(e) => setFormData({ ...formData, room_number: e.target.value })}
+                                    onFocus={() => setIsInputFocused(true)}
+                                    onBlur={() => setIsInputFocused(false)}
+                                    placeholder="e.g., Lab 101, Classroom 201"
+                                    className="w-full px-4 py-3 bg-[#2C2C2C] border border-[#404040] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#00BFFF] focus:ring-2 focus:ring-[#00BFFF]/50 transition-all duration-300"
+                                />
+                                {errors.room_number && <p className="mt-2 text-sm text-[#F44336]">{errors.room_number}</p>}
+                            </div>
                         </div>
                     </div>
 
                     {/* Issue Details */}
-                    <div>
-                        <h2 className="text-xl font-semibold text-gray-900 mb-4">Issue Details</h2>
-                        <div className="space-y-6">
+                    <div className="pt-6 border-t border-[#333333]">
+                        <h2 className="text-xl font-bold text-white mb-5">Issue Details</h2>
+                        <div className="space-y-5 sm:space-y-6">
                             {/* Prepare grouped options */}
                             {(() => {
                                 const grouped = getComplaintTypesByCategory();
@@ -292,47 +320,27 @@ export default function SubmitPage() {
                                         />
 
                                         {requiresCustomType && (
-                                            <Input
-                                                label="Specify Issue Type"
-                                                required
-                                                value={formData.custom_type}
-                                                onChange={(e) => setFormData({ ...formData, custom_type: e.target.value })}
-                                                error={errors.custom_type}
-                                                placeholder="Please specify the issue type"
-                                                helperText="Provide more details about the issue"
-                                            />
+                                            <div>
+                                                <label className="block text-sm font-medium text-white mb-2">
+                                                    Specify Issue Type <span className="text-[#00BFFF]">*</span>
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    required
+                                                    value={formData.custom_type}
+                                                    onChange={(e) => setFormData({ ...formData, custom_type: e.target.value })}
+                                                    onFocus={() => setIsInputFocused(true)}
+                                                    onBlur={() => setIsInputFocused(false)}
+                                                    placeholder="Please specify the issue type"
+                                                    className="w-full px-4 py-3 bg-[#2C2C2C] border border-[#404040] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#00BFFF] focus:ring-2 focus:ring-[#00BFFF]/50 transition-all duration-300"
+                                                />
+                                                {errors.custom_type && <p className="mt-2 text-sm text-[#F44336]">{errors.custom_type}</p>}
+                                                <p className="mt-2 text-xs text-gray-500">Provide more details about the issue</p>
+                                            </div>
                                         )}
                                     </>
                                 );
                             })()}
-
-
-                            {/* Priority Selection - Currently not needed
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Priority <span className="text-red-500">*</span>
-                                </label>
-                                <div className="grid grid-cols-3 gap-4">
-                                    {(['Low', 'Medium', 'High'] as const).map((priority) => (
-                                        <button
-                                            key={priority}
-                                            type="button"
-                                            onClick={() => setFormData({ ...formData, priority })}
-                                            className={`px-4 py-3 rounded-lg border-2 font-medium transition-all ${formData.priority === priority
-                                                ? priority === 'High'
-                                                    ? 'border-red-500 bg-red-50 text-red-700'
-                                                    : priority === 'Medium'
-                                                        ? 'border-orange-500 bg-orange-50 text-orange-700'
-                                                        : 'border-green-500 bg-green-50 text-green-700'
-                                                : 'border-gray-200 hover:border-gray-300'
-                                                }`}
-                                        >
-                                            {priority}
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-                            */}
 
 
                             <Textarea
@@ -357,16 +365,22 @@ export default function SubmitPage() {
                     </div>
 
                     {/* Submit Button */}
-                    <div className="pt-6 border-t border-gray-200">
-                        <Button
+                    <div className="pt-6 border-t border-[#333333]">
+                        <button
                             type="submit"
-                            size="lg"
-                            isLoading={isSubmitting}
-                            className="w-full"
+                            disabled={isSubmitting}
+                            className="w-full bg-gradient-to-r from-[#00BFFF] to-[#0099CC] hover:from-[#00A8E6] hover:to-[#0088BB] text-white font-semibold py-3 sm:py-4 px-4 rounded-lg transition-all duration-300 shadow-lg shadow-[#00BFFF]/40 hover:shadow-[#00BFFF]/60 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 hover:scale-[1.02]"
                         >
-                            {isSubmitting ? 'Submitting...' : 'Submit Complaint'}
-                        </Button>
-                        <p className="mt-3 text-sm text-gray-500 text-center">
+                            {isSubmitting ? (
+                                <>
+                                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                                    <span>Submitting...</span>
+                                </>
+                            ) : (
+                                <span>Submit Complaint</span>
+                            )}
+                        </button>
+                        <p className="mt-3 text-sm text-gray-400 text-center">
                             You'll receive a confirmation email with a tracking link
                         </p>
                     </div>
