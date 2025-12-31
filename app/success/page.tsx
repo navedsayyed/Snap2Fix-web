@@ -5,13 +5,13 @@
 
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 import { shortId, copyToClipboard } from '@/lib/utils';
 
-export default function SuccessPage() {
+function SuccessPageContent() {
     const searchParams = useSearchParams();
     const router = useRouter();
     const complaintId = searchParams.get('id');
@@ -131,5 +131,13 @@ export default function SuccessPage() {
                 </div>
             </div>
         </div>
+    );
+}
+
+export default function SuccessPage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen bg-[#121212] flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#00BFFF]"></div></div>}>
+            <SuccessPageContent />
+        </Suspense>
     );
 }

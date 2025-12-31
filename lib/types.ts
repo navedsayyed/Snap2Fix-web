@@ -121,6 +121,7 @@ export interface ComplaintWithDetails extends Complaint {
     email: string;
   };
   timeline: TimelineEvent[];
+  completed_notes?: string | null;
 }
 
 /**

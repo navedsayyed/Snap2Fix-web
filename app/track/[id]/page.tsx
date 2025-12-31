@@ -138,7 +138,7 @@ export default function TrackComplaintPage() {
                         </div>
 
                         {/* Photos Section - Enhanced */}
-                        {complaint.status === 'completed' && (complaint.image_url || complaint.proof_image) ? (
+                        {(complaint.status as string) === 'completed' && (complaint.image_url || complaint.proof_image) ? (
                             <div className="bg-[#1E1E1E] border border-[#333333] rounded-3xl shadow-2xl p-6 sm:p-8 hover:border-[#00BFFF]/30 transition-all duration-500">
                                 <div className="flex items-center gap-3 mb-3">
                                     <div className="w-12 h-12 bg-gradient-to-br from-[#4CAF50] to-[#45a049] rounded-xl flex items-center justify-center shadow-lg">
@@ -205,7 +205,7 @@ export default function TrackComplaintPage() {
                         )}
 
                         {/* Technician's Notes */}
-                        {complaint.status === 'completed' && complaint.completed_notes && (
+                        {(complaint.status as string) === 'completed' && complaint.completed_notes && (
                             <div className="bg-[#1E1E1E] border border-[#333333] rounded-3xl shadow-2xl p-6 sm:p-8 hover:border-[#00BFFF]/30 transition-all duration-500">
                                 <div className="flex items-center gap-3 mb-6">
                                     <div className="w-12 h-12 bg-gradient-to-br from-[#00BFFF] to-[#0099CC] rounded-xl flex items-center justify-center shadow-lg">
@@ -222,7 +222,7 @@ export default function TrackComplaintPage() {
                         )}
 
                         {/* Work In Progress Notice */}
-                        {complaint.status === 'in-progress' && (
+                        {(complaint.status as string) === 'in-progress' && (
                             <div className="bg-[#1E1E1E] border border-[#333333] rounded-3xl shadow-2xl p-6 sm:p-8 hover:border-[#00BFFF]/30 transition-all duration-500">
                                 <div className="bg-[#00BFFF]/10 border border-[#00BFFF]/30 rounded-2xl p-8 text-center">
                                     <div className="w-20 h-20 bg-gradient-to-br from-[#00BFFF]/20 to-[#0099CC]/20 rounded-full flex items-center justify-center mx-auto mb-4">
