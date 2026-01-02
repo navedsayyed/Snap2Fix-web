@@ -37,11 +37,13 @@ export default function LoginPage() {
             <div className={`w-full max-w-md transition-all duration-500 ease-out ${isInputFocused ? '-translate-y-8 sm:translate-y-0' : 'translate-y-0'}`}>
                 {/* Logo and Title */}
                 <div className="text-center mb-6">
-                    <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-[#00BFFF] to-[#0099CC] rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-2xl shadow-[#00BFFF]/60">
-                        <span className="text-2xl sm:text-3xl font-bold text-white">V3</span>
+                    <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-[#00BFFF] via-[#0099CC] to-[#007ACC] rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-2xl shadow-[#00BFFF]/60 border border-[#00BFFF]/20">
+                        <svg width="32" height="32" className="text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                        </svg>
                     </div>
-                    <h1 className="text-2xl sm:text-3xl font-bold text-white mb-1">Version-3</h1>
-                    <p className="text-sm sm:text-base text-gray-400">Efficient Complaint Management</p>
+                    <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent mb-1">Smart Maintenance</h1>
+                    <p className="text-sm sm:text-base text-[#00BFFF] font-semibold">Professional Issue Management</p>
                 </div>
 
                 {/* Login Card */}

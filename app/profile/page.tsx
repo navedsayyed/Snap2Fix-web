@@ -99,31 +99,37 @@ export default function ProfilePage() {
     return (
         <div className="min-h-screen bg-[#121212]">
             {/* Header with Glassmorphism */}
-            <div className="fixed top-0 left-0 right-0 z-50 bg-[#0A0A0A]/80 backdrop-blur-xl border-b border-white/10 shadow-xl">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div className="fixed top-0 left-0 right-0 z-50 bg-[#0A0A0A]/80 backdrop-blur-xl border-b border-white/10 shadow-2xl">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-5">
                     <div className="flex justify-between items-center">
                         <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-gradient-to-br from-[#00BFFF] to-[#0099CC] rounded-xl flex items-center justify-center shadow-lg">
-                                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            <div className="w-11 h-11 sm:w-12 sm:h-12 bg-gradient-to-br from-[#00BFFF] via-[#0099CC] to-[#007ACC] rounded-xl flex items-center justify-center shadow-lg shadow-[#00BFFF]/40 border border-[#00BFFF]/20">
+                                <svg className="w-6 h-6 sm:w-7 sm:h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                 </svg>
                             </div>
                             <div>
-                                <h1 className="text-2xl font-bold bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">My Profile</h1>
-                                <p className="text-[#B0B0B0] text-sm hidden sm:block">Manage your complaints and account</p>
+                                <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">My Dashboard</h1>
+                                <p className="text-[#00BFFF] text-xs sm:text-sm font-semibold hidden sm:block">Manage complaints & account</p>
                             </div>
                         </div>
                         <div className="flex gap-2 sm:gap-3">
                             <Link href="/">
-                                <button className="px-4 py-2 bg-[#2C2C2C] hover:bg-[#333333] text-white rounded-xl border border-[#404040] hover:border-[#00BFFF]/50 transition-all duration-300 text-sm sm:text-base font-medium">
-                                    Home
+                                <button className="px-3 sm:px-5 py-2 sm:py-2.5 bg-[#2C2C2C] hover:bg-[#333333] text-white rounded-xl border border-[#404040] hover:border-[#00BFFF]/50 transition-all duration-300 text-sm sm:text-base font-medium flex items-center gap-2">
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                                    </svg>
+                                    <span className="hidden sm:inline">Home</span>
                                 </button>
                             </Link>
                             <button 
                                 onClick={handleSignOut}
-                                className="px-4 py-2 bg-gradient-to-r from-[#00BFFF] to-[#0099CC] hover:from-[#00BFFF]/90 hover:to-[#0099CC]/90 text-white rounded-xl shadow-lg shadow-[#00BFFF]/30 hover:shadow-[#00BFFF]/50 transition-all duration-300 text-sm sm:text-base font-semibold"
+                                className="px-3 sm:px-5 py-2 sm:py-2.5 bg-gradient-to-r from-[#00BFFF] to-[#0099CC] hover:from-[#00BFFF]/90 hover:to-[#0099CC]/90 text-white rounded-xl shadow-lg shadow-[#00BFFF]/30 hover:shadow-[#00BFFF]/50 transition-all duration-300 text-sm sm:text-base font-semibold hover:scale-105 flex items-center gap-2"
                             >
-                                Sign Out
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                                </svg>
+                                <span className="hidden sm:inline">Sign Out</span>
                             </button>
                         </div>
                     </div>
@@ -133,17 +139,20 @@ export default function ProfilePage() {
             {/* Main Content with Top Padding for Fixed Header */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-24">
                 {/* User Info Card with Enhanced Design */}
-                <div className="bg-[#1E1E1E] border border-[#333333] rounded-3xl shadow-2xl p-6 sm:p-8 mb-8 hover:border-[#00BFFF]/30 transition-all duration-500">
-                    <div className="flex items-center gap-3 mb-6">
-                        <div className="w-12 h-12 bg-gradient-to-br from-[#00BFFF] to-[#0099CC] rounded-xl flex items-center justify-center shadow-lg">
-                            <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <div className="bg-gradient-to-br from-[#1E1E1E] via-[#252525] to-[#1A1A1A] border border-[#333333] rounded-3xl shadow-2xl p-6 sm:p-10 mb-8 hover:border-[#00BFFF]/40 transition-all duration-500 hover:shadow-[#00BFFF]/20">
+                    <div className="flex items-center gap-4 mb-8">
+                        <div className="w-14 h-14 bg-gradient-to-br from-[#00BFFF] to-[#0099CC] rounded-2xl flex items-center justify-center shadow-lg shadow-[#00BFFF]/50">
+                            <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                             </svg>
                         </div>
-                        <h2 className="text-2xl font-bold bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">Account Information</h2>
+                        <div>
+                            <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent">Account Information</h2>
+                            <p className="text-[#00BFFF] text-sm font-semibold">Personal Details</p>
+                        </div>
                     </div>
-                    <div className="grid md:grid-cols-2 gap-6">
-                        <div className="bg-[#2C2C2C] border border-[#404040] rounded-2xl p-4 hover:border-[#00BFFF]/50 transition-all duration-300">
+                    <div className="grid md:grid-cols-2 gap-5 sm:gap-6">
+                        <div className="bg-[#2C2C2C] border border-[#404040] rounded-2xl p-5 hover:border-[#00BFFF]/60 hover:shadow-lg hover:shadow-[#00BFFF]/10 transition-all duration-300 hover:-translate-y-1">
                             <p className="text-sm text-[#B0B0B0] mb-1 flex items-center gap-2">
                                 <svg className="w-4 h-4 text-[#00BFFF]" fill="currentColor" viewBox="0 0 20 20">
                                     <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
@@ -189,15 +198,18 @@ export default function ProfilePage() {
                 </div>
 
                 {/* Complaints List with Enhanced Design */}
-                <div className="bg-[#1E1E1E] border border-[#333333] rounded-3xl shadow-2xl p-6 sm:p-8 hover:border-[#00BFFF]/30 transition-all duration-500">
-                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
-                        <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 bg-gradient-to-br from-[#00BFFF] to-[#0099CC] rounded-xl flex items-center justify-center shadow-lg">
-                                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                <div className="bg-gradient-to-br from-[#1E1E1E] via-[#252525] to-[#1A1A1A] border border-[#333333] rounded-3xl shadow-2xl p-6 sm:p-10 hover:border-[#00BFFF]/40 transition-all duration-500 hover:shadow-[#00BFFF]/20">
+                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
+                        <div className="flex items-center gap-4">
+                            <div className="w-14 h-14 bg-gradient-to-br from-[#00BFFF] to-[#0099CC] rounded-2xl flex items-center justify-center shadow-lg shadow-[#00BFFF]/50">
+                                <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
                                 </svg>
                             </div>
-                            <h2 className="text-2xl font-bold bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">My Complaints</h2>
+                            <div>
+                                <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent">My Complaints</h2>
+                                <p className="text-[#00BFFF] text-sm font-semibold">Track & Manage</p>
+                            </div>
                         </div>
                         <Link href="/submit">
                             <button className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-[#00BFFF] to-[#0099CC] hover:from-[#00BFFF]/90 hover:to-[#0099CC]/90 text-white rounded-xl shadow-lg shadow-[#00BFFF]/30 hover:shadow-[#00BFFF]/50 hover:scale-105 transition-all duration-300 font-semibold flex items-center justify-center gap-2">

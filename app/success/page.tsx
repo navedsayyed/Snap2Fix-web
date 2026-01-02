@@ -40,7 +40,27 @@ function SuccessPageContent() {
     const trackingUrl = `${window.location.origin}/track/${complaintId}`;
 
     return (
-        <div className="min-h-screen bg-[#121212] flex items-center justify-center p-4">
+        <div className="min-h-screen bg-[#121212]">
+            {/* Header */}
+            <header className="bg-[#0A0A0A]/80 backdrop-blur-xl border-b border-white/10 shadow-2xl">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="flex items-center justify-between h-16 sm:h-20">
+                        <Link href="/" className="flex items-center gap-2 sm:gap-3 group">
+                            <div className="w-11 h-11 sm:w-12 sm:h-12 bg-gradient-to-br from-[#00BFFF] via-[#0099CC] to-[#007ACC] rounded-xl flex items-center justify-center shadow-lg shadow-[#00BFFF]/40 transition-all duration-300 group-hover:shadow-[#00BFFF]/60 group-hover:scale-105 border border-[#00BFFF]/20">
+                                <svg width="24" height="24" className="text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                                </svg>
+                            </div>
+                            <div>
+                                <span className="text-lg sm:text-xl font-bold text-white">Success</span>
+                                <p className="text-[#00BFFF] text-xs sm:text-sm font-semibold hidden sm:block">Submitted</p>
+                            </div>
+                        </Link>
+                    </div>
+                </div>
+            </header>
+            
+            <div className="flex items-center justify-center p-4 pt-20">
             <div className="max-w-2xl w-full">
                 <div className="bg-[#1E1E1E] border border-[#404040] rounded-2xl shadow-xl p-8 md:p-12 text-center animate-slide-in-up">
                     {/* Success Icon */}

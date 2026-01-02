@@ -43,16 +43,19 @@ export default function TrackPage() {
     return (
         <div className="min-h-screen bg-[#121212] overflow-hidden">
             {/* Header */}
-            <header className="bg-[#0A0A0A]/80 backdrop-blur-xl border-b border-white/10 sticky top-0 z-50">
-                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex items-center h-16 sm:h-20">
-                        <Link href="/" className="flex items-center gap-2 sm:gap-3 text-gray-400 hover:text-white transition-colors group">
-                            <div className="w-9 h-9 sm:w-10 sm:h-10 bg-white/5 hover:bg-white/10 rounded-lg flex items-center justify-center transition-all group-hover:scale-105">
-                                <svg width="20" height="20" className="text-gray-400 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            <header className="bg-[#0A0A0A]/80 backdrop-blur-xl border-b border-white/10 sticky top-0 z-50 shadow-2xl">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="flex items-center justify-between h-16 sm:h-20">
+                        <Link href="/" className="flex items-center gap-2 sm:gap-3 group">
+                            <div className="w-11 h-11 sm:w-12 sm:h-12 bg-gradient-to-br from-[#00BFFF] via-[#0099CC] to-[#007ACC] rounded-xl flex items-center justify-center shadow-lg shadow-[#00BFFF]/40 transition-all duration-300 group-hover:shadow-[#00BFFF]/60 group-hover:scale-105 border border-[#00BFFF]/20">
+                                <svg width="24" height="24" className="text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                                 </svg>
                             </div>
-                            <span className="text-sm sm:text-base font-medium">Back to Home</span>
+                            <div>
+                                <span className="text-lg sm:text-xl font-bold text-white">Track Complaint</span>
+                                <p className="text-[#00BFFF] text-xs sm:text-sm font-semibold hidden sm:block">Check Status</p>
+                            </div>
                         </Link>
                     </div>
                 </div>
