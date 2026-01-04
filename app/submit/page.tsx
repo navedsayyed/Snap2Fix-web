@@ -84,10 +84,24 @@ function SubmitForm() {
         if (qrClass || qrFloor || qrDepartment || qrBuilding) {
             console.log('Auto-filling form with QR data');
             
+            // Map numeric floor to floor name
+            const floorMap: Record<string, string> = {
+                '0': 'Ground Floor',
+                '1': 'First Floor',
+                '2': 'Second Floor',
+                '3': 'Third Floor',
+                'Ground': 'Ground Floor',
+                'First': 'First Floor',
+                'Second': 'Second Floor',
+                'Third': 'Third Floor'
+            };
+            
+            const mappedFloor = qrFloor ? (floorMap[qrFloor] || qrFloor) : '';
+            
             // Auto-fill from QR code scan (matching React Native app format)
             setFormData(prev => ({
                 ...prev,
-                floor: qrFloor || prev.floor,
+                floor: mappedFloor,
                 room_number: qrClass || prev.room_number,
                 location_department: qrDepartment || prev.location_department,
             }));
@@ -340,6 +354,28 @@ function SubmitForm() {
                                 {errors.room_number && <p className="mt-2 text-sm text-[#F44336]">{errors.room_number}</p>}
                             </div>
                         </div>
+
+                        {/* Show formatted location and place when QR scanned (matching React Native app) */}
+                        {locationDisplay.location && (
+                            <div className="grid md:grid-cols-2 gap-5 sm:gap-6 mt-5 sm:mt-6">
+                                <div>
+                                    <label className="block text-sm font-medium text-white mb-2">
+                                        Location <span className="text-[#00BFFF]">*</span>
+                                    </label>
+                                    <div className="w-full px-4 py-3 bg-[#2C2C2C]/50 border border-[#00BFFF]/30 rounded-lg text-white">
+                                        {locationDisplay.location}
+                                    </div>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-white mb-2">
+                                        Place <span className="text-[#00BFFF]">*</span>
+                                    </label>
+                                    <div className="w-full px-4 py-3 bg-[#2C2C2C]/50 border border-[#00BFFF]/30 rounded-lg text-white">
+                                        {locationDisplay.place}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </div>
 
                     {/* Issue Details */}
