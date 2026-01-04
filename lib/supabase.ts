@@ -33,14 +33,19 @@ export async function uploadImage(
     pathPrefix: string = 'web'
 ): Promise<{ url: string | null; error: Error | null }> {
     try {
+        // Convert File to ArrayBuffer for upload
+        const arrayBuffer = await file.arrayBuffer();
         const timestamp = Date.now();
         const fileName = `${pathPrefix}/${timestamp}_${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
 
+        console.log('Uploading file:', fileName, 'Size:', file.size, 'Type:', file.type);
+
         const { data, error } = await supabase.storage
             .from(bucket)
-            .upload(fileName, file, {
+            .upload(fileName, arrayBuffer, {
                 cacheControl: '3600',
                 upsert: false,
+                contentType: file.type,
             });
 
         if (error) {
@@ -48,10 +53,17 @@ export async function uploadImage(
             return { url: null, error };
         }
 
+        if (!data) {
+            console.error('No data returned from upload');
+            return { url: null, error: new Error('Upload failed: no data returned') };
+        }
+
         // Get public URL
         const { data: { publicUrl } } = supabase.storage
             .from(bucket)
             .getPublicUrl(data.path);
+
+        console.log('Upload successful, public URL:', publicUrl);
 
         return { url: publicUrl, error: null };
     } catch (error) {

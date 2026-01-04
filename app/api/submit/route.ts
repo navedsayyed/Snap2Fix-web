@@ -65,15 +65,17 @@ export async function POST(request: NextRequest) {
                 );
             }
 
+            console.log('Attempting to upload image:', photo.name, 'Size:', photo.size);
             const { url, error: uploadError } = await uploadImage(photo);
             if (uploadError) {
                 console.error('Image upload error:', uploadError);
                 return NextResponse.json(
-                    { success: false, error: 'Failed to upload image' },
+                    { success: false, error: `Failed to upload image: ${uploadError.message}` },
                     { status: 500 }
                 );
             }
             imageUrl = url;
+            console.log('Image uploaded successfully:', imageUrl);
         }
 
         // Determine department based on issue type and location
