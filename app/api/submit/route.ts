@@ -46,36 +46,35 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // Upload photo if provided
+        // Upload photo if provided (non-blocking - complaint can be submitted without image)
         let imageUrl: string | null = null;
+        let imageUploadWarning: string | null = null;
+        
         if (photo && photo.size > 0) {
             // Validate file size (5MB max)
             if (photo.size > 5 * 1024 * 1024) {
-                return NextResponse.json(
-                    { success: false, error: 'File size must be less than 5MB' },
-                    { status: 400 }
-                );
+                imageUploadWarning = 'File size exceeds 5MB limit';
+                console.warn('Image too large:', photo.size);
             }
-
             // Validate file type
-            if (!['image/jpeg', 'image/jpg', 'image/png'].includes(photo.type)) {
-                return NextResponse.json(
-                    { success: false, error: 'Only JPEG and PNG images are allowed' },
-                    { status: 400 }
-                );
+            else if (!['image/jpeg', 'image/jpg', 'image/png'].includes(photo.type)) {
+                imageUploadWarning = 'Only JPEG and PNG images are allowed';
+                console.warn('Invalid file type:', photo.type);
             }
-
-            console.log('Attempting to upload image:', photo.name, 'Size:', photo.size);
-            const { url, error: uploadError } = await uploadImage(photo);
-            if (uploadError) {
-                console.error('Image upload error:', uploadError);
-                return NextResponse.json(
-                    { success: false, error: `Failed to upload image: ${uploadError.message}` },
-                    { status: 500 }
-                );
+            // Try to upload
+            else {
+                console.log('Attempting to upload image:', photo.name, 'Size:', photo.size);
+                const { url, error: uploadError } = await uploadImage(photo);
+                
+                if (uploadError) {
+                    console.error('Image upload error:', uploadError);
+                    imageUploadWarning = 'Image upload failed - complaint submitted without photo';
+                    // Don't block submission, just continue without image
+                } else {
+                    imageUrl = url;
+                    console.log('Image uploaded successfully:', imageUrl);
+                }
             }
-            imageUrl = url;
-            console.log('Image uploaded successfully:', imageUrl);
         }
 
         // Determine department based on issue type and location
@@ -155,6 +154,7 @@ export async function POST(request: NextRequest) {
             success: true,
             complaintId: complaint.id,
             trackingUrl,
+            warning: imageUploadWarning, // Include warning if image upload failed
         });
 
     } catch (error) {

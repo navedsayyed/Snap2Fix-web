@@ -196,6 +196,12 @@ function SubmitForm() {
                 throw new Error(result.error || 'Failed to submit complaint');
             }
 
+            // Show warning if image upload failed but complaint was submitted
+            if (result.warning) {
+                console.warn('Image upload warning:', result.warning);
+                // Still redirect to success page, the warning is logged
+            }
+
             // Redirect to success page with complaint ID
             router.push(`/success?id=${result.complaintId}`);
 
