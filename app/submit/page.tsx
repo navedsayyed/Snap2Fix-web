@@ -44,6 +44,12 @@ export default function SubmitPage() {
         location_department: '',
     });
 
+    // Formatted location strings (matching React Native app format)
+    const [locationDisplay, setLocationDisplay] = useState({
+        location: '',  // "Building A - Floor 1"
+        place: ''      // "Civil - Room 101"
+    });
+
     // Load current user
     useEffect(() => {
         loadUser();
@@ -74,13 +80,19 @@ export default function SubmitPage() {
         const qrBuilding = searchParams.get('building');
 
         if (qrClass || qrFloor || qrDepartment || qrBuilding) {
-            // Auto-fill from QR code scan
+            // Auto-fill from QR code scan (matching React Native app format)
             setFormData(prev => ({
                 ...prev,
                 floor: qrFloor || prev.floor,
                 room_number: qrClass || prev.room_number,
                 location_department: qrDepartment || prev.location_department,
             }));
+
+            // Set formatted location strings (same as React Native app)
+            setLocationDisplay({
+                location: `Building ${qrBuilding || 'A'} - Floor ${qrFloor || '1'}`,
+                place: `${qrDepartment || 'General'} - Room ${qrClass || '101'}`
+            });
         } else if (locationId) {
             // Fallback to old location ID method
             const location = getLocationById(locationId);
@@ -206,14 +218,31 @@ export default function SubmitPage() {
                             <svg width="20" height="20" className="text-[#00BFFF] flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                             </svg>
-                            <div>
+                            <div className="flex-1">
                                 <p className="text-sm font-medium text-white">QR Code Scanned</p>
-                                <p className="text-sm text-gray-400">Location details have been pre-filled for you</p>
-                                {(searchParams.get('building') && searchParams.get('floor') && searchParams.get('class')) && (
-                                    <p className="text-xs text-[#00BFFF] mt-1 font-mono">
-                                        Building {searchParams.get('building')} • Floor {searchParams.get('floor')} • Room {searchParams.get('class')}
-                                        {searchParams.get('department') && ` • ${searchParams.get('department')}`}
-                                    </p>
+                                <p className="text-sm text-gray-400 mb-2">Location details have been pre-filled for you</p>
+                                {locationDisplay.location && (
+                                    <div className="space-y-1 text-xs">
+                                        {formData.location_department && (
+                                            <p className="text-gray-400">
+                                                <span className="text-gray-500">Dept:</span> <span className="text-white">{formData.location_department}</span>
+                                            </p>
+                                        )}
+                                        {formData.floor && (
+                                            <p className="text-gray-400">
+                                                <span className="text-gray-500">Floor:</span> <span className="text-white">{formData.floor}</span>
+                                            </p>
+                                        )}
+                                        {formData.room_number && (
+                                            <p className="text-gray-400">
+                                                <span className="text-gray-500">Room:</span> <span className="text-white">{formData.room_number}</span>
+                                            </p>
+                                        )}
+                                        <p className="text-[#00BFFF] mt-2 font-medium">
+                                            {locationDisplay.location}<br/>
+                                            {locationDisplay.place}
+                                        </p>
+                                    </div>
                                 )}
                             </div>
                         </div>
