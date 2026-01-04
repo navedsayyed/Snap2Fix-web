@@ -325,57 +325,40 @@ function SubmitForm() {
                     {/* Location Information */}
                     <div className="pt-6 border-t border-[#333333]">
                         <h2 className="text-xl font-bold text-white mb-5">Location</h2>
+                        
+                        {/* Show formatted location and place fields (matching React Native app) */}
                         <div className="grid md:grid-cols-2 gap-5 sm:gap-6">
-                            <Select
-                                label="Floor"
-                                required
-                                value={formData.floor}
-                                onChange={(e) => setFormData({ ...formData, floor: e.target.value })}
-                                error={errors.floor}
-                                options={[
-                                    { value: '', label: 'Select floor' },
-                                    ...FLOORS.map(floor => ({ value: floor, label: floor }))
-                                ]}
-                            />
                             <div>
                                 <label className="block text-sm font-medium text-white mb-2">
-                                    Room Number <span className="text-[#00BFFF]">*</span>
+                                    Location <span className="text-[#00BFFF]">*</span>
                                 </label>
                                 <input
                                     type="text"
                                     required
-                                    value={formData.room_number}
-                                    onChange={(e) => setFormData({ ...formData, room_number: e.target.value })}
+                                    value={locationDisplay.location}
+                                    onChange={(e) => setLocationDisplay({ ...locationDisplay, location: e.target.value })}
                                     onFocus={() => setIsInputFocused(true)}
                                     onBlur={() => setIsInputFocused(false)}
-                                    placeholder="e.g., Lab 101, Classroom 201"
-                                    className="w-full px-4 py-3 bg-[#2C2C2C] border border-[#404040] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#00BFFF] focus:ring-2 focus:ring-[#00BFFF]/50 transition-all duration-300"
+                                    placeholder="Building & Floor"
+                                    className="w-full px-4 py-3 bg-[#2C2C2C] border border-[#00BFFF]/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#00BFFF] focus:ring-2 focus:ring-[#00BFFF]/50 transition-all duration-300"
                                 />
-                                {errors.room_number && <p className="mt-2 text-sm text-[#F44336]">{errors.room_number}</p>}
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-white mb-2">
+                                    Place <span className="text-[#00BFFF]">*</span>
+                                </label>
+                                <input
+                                    type="text"
+                                    required
+                                    value={locationDisplay.place}
+                                    onChange={(e) => setLocationDisplay({ ...locationDisplay, place: e.target.value })}
+                                    onFocus={() => setIsInputFocused(true)}
+                                    onBlur={() => setIsInputFocused(false)}
+                                    placeholder="Dept / Room"
+                                    className="w-full px-4 py-3 bg-[#2C2C2C] border border-[#00BFFF]/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#00BFFF] focus:ring-2 focus:ring-[#00BFFF]/50 transition-all duration-300"
+                                />
                             </div>
                         </div>
-
-                        {/* Show formatted location and place when QR scanned (matching React Native app) */}
-                        {locationDisplay.location && (
-                            <div className="grid md:grid-cols-2 gap-5 sm:gap-6 mt-5 sm:mt-6">
-                                <div>
-                                    <label className="block text-sm font-medium text-white mb-2">
-                                        Location <span className="text-[#00BFFF]">*</span>
-                                    </label>
-                                    <div className="w-full px-4 py-3 bg-[#2C2C2C]/50 border border-[#00BFFF]/30 rounded-lg text-white">
-                                        {locationDisplay.location}
-                                    </div>
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-white mb-2">
-                                        Place <span className="text-[#00BFFF]">*</span>
-                                    </label>
-                                    <div className="w-full px-4 py-3 bg-[#2C2C2C]/50 border border-[#00BFFF]/30 rounded-lg text-white">
-                                        {locationDisplay.place}
-                                    </div>
-                                </div>
-                            </div>
-                        )}
                     </div>
 
                     {/* Issue Details */}
