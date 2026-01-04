@@ -183,6 +183,10 @@ function SubmitForm() {
             submitData.append('description', formData.description);
             if (formData.photo) submitData.append('photo', formData.photo);
             if (formData.location_department) submitData.append('location_department', formData.location_department);
+            
+            // Add location and place fields (matching React Native app)
+            submitData.append('location', locationDisplay.location || `Building A - Floor ${formData.floor}`);
+            submitData.append('place', locationDisplay.place || `${formData.location_department || 'General'} - Room ${formData.room_number}`);
 
             // Submit to API
             const response = await fetch('/api/submit', {

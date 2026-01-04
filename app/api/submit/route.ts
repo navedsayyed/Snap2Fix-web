@@ -84,30 +84,33 @@ export async function POST(request: NextRequest) {
             floor
         );
 
-        // Create complaint title from issue type and room
-        const title = `${issue_type} issue in ${room_number}`;
+        // Get location and place from form data
+        const location = formData.get('location') as string || `Building A - Floor ${floor}`;
+        const place = formData.get('place') as string || `${locationDepartment || 'General'} - Room ${room_number}`;
 
-        // Prepare complaint data
+        // Handle custom type - prepend to title if provided
+        const custom_type = formData.get('custom_type') as string | null;
+        const baseTitle = custom_type || issue_type;
+        const title = `${baseTitle} issue in ${room_number}`;
+
+        // Prepare complaint data - MATCHING React Native app structure
         const complaintData = {
             user_id: user?.id || null, // Set user_id if authenticated, null for guest
-            title,
-            description,
-            department,
-            floor,
-            room_number,
-            status: 'Pending',
-            priority,
-            image_url: imageUrl,
-            proof_image: null,
-            technician_id: null,
+            title,                      // Complaint title
+            type: issue_type,          // Original complaint type (REQUIRED by React Native)
+            description,               // Description
+            location,                  // "Building A - Floor 1" format
+            place,                     // "Civil - Room 101" format
+            department,                // Auto-determined from type/floor
+            complaint_type: department, // Department name for HOD filtering
+            floor: floor || null,      // Floor number
+            class: room_number || null, // Room/class number (React Native uses 'class' field)
+            status: 'in-progress',     // MUST be 'in-progress' not 'Pending'
+            assigned_to: null,         // Initially null
             completed_at: null,
-            user_name: name,
-            user_email: email,
-            user_phone: phone || null,
-            created_via: 'web',
-            tracking_token: crypto.randomUUID(),
-            assigned_at: null,
-            started_at: null,
+            completion_notes: null,
+            completion_image_url: null,
+            completion_image_path: null,
         };
 
         // Insert complaint into database
@@ -126,6 +129,29 @@ export async function POST(request: NextRequest) {
                 { success: false, error: 'Failed to create complaint' },
                 { status: 500 }
             );
+        }
+
+        // Upload image AFTER complaint is created (matching React Native flow)
+        if (imageUrl && complaint.id) {
+            try {
+                // Store image reference in complaint_images table
+                const { error: imageRecordError } = await supabase
+                    .from('complaint_images')
+                    .insert({
+                        complaint_id: complaint.id,
+                        url: imageUrl,
+                        storage_path: imageUrl, // Store the full URL
+                        created_at: new Date().toISOString(),
+                    });
+
+                if (imageRecordError) {
+                    console.error('Failed to create image record:', imageRecordError);
+                    imageUploadWarning = 'Image uploaded but failed to link to complaint';
+                }
+            } catch (err) {
+                console.error('Image record exception:', err);
+                imageUploadWarning = 'Image uploaded but failed to link to complaint';
+            }
         }
 
         // Send confirmation email (don't wait for it, send async)
