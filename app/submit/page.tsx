@@ -5,7 +5,7 @@
 
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
@@ -19,7 +19,7 @@ import { FLOORS } from '@/lib/types';
 import { COMPLAINT_TYPES, getComplaintTypesByCategory } from '@/lib/complaintTypes';
 import { getCurrentUser } from '@/lib/auth';
 
-function SubmitPageContent() {
+export default function SubmitPage() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const locationId = searchParams.get('loc');
@@ -65,9 +65,24 @@ function SubmitPageContent() {
         }
     };
 
-    // Pre-fill location from QR code
+    // Pre-fill location from QR code URL parameters
     useEffect(() => {
-        if (locationId) {
+        // Check for QR code parameters (class, floor, department, building)
+        const qrClass = searchParams.get('class');
+        const qrFloor = searchParams.get('floor');
+        const qrDepartment = searchParams.get('department');
+        const qrBuilding = searchParams.get('building');
+
+        if (qrClass || qrFloor || qrDepartment || qrBuilding) {
+            // Auto-fill from QR code scan
+            setFormData(prev => ({
+                ...prev,
+                floor: qrFloor || prev.floor,
+                room_number: qrClass || prev.room_number,
+                location_department: qrDepartment || prev.location_department,
+            }));
+        } else if (locationId) {
+            // Fallback to old location ID method
             const location = getLocationById(locationId);
             if (location) {
                 setFormData(prev => ({
@@ -78,7 +93,7 @@ function SubmitPageContent() {
                 }));
             }
         }
-    }, [locationId]);
+    }, [locationId, searchParams]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -164,19 +179,16 @@ function SubmitPageContent() {
     return (
         <div className="min-h-screen bg-[#121212] overflow-hidden">
             {/* Header */}
-            <header className="bg-[#0A0A0A]/80 backdrop-blur-xl border-b border-white/10 sticky top-0 z-50 shadow-2xl">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex items-center justify-between h-16 sm:h-20">
-                        <Link href="/" className="flex items-center gap-2 sm:gap-3 group">
-                            <div className="w-11 h-11 sm:w-12 sm:h-12 bg-gradient-to-br from-[#00BFFF] via-[#0099CC] to-[#007ACC] rounded-xl flex items-center justify-center shadow-lg shadow-[#00BFFF]/40 transition-all duration-300 group-hover:shadow-[#00BFFF]/60 group-hover:scale-105 border border-[#00BFFF]/20">
-                                <svg width="24" height="24" className="text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            <header className="bg-[#0A0A0A]/80 backdrop-blur-xl border-b border-white/10 sticky top-0 z-50">
+                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="flex items-center h-16 sm:h-20">
+                        <Link href="/" className="flex items-center gap-2 sm:gap-3 text-gray-400 hover:text-white transition-colors group">
+                            <div className="w-9 h-9 sm:w-10 sm:h-10 bg-white/5 hover:bg-white/10 rounded-lg flex items-center justify-center transition-all group-hover:scale-105">
+                                <svg width="20" height="20" className="text-gray-400 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                                 </svg>
                             </div>
-                            <div>
-                                <span className="text-lg sm:text-xl font-bold text-white">Submit Complaint</span>
-                                <p className="text-[#00BFFF] text-xs sm:text-sm font-semibold hidden sm:block">Report an Issue</p>
-                            </div>
+                            <span className="text-sm sm:text-base font-medium">Back to Home</span>
                         </Link>
                     </div>
                 </div>
@@ -189,7 +201,7 @@ function SubmitPageContent() {
                     <p className="text-base sm:text-lg text-gray-400">
                         Fill out the form below to report an issue. We'll get back to you within 24-48 hours.
                     </p>
-                    {locationId && (
+                    {(locationId || searchParams.get('class') || searchParams.get('floor')) && (
                         <div className="mt-4 p-4 bg-[#1E1E1E] border border-[#00BFFF]/30 rounded-lg flex items-start gap-3">
                             <svg width="20" height="20" className="text-[#00BFFF] flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
@@ -197,6 +209,12 @@ function SubmitPageContent() {
                             <div>
                                 <p className="text-sm font-medium text-white">QR Code Scanned</p>
                                 <p className="text-sm text-gray-400">Location details have been pre-filled for you</p>
+                                {(searchParams.get('building') && searchParams.get('floor') && searchParams.get('class')) && (
+                                    <p className="text-xs text-[#00BFFF] mt-1 font-mono">
+                                        Building {searchParams.get('building')} • Floor {searchParams.get('floor')} • Room {searchParams.get('class')}
+                                        {searchParams.get('department') && ` • ${searchParams.get('department')}`}
+                                    </p>
+                                )}
                             </div>
                         </div>
                     )}
@@ -390,13 +408,5 @@ function SubmitPageContent() {
                 </form>
             </main>
         </div>
-    );
-}
-
-export default function SubmitPage() {
-    return (
-        <Suspense fallback={<div className="min-h-screen bg-[#121212] flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#00BFFF]"></div></div>}>
-            <SubmitPageContent />
-        </Suspense>
     );
 }
