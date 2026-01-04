@@ -5,7 +5,7 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
@@ -19,7 +19,7 @@ import { FLOORS } from '@/lib/types';
 import { COMPLAINT_TYPES, getComplaintTypesByCategory } from '@/lib/complaintTypes';
 import { getCurrentUser } from '@/lib/auth';
 
-export default function SubmitPage() {
+function SubmitForm() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const locationId = searchParams.get('loc');
@@ -79,7 +79,11 @@ export default function SubmitPage() {
         const qrDepartment = searchParams.get('department');
         const qrBuilding = searchParams.get('building');
 
+        console.log('QR Parameters:', { qrClass, qrFloor, qrDepartment, qrBuilding });
+
         if (qrClass || qrFloor || qrDepartment || qrBuilding) {
+            console.log('Auto-filling form with QR data');
+            
             // Auto-fill from QR code scan (matching React Native app format)
             setFormData(prev => ({
                 ...prev,
@@ -437,5 +441,17 @@ export default function SubmitPage() {
                 </form>
             </main>
         </div>
+    );
+}
+
+export default function SubmitPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen bg-[#121212] flex items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#00BFFF]"></div>
+            </div>
+        }>
+            <SubmitForm />
+        </Suspense>
     );
 }
