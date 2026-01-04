@@ -61,9 +61,9 @@ function SuccessPageContent() {
             </header>
             
             <div className="flex items-center justify-center p-4 pt-20">
-            <div className="max-w-2xl w-full">
-                <div className="bg-[#1E1E1E] border border-[#404040] rounded-2xl shadow-xl p-8 md:p-12 text-center animate-slide-in-up">
-                    {/* Success Icon */}
+                <div className="max-w-2xl w-full">
+                    <div className="bg-[#1E1E1E] border border-[#404040] rounded-2xl shadow-xl p-8 md:p-12 text-center animate-slide-in-up">
+                        {/* Success Icon */}
                     <div className="w-20 h-20 bg-[#4CAF50]/20 rounded-full flex items-center justify-center mx-auto mb-6">
                         <svg width="48" height="48" className="text-[#4CAF50]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -141,13 +141,14 @@ function SuccessPageContent() {
                             You'll receive email updates when the status changes
                         </p>
                     </div>
-                </div>
+                    </div>
 
-                {/* Back to Home */}
-                <div className="text-center mt-6">
-                    <Link href="/" className="text-[#B0B0B0] hover:text-white text-sm">
-                        ← Back to Home
-                    </Link>
+                    {/* Back to Home */}
+                    <div className="text-center mt-6">
+                        <Link href="/" className="text-[#B0B0B0] hover:text-white text-sm">
+                            ← Back to Home
+                        </Link>
+                    </div>
                 </div>
             </div>
         </div>
