@@ -43,8 +43,13 @@ function SubmitForm() {
                 const user = await getCurrentUser();
                 console.log('Current user:', user);
                 
-                if (user) {
-                    // Fetch user profile data
+                if (user && user.email) {
+                    // Always set email from user object
+                    const updatedData: any = {
+                        email: user.email
+                    };
+                    
+                    // Try to get additional profile info
                     const { data: profile, error } = await supabase
                         .from('profiles')
                         .select('full_name, phone')
@@ -54,14 +59,15 @@ function SubmitForm() {
                     console.log('Profile data:', profile, 'Error:', error);
                     
                     if (profile) {
-                        setFormData(prev => ({
-                            ...prev,
-                            name: profile.full_name || '',
-                            email: user.email || '',
-                            phone: profile.phone || ''
-                        }));
-                        console.log('Form data updated with user info');
+                        if (profile.full_name) updatedData.name = profile.full_name;
+                        if (profile.phone) updatedData.phone = profile.phone;
                     }
+                    
+                    setFormData(prev => ({
+                        ...prev,
+                        ...updatedData
+                    }));
+                    console.log('Form data updated with:', updatedData);
                 }
             } catch (error) {
                 console.error('Error loading user data:', error);
