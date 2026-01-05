@@ -37,7 +37,9 @@ function SuccessPageContent() {
         return null;
     }
 
-    const trackingUrl = `${window.location.origin}/track/${complaintId}`;
+    const trackingUrl = typeof window !== 'undefined' 
+        ? `${window.location.origin}/track/${complaintId}`
+        : `/track/${complaintId}`;
 
     return (
         <div className="min-h-screen bg-[#121212]">
