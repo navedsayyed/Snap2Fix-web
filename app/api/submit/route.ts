@@ -59,9 +59,13 @@ export async function POST(request: NextRequest) {
             }
         }
 
+        // For web submissions without login, use a default guest UUID
+        // This matches the database NOT NULL constraint
+        const GUEST_USER_ID = '00000000-0000-0000-0000-000000000001';
+
         // Prepare complaint data
         const complaintData = {
-            user_id: user?.id || null,
+            user_id: user?.id || GUEST_USER_ID,
             title: finalTitle,
             type,
             description,
