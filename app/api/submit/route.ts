@@ -72,6 +72,22 @@ export async function POST(request: NextRequest) {
 
             userId = newUser.user.id;
             console.log('Created new user:', userId);
+
+            // Update profile with name and phone
+            const { error: profileUpdateError } = await supabase
+                .from('profiles')
+                .update({
+                    full_name: name,
+                    phone: phone
+                })
+                .eq('id', userId);
+
+            if (profileUpdateError) {
+                console.error('Failed to update profile:', profileUpdateError);
+                // Don't fail the request, just log the error
+            } else {
+                console.log('Profile updated with name and phone');
+            }
         }
 
         // Handle custom type
