@@ -39,19 +39,32 @@ function SubmitForm() {
     // Check if user is logged in and auto-fill their info
     useEffect(() => {
         const loadUserData = async () => {
-            const user = await getCurrentUser();
-            if (user) {
-                // Fetch user profile data
-                const { data: profile } = await supabase.from('profiles').select('full_name, phone').eq('id', user.id).single();
+            try {
+                const user = await getCurrentUser();
+                console.log('Current user:', user);
                 
-                if (profile) {
-                    setFormData(prev => ({
-                        ...prev,
-                        name: profile.full_name || '',
-                        email: user.email || '',
-                        phone: profile.phone || ''
-                    }));
+                if (user) {
+                    // Fetch user profile data
+                    const { data: profile, error } = await supabase
+                        .from('profiles')
+                        .select('full_name, phone')
+                        .eq('id', user.id)
+                        .single();
+                    
+                    console.log('Profile data:', profile, 'Error:', error);
+                    
+                    if (profile) {
+                        setFormData(prev => ({
+                            ...prev,
+                            name: profile.full_name || '',
+                            email: user.email || '',
+                            phone: profile.phone || ''
+                        }));
+                        console.log('Form data updated with user info');
+                    }
                 }
+            } catch (error) {
+                console.error('Error loading user data:', error);
             }
         };
         loadUserData();
