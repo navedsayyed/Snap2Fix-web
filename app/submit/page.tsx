@@ -20,6 +20,9 @@ function SubmitForm() {
 
     // Form state - MATCHING React Native app exactly
     const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        phone: '',
         title: '',
         type: '',
         customType: '',
@@ -60,6 +63,10 @@ function SubmitForm() {
             // Validation
             const newErrors: Record<string, string> = {};
 
+            if (!formData.name || formData.name.length < 2) newErrors.name = 'Name is required';
+            if (!formData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+                newErrors.email = 'Valid email is required';
+            }
             if (!formData.title) newErrors.title = 'Title is required';
             if (!formData.type) newErrors.type = 'Please select complaint type';
             
@@ -83,6 +90,9 @@ function SubmitForm() {
 
             // Prepare form data
             const submitData = new FormData();
+            submitData.append('name', formData.name);
+            submitData.append('email', formData.email);
+            if (formData.phone) submitData.append('phone', formData.phone);
             submitData.append('title', formData.title);
             submitData.append('type', formData.type);
             if (formData.customType) submitData.append('custom_type', formData.customType);
@@ -95,22 +105,26 @@ function SubmitForm() {
             if (formData.department) submitData.append('department', formData.department);
 
             // Submit
+            console.log('Submitting complaint...');
             const response = await fetch('/api/submit', {
                 method: 'POST',
                 body: submitData,
             });
 
             const result = await response.json();
+            console.log('API Response:', result);
 
             if (!response.ok || !result.success) {
                 throw new Error(result.error || 'Failed to submit complaint');
             }
 
+            console.log('Success! Redirecting to success page...');
             router.push(`/success?id=${result.complaintId}`);
 
         } catch (error) {
             console.error('Submit error:', error);
-            alert(error instanceof Error ? error.message : 'Failed to submit complaint');
+            const errorMessage = error instanceof Error ? error.message : 'Failed to submit complaint';
+            alert(`Error: ${errorMessage}\n\nCheck the console for more details.`);
             setIsSubmitting(false);
         }
     };
@@ -139,20 +153,75 @@ function SubmitForm() {
                 )}
 
                 <form onSubmit={handleSubmit} className="bg-[#1E1E1E] rounded-xl border border-[#333333] p-6 space-y-6">
-                    {/* Title */}
-                    <div>
-                        <label className="block text-sm font-medium text-white mb-2">
-                            Title <span className="text-[#00BFFF]">*</span>
-                        </label>
-                        <input
-                            type="text"
-                            required
-                            value={formData.title}
-                            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                            placeholder="Short title"
-                            className="w-full px-4 py-3 bg-[#2C2C2C] border border-[#404040] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#00BFFF] focus:ring-2 focus:ring-[#00BFFF]/50"
-                        />
-                        {errors.title && <p className="mt-2 text-sm text-[#F44336]">{errors.title}</p>}
+                    {/* Personal Information */}
+                    <div className="space-y-4">
+                        <h2 className="text-xl font-bold text-white">Your Information</h2>
+                        
+                        <div className="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-medium text-white mb-2">
+                                    Full Name <span className="text-[#00BFFF]">*</span>
+                                </label>
+                                <input
+                                    type="text"
+                                    required
+                                    value={formData.name}
+                                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                    placeholder="John Doe"
+                                    className="w-full px-4 py-3 bg-[#2C2C2C] border border-[#404040] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#00BFFF] focus:ring-2 focus:ring-[#00BFFF]/50"
+                                />
+                                {errors.name && <p className="mt-2 text-sm text-[#F44336]">{errors.name}</p>}
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-white mb-2">
+                                    Email <span className="text-[#00BFFF]">*</span>
+                                </label>
+                                <input
+                                    type="email"
+                                    required
+                                    value={formData.email}
+                                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                    placeholder="john@example.com"
+                                    className="w-full px-4 py-3 bg-[#2C2C2C] border border-[#404040] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#00BFFF] focus:ring-2 focus:ring-[#00BFFF]/50"
+                                />
+                                {errors.email && <p className="mt-2 text-sm text-[#F44336]">{errors.email}</p>}
+                            </div>
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-white mb-2">
+                                Phone Number (Optional)
+                            </label>
+                            <input
+                                type="tel"
+                                value={formData.phone}
+                                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                                placeholder="+1 (555) 123-4567"
+                                className="w-full px-4 py-3 bg-[#2C2C2C] border border-[#404040] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#00BFFF] focus:ring-2 focus:ring-[#00BFFF]/50"
+                            />
+                        </div>
+                    </div>
+
+                    {/* Complaint Details */}
+                    <div className="pt-4 border-t border-[#333333] space-y-4">
+                        <h2 className="text-xl font-bold text-white">Complaint Details</h2>
+
+                        {/* Title */}
+                        <div>
+                            <label className="block text-sm font-medium text-white mb-2">
+                                Title <span className="text-[#00BFFF]">*</span>
+                            </label>
+                            <input
+                                type="text"
+                                required
+                                value={formData.title}
+                                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                                placeholder="Short title"
+                                className="w-full px-4 py-3 bg-[#2C2C2C] border border-[#404040] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#00BFFF] focus:ring-2 focus:ring-[#00BFFF]/50"
+                            />
+                            {errors.title && <p className="mt-2 text-sm text-[#F44336]">{errors.title}</p>}
+                        </div>
                     </div>
 
                     {/* Type */}

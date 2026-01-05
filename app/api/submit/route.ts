@@ -8,11 +8,13 @@ import { determineDepartment } from '@/lib/departmentMapping';
 
 export async function POST(request: NextRequest) {
     try {
-        // Get current user
-        const { data: { user } } = await supabase.auth.getUser();
-        
         // Parse form data
         const formData = await request.formData();
+
+        // Extract user info
+        const name = formData.get('name') as string;
+        const email = formData.get('email') as string;
+        const phone = formData.get('phone') as string | null;
 
         // Extract fields - MATCHING React Native app
         const title = formData.get('title') as string;
@@ -27,11 +29,49 @@ export async function POST(request: NextRequest) {
         const department = formData.get('department') as string | null;
 
         // Validate
-        if (!title || !type || !location || !place || !description) {
+        if (!name || !email || !title || !type || !location || !place || !description) {
             return NextResponse.json(
                 { success: false, error: 'Missing required fields' },
                 { status: 400 }
             );
+        }
+
+        // Find or create user by email
+        let userId: string;
+        
+        // Check if user exists
+        const { data: existingUser } = await supabase
+            .from('profiles')
+            .select('id')
+            .eq('email', email)
+            .single();
+
+        if (existingUser) {
+            userId = existingUser.id;
+            console.log('Using existing user:', userId);
+        } else {
+            // Create new user account
+            const { data: newUser, error: signUpError } = await supabase.auth.signUp({
+                email,
+                password: Math.random().toString(36).substring(2, 15), // Random password
+                options: {
+                    data: {
+                        name: name,
+                        phone: phone,
+                    }
+                }
+            });
+
+            if (signUpError || !newUser.user) {
+                console.error('Failed to create user:', signUpError);
+                return NextResponse.json(
+                    { success: false, error: 'Failed to create user account' },
+                    { status: 500 }
+                );
+            }
+
+            userId = newUser.user.id;
+            console.log('Created new user:', userId);
         }
 
         // Handle custom type
@@ -65,7 +105,7 @@ export async function POST(request: NextRequest) {
 
         // Prepare complaint data
         const complaintData = {
-            user_id: user?.id || GUEST_USER_ID,
+            user_id: userId, // Use the found or created user ID
             title: finalTitle,
             type,
             description,
@@ -80,6 +120,7 @@ export async function POST(request: NextRequest) {
         };
 
         // Insert complaint
+        console.log('Attempting to insert complaint:', complaintData);
         const { data: complaint, error: insertError } = await supabase
             .from('complaints')
             .insert([complaintData])
@@ -88,19 +129,35 @@ export async function POST(request: NextRequest) {
 
         if (insertError) {
             console.error('Insert error:', insertError);
+            console.error('Insert error details:', JSON.stringify(insertError, null, 2));
             return NextResponse.json(
-                { success: false, error: 'Failed to submit' },
+                { success: false, error: `Failed to submit: ${insertError.message}` },
                 { status: 500 }
             );
         }
 
+        if (!complaint) {
+            console.error('No complaint data returned');
+            return NextResponse.json(
+                { success: false, error: 'No complaint created' },
+                { status: 500 }
+            );
+        }
+
+        console.log('Complaint created successfully:', complaint.id);
+
         // Save image
         if (imageUrl && complaint?.id) {
-            await supabase.from('complaint_images').insert({
+            console.log('Saving image reference for complaint:', complaint.id);
+            const { error: imageError } = await supabase.from('complaint_images').insert({
                 complaint_id: complaint.id,
                 url: imageUrl,
                 storage_path: imageUrl,
             });
+            
+            if (imageError) {
+                console.error('Image reference save error:', imageError);
+            }
         }
 
         return NextResponse.json({
@@ -110,9 +167,9 @@ export async function POST(request: NextRequest) {
         });
 
     } catch (error) {
-        console.error('Error:', error);
+        console.error('Unexpected error:', error);
         return NextResponse.json(
-            { success: false, error: 'Server error' },
+            { success: false, error: `Server error: ${error instanceof Error ? error.message : 'Unknown error'}` },
             { status: 500 }
         );
     }
