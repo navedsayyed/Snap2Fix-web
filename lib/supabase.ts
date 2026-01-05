@@ -29,14 +29,13 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
  */
 export async function uploadImage(
     file: File,
-    bucket: string = 'complaint-images',
-    pathPrefix: string = 'web'
+    bucket: string = 'web'
 ): Promise<{ url: string | null; error: Error | null }> {
     try {
         // Convert File to ArrayBuffer for upload
         const arrayBuffer = await file.arrayBuffer();
         const timestamp = Date.now();
-        const fileName = `${pathPrefix}/${timestamp}_${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
+        const fileName = `${timestamp}_${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
 
         console.log('Uploading file:', fileName, 'Size:', file.size, 'Type:', file.type);
 

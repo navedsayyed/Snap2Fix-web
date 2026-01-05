@@ -106,7 +106,7 @@ export async function POST(request: NextRequest) {
             } else if (!['image/jpeg', 'image/jpg', 'image/png'].includes(photo.type)) {
                 imageUploadWarning = 'Invalid file type';
             } else {
-                const { url, error: uploadError } = await uploadImage(photo);
+                const { url, error: uploadError } = await uploadImage(photo, 'web');
                 if (uploadError) {
                     imageUploadWarning = 'Upload failed';
                 } else {
