@@ -44,30 +44,36 @@ function SubmitForm() {
                 console.log('Current user:', user);
                 
                 if (user && user.email) {
-                    // Always set email from user object
-                    const updatedData: any = {
-                        email: user.email
-                    };
+                    // Get session token
+                    const { data: { session } } = await supabase.auth.getSession();
                     
-                    // Try to get additional profile info
-                    const { data: profile, error } = await supabase
-                        .from('profiles')
-                        .select('full_name, phone')
-                        .eq('id', user.id)
-                        .single();
-                    
-                    console.log('Profile data:', profile, 'Error:', error);
-                    
-                    if (profile) {
-                        if (profile.full_name) updatedData.name = profile.full_name;
-                        if (profile.phone) updatedData.phone = profile.phone;
+                    if (session?.access_token) {
+                        // Fetch profile via API route
+                        const response = await fetch('/api/profile', {
+                            headers: {
+                                'Authorization': `Bearer ${session.access_token}`
+                            }
+                        });
+                        
+                        if (response.ok) {
+                            const profileData = await response.json();
+                            console.log('Profile data from API:', profileData);
+                            
+                            setFormData(prev => ({
+                                ...prev,
+                                email: profileData.email || user.email,
+                                name: profileData.full_name || '',
+                                phone: profileData.phone || ''
+                            }));
+                            console.log('Form data updated successfully');
+                        } else {
+                            // Fallback to just email
+                            setFormData(prev => ({
+                                ...prev,
+                                email: user.email
+                            }));
+                        }
                     }
-                    
-                    setFormData(prev => ({
-                        ...prev,
-                        ...updatedData
-                    }));
-                    console.log('Form data updated with:', updatedData);
                 }
             } catch (error) {
                 console.error('Error loading user data:', error);
