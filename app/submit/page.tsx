@@ -10,6 +10,7 @@ import Link from 'next/link';
 import { GroupedSelect } from '@/components/ui/GroupedSelect';
 import { COMPLAINT_TYPES, getComplaintTypesByCategory } from '@/lib/complaintTypes';
 import { getCurrentUser } from '@/lib/auth';
+import { supabase } from '@/lib/supabase';
 
 function SubmitForm() {
     const router = useRouter();
@@ -34,6 +35,27 @@ function SubmitForm() {
         floor: '',
         department: '',
     });
+
+    // Check if user is logged in and auto-fill their info
+    useEffect(() => {
+        const loadUserData = async () => {
+            const user = await getCurrentUser();
+            if (user) {
+                // Fetch user profile data
+                const { data: profile } = await supabase.from('profiles').select('full_name, phone').eq('id', user.id).single();
+                
+                if (profile) {
+                    setFormData(prev => ({
+                        ...prev,
+                        name: profile.full_name || '',
+                        email: user.email || '',
+                        phone: profile.phone || ''
+                    }));
+                }
+            }
+        };
+        loadUserData();
+    }, []);
 
     // Pre-fill location from QR code
     useEffect(() => {
