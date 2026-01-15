@@ -17,10 +17,10 @@ export async function GET(request: Request) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        // Fetch profile data using service role or with proper auth
+        // Fetch profile data from users table
         const { data: profile, error: profileError } = await supabase
-            .from('profiles')
-            .select('id, email, full_name, phone')
+            .from('users')
+            .select('id, email, full_name, phone, role, department')
             .eq('id', user.id)
             .single();
 
@@ -30,14 +30,17 @@ export async function GET(request: Request) {
             return NextResponse.json({
                 email: user.email,
                 full_name: '',
-                phone: ''
+                phone: '',
+                role: 'user'
             });
         }
 
         return NextResponse.json({
             email: profile.email || user.email,
             full_name: profile.full_name || '',
-            phone: profile.phone || ''
+            phone: profile.phone || '',
+            role: profile.role || 'user',
+            department: profile.department || null
         });
 
     } catch (error) {

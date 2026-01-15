@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { getCurrentUser } from '@/lib/auth';
-import { supabase } from '@/lib/supabase';
+import { supabase, getUserProfile } from '@/lib/supabase';
 
 export default function AccountSettingsPage() {
     const router = useRouter();
@@ -16,6 +16,9 @@ export default function AccountSettingsPage() {
     const [formData, setFormData] = useState({
         name: '',
         email: '',
+        phone: '',
+        memberSince: '',
+        status: 'Active'
     });
 
     useEffect(() => {
@@ -30,10 +33,28 @@ export default function AccountSettingsPage() {
                 return;
             }
             setUser(currentUser);
-            setFormData({
-                name: currentUser.user_metadata?.name || '',
-                email: currentUser.email || '',
-            });
+            
+            // Fetch profile from users table
+            const { data: profileData, error: profileError } = await getUserProfile(currentUser.id);
+            
+            if (profileData) {
+                setFormData({
+                    name: profileData.full_name || '',
+                    email: profileData.email || currentUser.email || '',
+                    phone: profileData.phone || '',
+                    memberSince: currentUser.created_at ? new Date(currentUser.created_at).toLocaleDateString() : '',
+                    status: 'Active'
+                });
+            } else {
+                // Fallback to auth metadata
+                setFormData({
+                    name: currentUser.user_metadata?.name || '',
+                    email: currentUser.email || '',
+                    phone: currentUser.user_metadata?.phone || '',
+                    memberSince: currentUser.created_at ? new Date(currentUser.created_at).toLocaleDateString() : '',
+                    status: 'Active'
+                });
+            }
         } catch (error) {
             console.error('Auth check error:', error);
             router.push('/login');
@@ -48,17 +69,28 @@ export default function AccountSettingsPage() {
         setMessage({ type: '', text: '' });
 
         try {
-            const { error } = await supabase.auth.updateUser({
-                data: { name: formData.name }
+            // Update in users table
+            const { error: updateError } = await supabase
+                .from('users')
+                .update({ 
+                    full_name: formData.name,
+                    phone: formData.phone 
+                })
+                .eq('id', user.id);
+
+            if (updateError) throw updateError;
+
+            // Also update auth metadata
+            const { error: authError } = await supabase.auth.updateUser({
+                data: { name: formData.name, phone: formData.phone }
             });
 
-            if (error) throw error;
+            if (authError) throw authError;
 
             setMessage({ type: 'success', text: 'Profile updated successfully!' });
             
             // Refresh user data
-            const updatedUser = await getCurrentUser();
-            setUser(updatedUser);
+            await checkAuth();
         } catch (error: any) {
             setMessage({ type: 'error', text: error.message || 'Failed to update profile' });
         } finally {
@@ -129,7 +161,7 @@ export default function AccountSettingsPage() {
                                     Current Name
                                 </p>
                                 <p className="text-lg font-semibold text-white">
-                                    {user?.user_metadata?.name || 'Not set'}
+                                    {formData.name || 'Not set'}
                                 </p>
                             </div>
                             <div className="bg-[#2C2C2C] border border-[#404040] rounded-2xl p-5">
@@ -140,7 +172,18 @@ export default function AccountSettingsPage() {
                                     </svg>
                                     Email Address
                                 </p>
-                                <p className="text-lg font-semibold text-white break-all">{user?.email}</p>
+                                <p className="text-lg font-semibold text-white break-all">{formData.email}</p>
+                            </div>
+                            <div className="bg-[#2C2C2C] border border-[#404040] rounded-2xl p-5">
+                                <p className="text-sm text-[#B0B0B0] mb-1 flex items-center gap-2">
+                                    <svg className="w-4 h-4 text-[#00BFFF]" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
+                                    </svg>
+                                    Phone Number
+                                </p>
+                                <p className="text-lg font-semibold text-white">
+                                    {formData.phone || 'Not set'}
+                                </p>
                             </div>
                             <div className="bg-[#2C2C2C] border border-[#404040] rounded-2xl p-5">
                                 <p className="text-sm text-[#B0B0B0] mb-1 flex items-center gap-2">
@@ -150,7 +193,7 @@ export default function AccountSettingsPage() {
                                     Member Since
                                 </p>
                                 <p className="text-lg font-semibold text-white">
-                                    {new Date(user?.created_at).toLocaleDateString()}
+                                    {formData.memberSince}
                                 </p>
                             </div>
                             <div className="bg-[#2C2C2C] border border-[#404040] rounded-2xl p-5">
@@ -160,7 +203,7 @@ export default function AccountSettingsPage() {
                                     </svg>
                                     Account Status
                                 </p>
-                                <p className="text-lg font-semibold text-[#00FF00]">Active</p>
+                                <p className="text-lg font-semibold text-[#00FF00]">{formData.status}</p>
                             </div>
                         </div>
                     </div>
@@ -180,16 +223,32 @@ export default function AccountSettingsPage() {
                                     <svg className="w-5 h-5 text-[#00BFFF]" fill="currentColor" viewBox="0 0 20 20">
                                         <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
                                     </svg>
-                                    New Name
+                                    Full Name
                                 </label>
                                 <input
                                     type="text"
                                     value={formData.name}
                                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                     className="w-full px-4 py-3 bg-[#2C2C2C] border border-[#404040] rounded-xl text-white placeholder-[#808080] focus:outline-none focus:border-[#00BFFF] focus:ring-2 focus:ring-[#00BFFF]/20 transition-all"
-                                    placeholder="Enter your new name"
+                                    placeholder="Enter your full name"
                                 />
-                                <p className="text-xs text-[#808080] mt-1">Enter a new name to update your profile</p>
+                            </div>
+
+                            {/* Phone Field */}
+                            <div>
+                                <label className="block text-sm font-medium text-[#E0E0E0] mb-2 flex items-center gap-2">
+                                    <svg className="w-5 h-5 text-[#00BFFF]" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
+                                    </svg>
+                                    Phone Number
+                                </label>
+                                <input
+                                    type="tel"
+                                    value={formData.phone}
+                                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                                    className="w-full px-4 py-3 bg-[#2C2C2C] border border-[#404040] rounded-xl text-white placeholder-[#808080] focus:outline-none focus:border-[#00BFFF] focus:ring-2 focus:ring-[#00BFFF]/20 transition-all"
+                                    placeholder="Enter your phone number"
+                                />
                             </div>
 
                             {/* Message */}

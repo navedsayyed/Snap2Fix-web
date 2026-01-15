@@ -181,7 +181,12 @@ function SubmitForm() {
             <header className="bg-[#0A0A0A]/80 backdrop-blur-xl border-b border-white/10 sticky top-0 z-50">
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex items-center h-16">
-                        <Link href="/" className="text-gray-400 hover:text-white">← Back</Link>
+                        <Link href="/" className="flex items-center gap-2 text-[#B0B0B0] hover:text-[#00BFFF] transition-colors duration-300 group">
+                            <svg className="w-5 h-5 transform group-hover:-translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                            </svg>
+                            <span className="font-medium">Back</span>
+                        </Link>
                     </div>
                 </div>
             </header>

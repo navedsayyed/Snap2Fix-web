@@ -45,6 +45,8 @@ export default function ProfilePage() {
     const loadUserData = async () => {
         try {
             setLoading(true);
+            setError(''); // Clear any previous errors
+            
             const currentUser = await getCurrentUser();
             
             if (!currentUser) {
@@ -59,6 +61,15 @@ export default function ProfilePage() {
             
             if (profileError) {
                 console.error('Error loading profile:', profileError);
+                // If user doesn't exist in users table, treat as regular user
+                setUserProfile({
+                    id: currentUser.id,
+                    email: currentUser.email || '',
+                    full_name: currentUser.user_metadata?.name || currentUser.email || 'User',
+                    phone: null,
+                    role: 'user',
+                    department: null
+                });
             } else {
                 setUserProfile(profileData);
             }
@@ -66,15 +77,26 @@ export default function ProfilePage() {
             // Load user's complaints
             const { data, error } = await getUserComplaints(currentUser.id);
             
-            if (error) throw error;
-            console.log('Loaded complaints:', data);
-            if (data && data.length > 0) {
-                console.log('First complaint ID:', data[0].id, 'Type:', typeof data[0].id);
+            if (error) {
+                console.error('Error loading complaints:', error);
+                // Don't throw, just set empty complaints
+                setComplaints([]);
+            } else {
+                console.log('Loaded complaints:', data);
+                if (data && data.length > 0) {
+                    console.log('First complaint ID:', data[0].id, 'Type:', typeof data[0].id);
+                }
+                setComplaints(data || []);
             }
-            setComplaints(data || []);
         } catch (err: any) {
             console.error('Error loading user data:', err);
-            setError(err.message || 'Failed to load profile');
+            
+            // Handle auth session missing error
+            if (err.message?.includes('Auth session missing') || err.message?.includes('session')) {
+                router.push('/login');
+            } else {
+                setError(err.message || 'Failed to load profile');
+            }
         } finally {
             setLoading(false);
         }
