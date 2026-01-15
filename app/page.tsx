@@ -6,27 +6,40 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 import { getCurrentUser } from '@/lib/auth';
 
 export default function HomePage() {
+  const router = useRouter();
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     checkAuth();
+    
+    // Listen for navigation events to recheck auth
+    const handleFocus = () => checkAuth();
+    window.addEventListener('focus', handleFocus);
+    
+    return () => window.removeEventListener('focus', handleFocus);
   }, []);
 
   const checkAuth = async () => {
     try {
+      setLoading(true);
       const currentUser = await getCurrentUser();
       setUser(currentUser);
     } catch (err) {
-      console.log('Not logged in');
+      setUser(null);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleSubmitClick = () => {
+    router.push('/scan-qr');
   };
 
   return (
@@ -119,16 +132,18 @@ export default function HomePage() {
               <p className="text-[#B0B0B0] mb-8 leading-relaxed text-base">
                 Report any facility issues including computers, projectors, AC, furniture, and electrical systems.
               </p>
-              <Link href="/submit" className="w-full">
-                <Button size="lg" className="w-full group-hover:shadow-xl group-hover:shadow-[#00BFFF]/40 transition-all duration-300 text-base font-semibold py-4">
-                  <span className="flex items-center justify-center gap-3">
-                    Submit Now
-                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" className="group-hover:translate-x-1 transition-transform">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                    </svg>
-                  </span>
-                </Button>
-              </Link>
+              <Button 
+                size="lg" 
+                className="w-full group-hover:shadow-xl group-hover:shadow-[#00BFFF]/40 transition-all duration-300 text-base font-semibold py-4"
+                onClick={handleSubmitClick}
+              >
+                <span className="flex items-center justify-center gap-3">
+                  Scan QR & Submit
+                  <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" className="group-hover:translate-x-1 transition-transform">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  </svg>
+                </span>
+              </Button>
             </div>
           </div>
 

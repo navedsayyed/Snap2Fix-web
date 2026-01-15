@@ -36,53 +36,7 @@ function SubmitForm() {
         department: '',
     });
 
-    // Check if user is logged in and auto-fill their info
-    useEffect(() => {
-        const loadUserData = async () => {
-            try {
-                const user = await getCurrentUser();
-                console.log('Current user:', user);
-                
-                if (user && user.email) {
-                    // Get session token
-                    const { data: { session } } = await supabase.auth.getSession();
-                    
-                    if (session?.access_token) {
-                        // Fetch profile via API route
-                        const response = await fetch('/api/profile', {
-                            headers: {
-                                'Authorization': `Bearer ${session.access_token}`
-                            }
-                        });
-                        
-                        if (response.ok) {
-                            const profileData = await response.json();
-                            console.log('Profile data from API:', profileData);
-                            
-                            setFormData(prev => ({
-                                ...prev,
-                                email: profileData.email || user.email,
-                                name: profileData.full_name || '',
-                                phone: profileData.phone || ''
-                            }));
-                            console.log('Form data updated successfully');
-                        } else {
-                            // Fallback to just email
-                            setFormData(prev => ({
-                                ...prev,
-                                email: user.email
-                            }));
-                        }
-                    }
-                }
-            } catch (error) {
-                console.error('Error loading user data:', error);
-            }
-        };
-        loadUserData();
-    }, []);
-
-    // Pre-fill location from QR code
+    // Pre-fill location from QR code FIRST (before user data)
     useEffect(() => {
         const qrClass = searchParams.get('class');
         const qrFloor = searchParams.get('floor');
@@ -100,6 +54,49 @@ function SubmitForm() {
             }));
         }
     }, [searchParams]);
+
+    // Check if user is logged in and auto-fill ONLY their personal info
+    useEffect(() => {
+        const loadUserData = async () => {
+            try {
+                const user = await getCurrentUser();
+                
+                if (user && user.email) {
+                    // Get session token
+                    const { data: { session } } = await supabase.auth.getSession();
+                    
+                    if (session?.access_token) {
+                        // Fetch profile via API route
+                        const response = await fetch('/api/profile', {
+                            headers: {
+                                'Authorization': `Bearer ${session.access_token}`
+                            }
+                        });
+                        
+                        if (response.ok) {
+                            const profileData = await response.json();
+                            
+                            // Only update personal info, preserve location data from QR
+                            setFormData(prev => ({
+                                ...prev,
+                                email: profileData.email || user.email,
+                                name: profileData.full_name || '',
+                                phone: profileData.phone || ''
+                            }));
+                        } else {
+                            // Fallback to just email
+                            setFormData(prev => ({
+                                ...prev,
+                                email: user.email
+                            }));
+                        }
+                    }
+                }
+            } catch (error) {
+            }
+        };
+        loadUserData();
+    }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();

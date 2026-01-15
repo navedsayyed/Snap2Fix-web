@@ -324,7 +324,7 @@ export default function ProfilePage() {
                 {/* Complaints List with Enhanced Design */}
                 <div id="my-complaints" className="bg-gradient-to-br from-[#1E1E1E] via-[#252525] to-[#1A1A1A] border border-[#333333] rounded-3xl shadow-2xl p-6 sm:p-10 hover:border-[#00BFFF]/40 transition-all duration-500 hover:shadow-[#00BFFF]/20">
                     <div className="flex flex-col sm:flex-row sm:justify-end sm:items-center gap-4 mb-8">
-                        <Link href="/submit">
+                        <Link href="/scan-qr">
                             <button className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-[#00BFFF] to-[#0099CC] hover:from-[#00BFFF]/90 hover:to-[#0099CC]/90 text-white rounded-xl shadow-lg shadow-[#00BFFF]/30 hover:shadow-[#00BFFF]/50 hover:scale-105 transition-all duration-300 font-semibold flex items-center justify-center gap-2">
                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -342,7 +342,7 @@ export default function ProfilePage() {
                                 </svg>
                             </div>
                             <p className="text-[#B0B0B0] text-lg mb-6">No complaints submitted yet</p>
-                            <Link href="/submit">
+                            <Link href="/scan-qr">
                                 <button className="px-8 py-3 bg-gradient-to-r from-[#00BFFF] to-[#0099CC] hover:from-[#00BFFF]/90 hover:to-[#0099CC]/90 text-white rounded-xl shadow-lg shadow-[#00BFFF]/30 hover:shadow-[#00BFFF]/50 hover:scale-105 transition-all duration-300 font-semibold inline-flex items-center gap-2">
                                     Submit Your First Complaint
                                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
