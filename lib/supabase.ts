@@ -142,3 +142,16 @@ export async function getUserComplaints(userId: string) {
 
     return { data, error };
 }
+
+/**
+ * Get user profile with role information from database
+ */
+export async function getUserProfile(userId: string) {
+    const { data, error } = await supabase
+        .from('users')
+        .select('id, email, full_name, phone, role, department')
+        .eq('id', userId)
+        .single();
+
+    return { data, error };
+}

@@ -4,10 +4,10 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { getCurrentUser, signOut } from '@/lib/auth';
-import { getUserComplaints } from '@/lib/supabase';
+import { getUserComplaints, getUserProfile } from '@/lib/supabase';
 import { Button } from '@/components/ui/Button';
 import { StatusBadge } from '@/components/ui/StatusBadge';
-import { ComplaintStatus } from '@/lib/types';
+import { ComplaintStatus, UserRole } from '@/lib/types';
 
 interface Complaint {
     id: string;
@@ -20,9 +20,19 @@ interface Complaint {
     created_at: string;
 }
 
+interface UserProfile {
+    id: string;
+    email: string;
+    full_name: string;
+    phone: string | null;
+    role: UserRole;
+    department: string | null;
+}
+
 export default function ProfilePage() {
     const router = useRouter();
     const [user, setUser] = useState<any>(null);
+    const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
     const [complaints, setComplaints] = useState<Complaint[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
@@ -43,6 +53,15 @@ export default function ProfilePage() {
             }
 
             setUser(currentUser);
+
+            // Get user profile with role from database
+            const { data: profileData, error: profileError } = await getUserProfile(currentUser.id);
+            
+            if (profileError) {
+                console.error('Error loading profile:', profileError);
+            } else {
+                setUserProfile(profileData);
+            }
 
             // Load user's complaints
             const { data, error } = await getUserComplaints(currentUser.id);
@@ -90,6 +109,77 @@ export default function ProfilePage() {
                         <p className="text-[#F44336] mb-6">{error}</p>
                         <Link href="/login">
                             <Button>Go to Login</Button>
+                        </Link>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    // Check if user is admin, technician, or superadmin - they should use mobile app
+    if (userProfile && userProfile.role !== 'user') {
+        const roleDisplayNames = {
+            'admin': 'Administrator',
+            'super_admin': 'Super Administrator',
+            'technician': 'Technician'
+        };
+
+        return (
+            <div className="min-h-screen bg-gradient-to-br from-[#0A0A0A] via-[#121212] to-[#1A1A1A] flex items-center justify-center p-4">
+                <div className="bg-gradient-to-br from-[#1E1E1E] to-[#252525] border border-[#404040]/50 rounded-2xl shadow-2xl p-10 max-w-lg w-full text-center backdrop-blur-sm">
+                    {/* Icon */}
+                    <div className="mb-8">
+                        <div className="w-24 h-24 bg-gradient-to-br from-[#00BFFF] via-[#0099CC] to-[#007ACC] rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-[#00BFFF]/40 border-4 border-[#00BFFF]/20">
+                            <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                        
+                        {/* Title */}
+                        <h2 className="text-3xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent mb-3">
+                            Mobile App Required
+                        </h2>
+                        
+                        {/* Role Badge */}
+                        <div className="inline-block px-4 py-2 bg-[#00BFFF]/10 border border-[#00BFFF]/30 rounded-full mb-4">
+                            <p className="text-[#00BFFF] text-sm font-semibold tracking-wide">
+                                {roleDisplayNames[userProfile.role as keyof typeof roleDisplayNames]} Account
+                            </p>
+                        </div>
+                    </div>
+                    
+                    {/* Message */}
+                    <div className="mb-8 space-y-3">
+                        <p className="text-[#E0E0E0] text-base leading-relaxed">
+                            Your account type requires the use of our dedicated mobile application to access advanced features and manage complaints efficiently.
+                        </p>
+                        <p className="text-[#B0B0B0] text-sm">
+                            This web interface is designed for end-user complaint submissions only.
+                        </p>
+                    </div>
+                    
+                    {/* Additional Info */}
+                    <div className="bg-[#2C2C2C]/50 border border-[#404040]/30 rounded-xl p-4 mb-8">
+                        <p className="text-[#9CA3AF] text-sm flex items-center justify-center gap-2">
+                            <svg className="w-5 h-5 text-[#00BFFF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span>Contact IT support if you need assistance</span>
+                        </p>
+                    </div>
+                    
+                    {/* Action Buttons */}
+                    <div className="space-y-3">
+                        <Button 
+                            onClick={handleSignOut} 
+                            className="w-full bg-gradient-to-r from-[#00BFFF] to-[#0099CC] hover:from-[#00BFFF]/90 hover:to-[#0099CC]/90 text-white font-semibold py-3 rounded-xl shadow-lg shadow-[#00BFFF]/30 hover:shadow-[#00BFFF]/50 transition-all duration-300"
+                        >
+                            Sign Out
+                        </Button>
+                        <Link href="/" className="block">
+                            <button className="w-full bg-transparent border-2 border-[#404040] hover:border-[#00BFFF]/50 text-white font-semibold py-3 rounded-xl transition-all duration-300 hover:bg-[#2C2C2C]">
+                                Back to Home
+                            </button>
                         </Link>
                     </div>
                 </div>
