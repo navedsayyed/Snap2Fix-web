@@ -79,7 +79,7 @@ function SubmitForm() {
                             // Only update personal info, preserve location data from QR
                             setFormData(prev => ({
                                 ...prev,
-                                email: profileData.email || user.email,
+                                email: profileData.email || user.email || '',
                                 name: profileData.full_name || '',
                                 phone: profileData.phone || ''
                             }));
@@ -87,7 +87,7 @@ function SubmitForm() {
                             // Fallback to just email
                             setFormData(prev => ({
                                 ...prev,
-                                email: user.email
+                                email: user.email || ''
                             }));
                         }
                     }
