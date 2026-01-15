@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
         
         // Check if user exists
         const { data: existingUser } = await supabase
-            .from('profiles')
+            .from('users')
             .select('id')
             .eq('email', email)
             .single();
@@ -73,20 +73,20 @@ export async function POST(request: NextRequest) {
             userId = newUser.user.id;
             console.log('Created new user:', userId);
 
-            // Update profile with name and phone
-            const { error: profileUpdateError } = await supabase
-                .from('profiles')
+            // Update user table with name and phone
+            const { error: userUpdateError } = await supabase
+                .from('users')
                 .update({
                     full_name: name,
                     phone: phone
                 })
                 .eq('id', userId);
 
-            if (profileUpdateError) {
-                console.error('Failed to update profile:', profileUpdateError);
+            if (userUpdateError) {
+                console.error('Failed to update user:', userUpdateError);
                 // Don't fail the request, just log the error
             } else {
-                console.log('Profile updated with name and phone');
+                console.log('User updated with name and phone');
             }
         }
 
