@@ -349,7 +349,7 @@ export default function ProfilePage() {
                             onClick={() => setActiveTab('completed')}
                             className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-bold text-sm transition-all duration-300 whitespace-nowrap ${
                                 activeTab === 'completed'
-                                    ? 'bg-gradient-to-r from-[#00BFFF] to-[#0099CC] text-white shadow-lg shadow-[#00BFFF]/50'
+                                    ? 'bg-gradient-to-r from-[#00BFFF] to-[#0099CC] text-white'
                                     : 'text-[#777777] hover:text-[#CCCCCC] hover:bg-[#252525]'
                             }`}
                         >
@@ -370,7 +370,7 @@ export default function ProfilePage() {
                             <p className="text-[#B0B0B0] text-lg mb-6">No {activeTab === 'in-progress' ? 'in-progress' : 'completed'} complaints yet</p>
                             {activeTab === 'in-progress' && (
                                 <Link href="/scan-qr">
-                                    <button className="px-8 py-3 bg-gradient-to-r from-[#00BFFF] to-[#0099CC] hover:from-[#00BFFF]/90 hover:to-[#0099CC]/90 text-white rounded-xl shadow-lg shadow-[#00BFFF]/30 hover:shadow-[#00BFFF]/50 hover:scale-105 transition-all duration-300 font-semibold inline-flex items-center gap-2">
+                                    <button className="px-8 py-3 bg-gradient-to-r from-[#00BFFF] to-[#0099CC] hover:from-[#00BFFF]/90 hover:to-[#0099CC]/90 text-white rounded-xl hover:scale-105 transition-all duration-300 font-semibold inline-flex items-center gap-2">
                                         Submit Your First Complaint
                                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
@@ -380,54 +380,55 @@ export default function ProfilePage() {
                             )}
                         </div>
                     ) : (
-                        <div className="space-y-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                             {complaints
                                 .filter(c => activeTab === 'in-progress' ? c.status.toLowerCase() !== 'completed' : c.status.toLowerCase() === 'completed')
                                 .map((complaint) => (
                                 <Link
                                     key={complaint.id}
                                     href={`/track/${complaint.id}`}
-                                    className="block border border-[#404040] bg-[#2C2C2C] rounded-2xl p-5 hover:border-[#00BFFF] hover:shadow-lg hover:shadow-[#00BFFF]/20 hover:scale-[1.02] transition-all duration-300 group"
+                                    className="block border border-[#404040] bg-[#2C2C2C] rounded-2xl p-5 hover:border-[#00BFFF] transition-all duration-300"
                                 >
-                                    <div className="flex justify-between items-start mb-3">
-                                        <div className="flex-1">
-                                            <div className="flex items-center gap-2 mb-1">
-                                                <div className="w-2 h-2 rounded-full bg-gradient-to-r from-[#00BFFF] to-[#0099CC]"></div>
-                                                <h3 className="font-bold text-white text-lg group-hover:text-[#00BFFF] transition-colors">
-                                                    {complaint.issue_type}
-                                                </h3>
-                                            </div>
-                                            <p className="text-sm text-[#B0B0B0] flex items-center gap-2">
-                                                <svg className="w-4 h-4 text-[#00BFFF]" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
-                                                </svg>
+                                    {/* Header with Location Title and Status Badge */}
+                                    <div className="flex justify-between items-start gap-3 mb-3">
+                                        <div className="flex items-start gap-2.5 flex-1 min-w-0">
+                                            <div className="w-2 h-2 rounded-full bg-[#00BFFF] mt-1.5 flex-shrink-0"></div>
+                                            <h3 className="font-bold text-white text-[17px] leading-6">
                                                 {complaint.floor} - Room {complaint.room_number}
-                                            </p>
+                                            </h3>
                                         </div>
                                         {complaint.status.toLowerCase() === 'completed' ? (
-                                            <span className="flex-shrink-0 px-4 py-1.5 bg-green-500 text-white rounded-full text-xs font-bold">
+                                            <span className="flex-shrink-0 px-3 py-1.5 bg-green-500 text-white rounded-full text-[11px] font-bold uppercase tracking-[0.3px]">
                                                 Completed
                                             </span>
                                         ) : (
-                                            <span className="flex-shrink-0 px-4 py-1.5 bg-orange-400 text-white rounded-full text-xs font-bold">
+                                            <span className="flex-shrink-0 px-3 py-1.5 bg-orange-400 text-white rounded-full text-[11px] font-bold uppercase tracking-[0.3px]">
                                                 In Progress
                                             </span>
                                         )}
                                     </div>
-                                    <p className="text-[#B0B0B0] text-sm mb-3 line-clamp-2 pl-4">
+
+                                    {/* Description */}
+                                    <p className="text-white text-sm leading-[22px] mb-4">
                                         {complaint.description}
                                     </p>
-                                    <div className="flex justify-between items-center text-sm pt-3 border-t border-[#404040]">
-                                        <span className="text-[#B0B0B0] flex items-center gap-1">
-                                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
-                                            </svg>
+
+                                    {/* Date with Calendar Icon */}
+                                    <div className="flex items-center gap-2.5 mb-4">
+                                        <svg className="w-4 h-4 flex-shrink-0 text-[#B0B0B0]" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
+                                        </svg>
+                                        <span className="text-[#B0B0B0] text-[13px] leading-[18px]">
                                             {new Date(complaint.created_at).toLocaleDateString()}
                                         </span>
-                                        <span className={`font-semibold px-3 py-1 rounded-lg ${
+                                    </div>
+
+                                    {/* Priority Badge */}
+                                    <div className="flex justify-end">
+                                        <span className={`text-[13px] font-semibold px-3 py-1 rounded-lg ${
                                             complaint.priority === 'High' ? 'text-red-400 bg-red-500/10' :
-                                            complaint.priority === 'Medium' ? 'text-orange-400 bg-orange-500/10' :
-                                            'text-green-400 bg-green-500/10'
+                                            complaint.priority === 'Medium' ? 'text-green-400 bg-green-500/10' :
+                                            'text-blue-400 bg-blue-500/10'
                                         }`}>
                                             {complaint.priority} Priority
                                         </span>
