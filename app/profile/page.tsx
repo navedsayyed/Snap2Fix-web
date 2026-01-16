@@ -152,7 +152,7 @@ export default function ProfilePage() {
                 <div className="bg-gradient-to-br from-[#1E1E1E] to-[#252525] border border-[#404040]/50 rounded-2xl shadow-2xl p-10 max-w-lg w-full text-center backdrop-blur-sm">
                     {/* Icon */}
                     <div className="mb-8">
-                        <div className="w-24 h-24 bg-gradient-to-br from-[#00BFFF] via-[#0099CC] to-[#007ACC] rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-[#00BFFF]/40 border-4 border-[#00BFFF]/20">
+                        <div className="w-24 h-24 bg-gradient-to-br from-[#00BFFF] via-[#0099CC] to-[#007ACC] rounded-full flex items-center justify-center mx-auto mb-6 border-4 border-[#00BFFF]/20">
                             <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
                             </svg>
@@ -195,7 +195,7 @@ export default function ProfilePage() {
                     <div className="space-y-3">
                         <Button 
                             onClick={handleSignOut} 
-                            className="w-full bg-gradient-to-r from-[#00BFFF] to-[#0099CC] hover:from-[#00BFFF]/90 hover:to-[#0099CC]/90 text-white font-semibold py-3 rounded-xl shadow-lg shadow-[#00BFFF]/30 hover:shadow-[#00BFFF]/50 transition-all duration-300"
+                            className="w-full bg-gradient-to-r from-[#00BFFF] to-[#0099CC] hover:from-[#00BFFF]/90 hover:to-[#0099CC]/90 text-white font-semibold py-3 rounded-xl transition-all duration-300"
                         >
                             Sign Out
                         </Button>
@@ -213,15 +213,10 @@ export default function ProfilePage() {
     return (
         <div className="min-h-screen bg-[#121212]">
             {/* Header with Glassmorphism */}
-            <div className="fixed top-0 left-0 right-0 z-50 bg-[#0A0A0A]/80 backdrop-blur-xl border-b border-white/10 shadow-2xl">
+            <div className="fixed top-0 left-0 right-0 z-50 bg-[#0A0A0A]/80 backdrop-blur-xl border-b border-white/10">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-5">
                     <div className="flex justify-between items-center">
                         <div className="flex items-center gap-3">
-                            <div className="w-11 h-11 sm:w-12 sm:h-12 bg-gradient-to-br from-[#00BFFF] via-[#0099CC] to-[#007ACC] rounded-xl flex items-center justify-center shadow-lg shadow-[#00BFFF]/40 border border-[#00BFFF]/20">
-                                <svg className="w-6 h-6 sm:w-7 sm:h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                </svg>
-                            </div>
                             <div>
                                 <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">My Dashboard</h1>
                                 <p className="text-[#00BFFF] text-xs sm:text-sm font-semibold hidden sm:block">Manage complaints & account</p>
@@ -241,7 +236,7 @@ export default function ProfilePage() {
                             <div className="relative">
                                 <button 
                                     onClick={() => setShowMenu(!showMenu)}
-                                    className="px-3 sm:px-5 py-2 sm:py-2.5 bg-gradient-to-r from-[#00BFFF] to-[#0099CC] hover:from-[#00BFFF]/90 hover:to-[#0099CC]/90 text-white rounded-xl shadow-lg shadow-[#00BFFF]/30 hover:shadow-[#00BFFF]/50 transition-all duration-300 text-sm sm:text-base font-semibold hover:scale-105 flex items-center gap-2"
+                                    className="px-3 sm:px-5 py-2 sm:py-2.5 bg-gradient-to-r from-[#00BFFF] to-[#0099CC] hover:from-[#00BFFF]/90 hover:to-[#0099CC]/90 text-white rounded-xl transition-all duration-300 text-sm sm:text-base font-semibold hover:scale-105 flex items-center gap-2"
                                 >
                                     <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
@@ -251,7 +246,7 @@ export default function ProfilePage() {
 
                                 {/* Dropdown Menu */}
                                 {showMenu && (
-                                    <div className="absolute right-0 mt-2 w-56 bg-[#1E1E1E] border border-[#404040] rounded-xl shadow-2xl shadow-black/50 overflow-hidden z-50">
+                                    <div className="absolute right-0 mt-2 w-56 bg-[#1E1E1E] border border-[#404040] rounded-xl overflow-hidden z-50">
                                         <div className="py-2">
                                             {/* Profile Info */}
                                             <div className="px-4 py-3 border-b border-[#404040]">
@@ -323,10 +318,10 @@ export default function ProfilePage() {
             {/* Main Content with Top Padding for Fixed Header */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-24">
                 {/* Complaints List with Enhanced Design */}
-                <div id="my-complaints" className="bg-gradient-to-br from-[#1E1E1E] via-[#252525] to-[#1A1A1A] border border-[#333333] rounded-3xl shadow-2xl p-6 sm:p-10 hover:border-[#00BFFF]/40 transition-all duration-500 hover:shadow-[#00BFFF]/20">
+                <div id="my-complaints" className="bg-gradient-to-br from-[#1E1E1E] via-[#252525] to-[#1A1A1A] border border-[#333333] rounded-3xl p-6 sm:p-10 hover:border-[#00BFFF]/40 transition-all duration-500">
                     <div className="flex flex-col sm:flex-row sm:justify-end sm:items-center gap-4 mb-8">
                         <Link href="/scan-qr">
-                            <button className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-[#00BFFF] to-[#0099CC] hover:from-[#00BFFF]/90 hover:to-[#0099CC]/90 text-white rounded-xl shadow-lg shadow-[#00BFFF]/30 hover:shadow-[#00BFFF]/50 hover:scale-105 transition-all duration-300 font-semibold flex items-center justify-center gap-2">
+                            <button className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-[#00BFFF] to-[#0099CC] hover:from-[#00BFFF]/90 hover:to-[#0099CC]/90 text-white rounded-xl hover:scale-105 transition-all duration-300 font-semibold flex items-center justify-center gap-2">
                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                                 </svg>
@@ -336,12 +331,12 @@ export default function ProfilePage() {
                     </div>
 
                     {/* Tab System - In Progress / Completed */}
-                    <div className="flex gap-2 mb-6 bg-[#1A1A1A] p-1.5 rounded-2xl border border-[#2A2A2A] shadow-xl">
+                    <div className="flex gap-2 mb-6 bg-[#1A1A1A] p-1.5 rounded-2xl border border-[#2A2A2A]">
                         <button
                             onClick={() => setActiveTab('in-progress')}
                             className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-bold text-sm transition-all duration-300 whitespace-nowrap ${
                                 activeTab === 'in-progress'
-                                    ? 'bg-gradient-to-r from-[#00BFFF] to-[#0099CC] text-white shadow-lg shadow-[#00BFFF]/50'
+                                    ? 'bg-gradient-to-r from-[#00BFFF] to-[#0099CC] text-white'
                                     : 'text-[#777777] hover:text-[#CCCCCC] hover:bg-[#252525]'
                             }`}
                         >

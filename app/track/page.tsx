@@ -43,27 +43,28 @@ export default function TrackPage() {
     return (
         <div className="min-h-screen bg-[#121212] overflow-hidden">
             {/* Header */}
-            <header className="bg-[#0A0A0A]/80 backdrop-blur-xl border-b border-white/10 sticky top-0 z-50 shadow-2xl">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex items-center justify-between h-16 sm:h-20">
-                        <Link href="/" className="flex items-center gap-2 sm:gap-3 group">
-                            <div className="w-11 h-11 sm:w-12 sm:h-12 bg-gradient-to-br from-[#00BFFF] via-[#0099CC] to-[#007ACC] rounded-xl flex items-center justify-center shadow-lg shadow-[#00BFFF]/40 transition-all duration-300 group-hover:shadow-[#00BFFF]/60 group-hover:scale-105 border border-[#00BFFF]/20">
-                                <svg width="24" height="24" className="text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            <header className="fixed top-0 left-0 right-0 z-50 bg-[#0A0A0A]/80 backdrop-blur-xl border-b border-white/10">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-5">
+                    <div className="flex justify-between items-center">
+                        <div className="flex items-center gap-3">
+                            <Link href="/" className="px-2 py-2 text-[#B0B0B0] hover:text-white transition-colors flex items-center gap-2">
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                                 </svg>
-                            </div>
+                            </Link>
                             <div>
-                                <span className="text-lg sm:text-xl font-bold text-white">Track Complaint</span>
-                                <p className="text-[#00BFFF] text-xs sm:text-sm font-semibold hidden sm:block">Check Status</p>
+                                <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">Track Complaint</h1>
+                                <p className="text-[#00BFFF] text-xs sm:text-sm font-semibold hidden sm:block">Check status & progress</p>
                             </div>
-                        </Link>
+                        </div>
                     </div>
                 </div>
             </header>
 
             {/* Main Content */}
-            <main className={`max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-500 ${isInputFocused ? 'py-8 sm:py-16' : 'py-12 sm:py-20'}`}>
-                <div className={`text-center mb-8 sm:mb-12 transition-all duration-500 ${isInputFocused ? 'scale-90 sm:scale-100' : 'scale-100'}`}>
+            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-24">
+                <div className="max-w-2xl mx-auto">
+                    <div className={`text-center mb-8 sm:mb-12 transition-all duration-500 ${isInputFocused ? 'scale-90 sm:scale-100' : 'scale-100'}`}>
                     <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-[#00BFFF]/20 to-[#00BFFF]/5 border border-[#00BFFF]/20 rounded-2xl flex items-center justify-center mx-auto mb-5 sm:mb-6">
                         <svg width="28" height="28" className="text-[#00BFFF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -75,7 +76,7 @@ export default function TrackPage() {
                     </p>
                 </div>
 
-                <div className="bg-[#1E1E1E] rounded-2xl sm:rounded-3xl shadow-2xl border border-[#333333] p-6 sm:p-10">
+                <div className="bg-[#1E1E1E] rounded-2xl sm:rounded-3xl border border-[#333333] p-6 sm:p-10">
                     <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6">
                         <div>
                             <label className="block text-sm font-medium text-white mb-2">
@@ -101,7 +102,7 @@ export default function TrackPage() {
 
                         <button
                             type="submit"
-                            className="w-full bg-gradient-to-r from-[#00BFFF] to-[#0099CC] hover:from-[#00A8E6] hover:to-[#0088BB] text-white font-semibold py-3 sm:py-4 px-4 rounded-lg transition-all duration-300 shadow-lg shadow-[#00BFFF]/40 hover:shadow-[#00BFFF]/60 hover:scale-[1.02] flex items-center justify-center gap-2"
+                            className="w-full bg-gradient-to-r from-[#00BFFF] to-[#0099CC] hover:from-[#00A8E6] hover:to-[#0088BB] text-white font-semibold py-3 sm:py-4 px-4 rounded-lg transition-all duration-300 hover:scale-[1.02] flex items-center justify-center gap-2"
                         >
                             <span>Track Complaint</span>
                             <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -142,6 +143,7 @@ export default function TrackPage() {
                             Submit a New Complaint
                         </button>
                     </Link>
+                </div>
                 </div>
             </main>
         </div>

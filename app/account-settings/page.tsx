@@ -109,16 +109,19 @@ export default function AccountSettingsPage() {
     return (
         <div className="min-h-screen bg-[#121212]">
             {/* Header */}
-            <header className="fixed top-0 left-0 right-0 z-40 bg-gradient-to-r from-[#1E1E1E] via-[#252525] to-[#1E1E1E] border-b border-[#333333] shadow-2xl">
+            <header className="fixed top-0 left-0 right-0 z-40 bg-gradient-to-r from-[#1E1E1E] via-[#252525] to-[#1E1E1E] border-b border-[#333333]">
                 <div className="h-16 sm:h-20">
                     <div className="h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="h-full flex items-center justify-between">
                             <div className="flex items-center gap-3">
-                                <div className="w-11 h-11 sm:w-12 sm:h-12 bg-gradient-to-br from-[#00BFFF] via-[#0099CC] to-[#007ACC] rounded-2xl flex items-center justify-center shadow-lg shadow-[#00BFFF]/50">
-                                    <svg className="w-6 h-6 sm:w-7 sm:h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                <Link 
+                                    href="/profile"
+                                    className="px-2 py-2 text-[#B0B0B0] hover:text-white transition-colors flex items-center gap-2"
+                                >
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                                     </svg>
-                                </div>
+                                </Link>
                                 <div>
                                     <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-white via-[#E0E0E0] to-[#B0B0B0] bg-clip-text text-transparent">
                                         Account Settings
@@ -126,16 +129,6 @@ export default function AccountSettingsPage() {
                                     <p className="text-xs text-[#B0B0B0] hidden sm:block">Manage your profile</p>
                                 </div>
                             </div>
-
-                            <Link 
-                                href="/profile"
-                                className="px-4 py-2 text-[#B0B0B0] hover:text-white transition-colors flex items-center gap-2"
-                            >
-                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                                </svg>
-                                <span className="hidden sm:inline">Back to Profile</span>
-                            </Link>
                         </div>
                     </div>
                 </div>
@@ -143,7 +136,7 @@ export default function AccountSettingsPage() {
 
             {/* Main Content */}
             <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-24">
-                <div className="bg-gradient-to-br from-[#1E1E1E] via-[#252525] to-[#1A1A1A] border border-[#333333] rounded-3xl shadow-2xl p-6 sm:p-10">
+                <div className="bg-gradient-to-br from-[#1E1E1E] via-[#252525] to-[#1A1A1A] border border-[#333333] rounded-3xl p-6 sm:p-10">
                     {/* Current Information Section */}
                     <div className="mb-8">
                         <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
@@ -266,7 +259,7 @@ export default function AccountSettingsPage() {
                             <button
                                 type="submit"
                                 disabled={saving}
-                                className="w-full px-6 py-3 bg-gradient-to-r from-[#00BFFF] to-[#0099CC] hover:from-[#00BFFF]/90 hover:to-[#0099CC]/90 text-white rounded-xl shadow-lg shadow-[#00BFFF]/30 hover:shadow-[#00BFFF]/50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 font-semibold flex items-center justify-center gap-2"
+                                className="w-full px-6 py-3 bg-gradient-to-r from-[#00BFFF] to-[#0099CC] hover:from-[#00BFFF]/90 hover:to-[#0099CC]/90 text-white rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 font-semibold flex items-center justify-center gap-2"
                             >
                                 {saving ? (
                                     <>
