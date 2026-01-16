@@ -35,7 +35,7 @@ export async function uploadImage(
         // Convert File to ArrayBuffer for upload
         const arrayBuffer = await file.arrayBuffer();
         const timestamp = Date.now();
-        const fileName = `${timestamp}_${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
+        const fileName = `complaints/${timestamp}_${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
 
         console.log('Uploading file:', fileName, 'Size:', file.size, 'Type:', file.type);
 
