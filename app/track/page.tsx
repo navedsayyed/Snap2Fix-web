@@ -29,14 +29,13 @@ export default function TrackPage() {
         // Clean the ID (remove # and spaces)
         const cleanId = complaintId.trim().replace(/^#/, '').replace(/\s/g, '');
 
-        // Basic validation - check if it looks like a UUID or short ID
-        if (cleanId.length < 8) {
+        // Basic validation - check if it's not empty after cleaning
+        if (!cleanId) {
             setError('Please enter a valid complaint ID');
             return;
         }
 
-        // If it's a short ID (8 chars), we'll need to handle it differently
-        // For now, assume full UUID or redirect to search
+        // Accept any valid ID (numeric or UUID)
         router.push(`/track/${cleanId}`);
     };
 
