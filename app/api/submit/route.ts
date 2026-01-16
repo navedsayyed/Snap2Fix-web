@@ -10,6 +10,16 @@ export async function POST(request: NextRequest) {
     try {
         // Parse form data
         const formData = await request.formData();
+        
+        console.log('=== FORM DATA RECEIVED ===');
+        for (let [key, value] of formData.entries()) {
+            if (value instanceof File) {
+                console.log(`${key}: File { name: "${value.name}", size: ${value.size}, type: "${value.type}" }`);
+            } else {
+                console.log(`${key}: ${value}`);
+            }
+        }
+        console.log('=========================');
 
         // Extract user info
         const name = formData.get('name') as string;
@@ -100,19 +110,28 @@ export async function POST(request: NextRequest) {
         let imageUrl: string | null = null;
         let imageUploadWarning: string | null = null;
         
+        console.log('Photo received:', photo ? `${photo.name} (${photo.size} bytes)` : 'No photo');
+        
         if (photo && photo.size > 0) {
             if (photo.size > 5 * 1024 * 1024) {
                 imageUploadWarning = 'File too large';
+                console.log('Image upload failed: File too large');
             } else if (!['image/jpeg', 'image/jpg', 'image/png'].includes(photo.type)) {
                 imageUploadWarning = 'Invalid file type';
+                console.log('Image upload failed: Invalid file type', photo.type);
             } else {
-                const { url, error: uploadError } = await uploadImage(photo, 'web');
+                console.log('Uploading image...');
+                const { url, error: uploadError } = await uploadImage(photo, 'complaint-images');
                 if (uploadError) {
                     imageUploadWarning = 'Upload failed';
+                    console.error('Image upload failed:', uploadError);
                 } else {
                     imageUrl = url;
+                    console.log('Image uploaded successfully:', imageUrl);
                 }
             }
+        } else {
+            console.log('No photo provided or photo size is 0');
         }
 
         // For web submissions without login, use a default guest UUID
@@ -133,6 +152,7 @@ export async function POST(request: NextRequest) {
             class: classRoom || null,
             status: 'in-progress',
             assigned_to: null,
+            image_url: imageUrl, // Add image URL to complaint
         };
 
         // Insert complaint

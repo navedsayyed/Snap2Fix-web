@@ -143,13 +143,25 @@ function SubmitForm() {
             submitData.append('location', formData.location);
             submitData.append('place', formData.place);
             submitData.append('description', formData.description);
-            if (formData.photo) submitData.append('photo', formData.photo);
+            if (formData.photo) {
+                console.log('Appending photo:', formData.photo.name, 'Size:', formData.photo.size, 'Type:', formData.photo.type);
+                submitData.append('photo', formData.photo);
+            } else {
+                console.log('No photo to upload');
+            }
             if (formData.floor) submitData.append('floor', formData.floor);
             if (formData.class) submitData.append('class', formData.class);
             if (formData.department) submitData.append('department', formData.department);
 
             // Submit
-            console.log('Submitting complaint...');
+            console.log('Submitting complaint with FormData...');
+            for (let [key, value] of submitData.entries()) {
+                if (key === 'photo') {
+                    console.log('FormData entry:', key, '=', value instanceof File ? `File: ${value.name}` : value);
+                } else {
+                    console.log('FormData entry:', key, '=', value);
+                }
+            }
             const response = await fetch('/api/submit', {
                 method: 'POST',
                 body: submitData,

@@ -29,7 +29,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
  */
 export async function uploadImage(
     file: File,
-    bucket: string = 'web'
+    bucket: string = 'complaint-images'
 ): Promise<{ url: string | null; error: Error | null }> {
     try {
         // Convert File to ArrayBuffer for upload
