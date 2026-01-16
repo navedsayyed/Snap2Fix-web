@@ -37,6 +37,7 @@ export default function ProfilePage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [showMenu, setShowMenu] = useState(false);
+    const [activeTab, setActiveTab] = useState<'in-progress' | 'completed'>('in-progress');
 
     useEffect(() => {
         loadUserData();
@@ -334,26 +335,60 @@ export default function ProfilePage() {
                         </Link>
                     </div>
 
-                    {complaints.length === 0 ? (
+                    {/* Tab System - In Progress / Completed */}
+                    <div className="flex gap-2 mb-6 bg-[#1A1A1A] p-1.5 rounded-2xl border border-[#2A2A2A] shadow-xl">
+                        <button
+                            onClick={() => setActiveTab('in-progress')}
+                            className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-bold text-sm transition-all duration-300 whitespace-nowrap ${
+                                activeTab === 'in-progress'
+                                    ? 'bg-gradient-to-r from-[#00BFFF] to-[#0099CC] text-white shadow-lg shadow-[#00BFFF]/50'
+                                    : 'text-[#777777] hover:text-[#CCCCCC] hover:bg-[#252525]'
+                            }`}
+                        >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span className="text-sm">In Progress</span>
+                        </button>
+                        <button
+                            onClick={() => setActiveTab('completed')}
+                            className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-bold text-sm transition-all duration-300 whitespace-nowrap ${
+                                activeTab === 'completed'
+                                    ? 'bg-gradient-to-r from-[#00BFFF] to-[#0099CC] text-white shadow-lg shadow-[#00BFFF]/50'
+                                    : 'text-[#777777] hover:text-[#CCCCCC] hover:bg-[#252525]'
+                            }`}
+                        >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span className="text-sm">Completed</span>
+                        </button>
+                    </div>
+
+                    {complaints.filter(c => activeTab === 'in-progress' ? c.status !== 'completed' : c.status === 'completed').length === 0 ? (
                         <div className="text-center py-16 bg-[#2C2C2C] border border-[#404040] rounded-2xl">
                             <div className="w-20 h-20 bg-gradient-to-br from-[#00BFFF]/20 to-[#0099CC]/20 rounded-full flex items-center justify-center mx-auto mb-4">
                                 <svg className="w-10 h-10 text-[#00BFFF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                 </svg>
                             </div>
-                            <p className="text-[#B0B0B0] text-lg mb-6">No complaints submitted yet</p>
-                            <Link href="/scan-qr">
-                                <button className="px-8 py-3 bg-gradient-to-r from-[#00BFFF] to-[#0099CC] hover:from-[#00BFFF]/90 hover:to-[#0099CC]/90 text-white rounded-xl shadow-lg shadow-[#00BFFF]/30 hover:shadow-[#00BFFF]/50 hover:scale-105 transition-all duration-300 font-semibold inline-flex items-center gap-2">
-                                    Submit Your First Complaint
-                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                                    </svg>
-                                </button>
-                            </Link>
+                            <p className="text-[#B0B0B0] text-lg mb-6">No {activeTab === 'in-progress' ? 'in-progress' : 'completed'} complaints yet</p>
+                            {activeTab === 'in-progress' && (
+                                <Link href="/scan-qr">
+                                    <button className="px-8 py-3 bg-gradient-to-r from-[#00BFFF] to-[#0099CC] hover:from-[#00BFFF]/90 hover:to-[#0099CC]/90 text-white rounded-xl shadow-lg shadow-[#00BFFF]/30 hover:shadow-[#00BFFF]/50 hover:scale-105 transition-all duration-300 font-semibold inline-flex items-center gap-2">
+                                        Submit Your First Complaint
+                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                                        </svg>
+                                    </button>
+                                </Link>
+                            )}
                         </div>
                     ) : (
                         <div className="space-y-4">
-                            {complaints.map((complaint) => (
+                            {complaints
+                                .filter(c => activeTab === 'in-progress' ? c.status !== 'completed' : c.status === 'completed')
+                                .map((complaint) => (
                                 <Link
                                     key={complaint.id}
                                     href={`/track/${complaint.id}`}
@@ -374,7 +409,15 @@ export default function ProfilePage() {
                                                 {complaint.floor} - Room {complaint.room_number}
                                             </p>
                                         </div>
-                                        <StatusBadge status={complaint.status} />
+                                        {complaint.status === 'completed' ? (
+                                            <span className="flex-shrink-0 px-4 py-1.5 bg-green-500 text-white rounded-full text-xs font-bold">
+                                                Completed
+                                            </span>
+                                        ) : (
+                                            <span className="flex-shrink-0 px-4 py-1.5 bg-orange-400 text-white rounded-full text-xs font-bold">
+                                                In Progress
+                                            </span>
+                                        )}
                                     </div>
                                     <p className="text-[#B0B0B0] text-sm mb-3 line-clamp-2 pl-4">
                                         {complaint.description}

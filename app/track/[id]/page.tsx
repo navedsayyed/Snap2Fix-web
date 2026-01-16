@@ -127,7 +127,15 @@ export default function TrackComplaintPage() {
                                 #{shortId(complaint.id)}
                             </h1>
                         </div>
-                        <StatusBadge status={complaint.status as ComplaintStatus} size="lg" />
+                        {complaint.status === 'completed' ? (
+                            <span className="flex-shrink-0 px-5 py-2 bg-green-500 text-white rounded-full text-sm font-bold">
+                                Completed
+                            </span>
+                        ) : (
+                            <span className="flex-shrink-0 px-5 py-2 bg-orange-400 text-white rounded-full text-sm font-bold">
+                                In Progress
+                            </span>
+                        )}
                     </div>
                     <h2 className="text-2xl font-semibold text-white mb-2">{complaint.title}</h2>
                     <p className="text-[#B0B0B0]">Submitted on {formatDateTime(complaint.created_at)}</p>
