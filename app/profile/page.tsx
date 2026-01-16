@@ -365,7 +365,7 @@ export default function ProfilePage() {
                         </button>
                     </div>
 
-                    {complaints.filter(c => activeTab === 'in-progress' ? c.status !== 'completed' : c.status === 'completed').length === 0 ? (
+                    {complaints.filter(c => activeTab === 'in-progress' ? c.status.toLowerCase() !== 'completed' : c.status.toLowerCase() === 'completed').length === 0 ? (
                         <div className="text-center py-16 bg-[#2C2C2C] border border-[#404040] rounded-2xl">
                             <div className="w-20 h-20 bg-gradient-to-br from-[#00BFFF]/20 to-[#0099CC]/20 rounded-full flex items-center justify-center mx-auto mb-4">
                                 <svg className="w-10 h-10 text-[#00BFFF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -387,7 +387,7 @@ export default function ProfilePage() {
                     ) : (
                         <div className="space-y-4">
                             {complaints
-                                .filter(c => activeTab === 'in-progress' ? c.status !== 'completed' : c.status === 'completed')
+                                .filter(c => activeTab === 'in-progress' ? c.status.toLowerCase() !== 'completed' : c.status.toLowerCase() === 'completed')
                                 .map((complaint) => (
                                 <Link
                                     key={complaint.id}
@@ -409,7 +409,7 @@ export default function ProfilePage() {
                                                 {complaint.floor} - Room {complaint.room_number}
                                             </p>
                                         </div>
-                                        {complaint.status === 'completed' ? (
+                                        {complaint.status.toLowerCase() === 'completed' ? (
                                             <span className="flex-shrink-0 px-4 py-1.5 bg-green-500 text-white rounded-full text-xs font-bold">
                                                 Completed
                                             </span>

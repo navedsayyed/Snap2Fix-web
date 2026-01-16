@@ -127,7 +127,7 @@ export default function TrackComplaintPage() {
                                 #{shortId(complaint.id)}
                             </h1>
                         </div>
-                        {complaint.status === 'completed' ? (
+                        {complaint.status.toLowerCase() === 'completed' ? (
                             <span className="flex-shrink-0 px-5 py-2 bg-green-500 text-white rounded-full text-sm font-bold">
                                 Completed
                             </span>
