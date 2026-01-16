@@ -18,6 +18,7 @@ function SubmitForm() {
 
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [errors, setErrors] = useState<Record<string, string>>({});
+    const [showImagePreview, setShowImagePreview] = useState(false);
 
     // Form state - MATCHING React Native app exactly
     const [formData, setFormData] = useState({
@@ -121,8 +122,8 @@ function SubmitForm() {
 
             if (!formData.location) newErrors.location = 'Location is required';
             if (!formData.place) newErrors.place = 'Place is required';
-            if (!formData.description || formData.description.length < 10) {
-                newErrors.description = 'Description must be at least 10 characters';
+            if (!formData.description) {
+                newErrors.description = 'Description is required';
             }
             if (!formData.photo) newErrors.photo = 'Photo is required';
 
@@ -187,21 +188,23 @@ function SubmitForm() {
 
     return (
         <div className="min-h-screen bg-[#121212]">
-            <header className="bg-[#0A0A0A]/80 backdrop-blur-xl border-b border-white/10 sticky top-0 z-50">
+            <header className="bg-[#0A0A0A]/80 backdrop-blur-xl border-b border-white/10 sticky top-0 z-50 shadow-2xl">
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex items-center h-16">
-                        <Link href="/" className="flex items-center gap-2 text-[#B0B0B0] hover:text-[#00BFFF] transition-colors duration-300 group">
-                            <svg className="w-5 h-5 transform group-hover:-translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                            </svg>
-                            <span className="font-medium">Back</span>
+                    <div className="flex items-center gap-4 h-16">
+                        <Link href="/" className="flex items-center gap-2 group hover:opacity-80 transition-opacity">
+                            <div className="w-10 h-10 bg-white/5 rounded-lg flex items-center justify-center group-hover:bg-white/10 transition-colors">
+                                <svg width="20" height="20" className="text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                                </svg>
+                            </div>
+                            <span className="text-xl font-bold text-white hidden sm:inline">Back</span>
                         </Link>
+                        <h1 className="text-xl font-bold text-white flex-1">Complaint Form</h1>
                     </div>
                 </div>
             </header>
 
             <main className="max-w-4xl mx-auto px-4 py-8">
-                <h1 className="text-3xl font-bold text-white mb-2">Submit a Complaint</h1>
                 <p className="text-gray-400 mb-6">Fill out the form below to report an issue</p>
 
                 {(formData.department || formData.floor || formData.class) && (
@@ -373,7 +376,6 @@ function SubmitForm() {
                             placeholder="Describe the issue"
                             className="w-full px-4 py-3 bg-[#2C2C2C] border border-[#404040] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#00BFFF] focus:ring-2 focus:ring-[#00BFFF]/50"
                         />
-                        <p className="mt-2 text-xs text-gray-500">Minimum 10 characters</p>
                         {errors.description && <p className="mt-2 text-sm text-[#F44336]">{errors.description}</p>}
                     </div>
 
@@ -384,15 +386,25 @@ function SubmitForm() {
                         </label>
                         {formData.photo ? (
                             <div className="space-y-3">
-                                <img 
-                                    src={URL.createObjectURL(formData.photo)} 
-                                    alt="Preview" 
-                                    className="w-full h-48 object-cover rounded-lg"
-                                />
+                                <div 
+                                    onClick={() => setShowImagePreview(true)}
+                                    className="cursor-pointer group relative overflow-hidden rounded-lg"
+                                >
+                                    <img 
+                                        src={URL.createObjectURL(formData.photo)} 
+                                        alt="Preview" 
+                                        className="w-full h-48 object-cover rounded-lg transition-transform duration-300 group-hover:scale-105"
+                                    />
+                                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors duration-300 flex items-center justify-center">
+                                        <svg className="w-12 h-12 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                                        </svg>
+                                    </div>
+                                </div>
                                 <button
                                     type="button"
                                     onClick={() => setFormData({ ...formData, photo: null })}
-                                    className="w-full py-2 px-4 bg-[#2C2C2C] hover:bg-[#333333] text-white rounded-lg border border-[#404040]"
+                                    className="w-full py-2 px-4 bg-[#2C2C2C] hover:bg-[#333333] text-white rounded-lg border border-[#404040] transition-colors"
                                 >
                                     Change Photo
                                 </button>
@@ -416,6 +428,31 @@ function SubmitForm() {
                         )}
                         {errors.photo && <p className="mt-2 text-sm text-[#F44336]">{errors.photo}</p>}
                     </div>
+
+                    {/* Image Preview Modal */}
+                    {showImagePreview && formData.photo && (
+                        <div 
+                            className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4"
+                            onClick={() => setShowImagePreview(false)}
+                        >
+                            <div className="relative max-w-5xl w-full">
+                                <button
+                                    onClick={() => setShowImagePreview(false)}
+                                    className="absolute -top-12 right-0 text-white hover:text-[#00BFFF] transition-colors"
+                                >
+                                    <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
+                                <img 
+                                    src={URL.createObjectURL(formData.photo)} 
+                                    alt="Full preview" 
+                                    className="w-full h-auto max-h-[85vh] object-contain rounded-lg"
+                                    onClick={(e) => e.stopPropagation()}
+                                />
+                            </div>
+                        </div>
+                    )}
 
                     {/* Submit */}
                     <button
