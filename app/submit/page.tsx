@@ -8,6 +8,7 @@ import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { GroupedSelect } from '@/components/ui/GroupedSelect';
+import { FileUpload } from '@/components/ui/FileUpload';
 import { COMPLAINT_TYPES, getComplaintTypesByCategory } from '@/lib/complaintTypes';
 import { getCurrentUser } from '@/lib/auth';
 import { supabase } from '@/lib/supabase';
@@ -380,54 +381,14 @@ function SubmitForm() {
                     </div>
 
                     {/* Photo */}
-                    <div>
-                        <label className="block text-sm font-medium text-white mb-2">
-                            Photo <span className="text-[#00BFFF]">*</span>
-                        </label>
-                        {formData.photo ? (
-                            <div className="space-y-3">
-                                <div 
-                                    onClick={() => setShowImagePreview(true)}
-                                    className="cursor-pointer group relative overflow-hidden rounded-lg"
-                                >
-                                    <img 
-                                        src={URL.createObjectURL(formData.photo)} 
-                                        alt="Preview" 
-                                        className="w-full h-48 object-cover rounded-lg transition-transform duration-300 group-hover:scale-105"
-                                    />
-                                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors duration-300 flex items-center justify-center">
-                                        <svg className="w-12 h-12 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
-                                        </svg>
-                                    </div>
-                                </div>
-                                <button
-                                    type="button"
-                                    onClick={() => setFormData({ ...formData, photo: null })}
-                                    className="w-full py-2 px-4 bg-[#2C2C2C] hover:bg-[#333333] text-white rounded-lg border border-[#404040] transition-colors"
-                                >
-                                    Change Photo
-                                </button>
-                            </div>
-                        ) : (
-                            <input
-                                type="file"
-                                accept="image/jpeg,image/jpg,image/png"
-                                onChange={(e) => {
-                                    const file = e.target.files?.[0];
-                                    if (file) {
-                                        if (file.size > 5 * 1024 * 1024) {
-                                            alert('File must be less than 5MB');
-                                            return;
-                                        }
-                                        setFormData({ ...formData, photo: file });
-                                    }
-                                }}
-                                className="w-full px-4 py-3 bg-[#2C2C2C] border border-[#404040] rounded-lg text-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-[#00BFFF] file:text-white file:cursor-pointer hover:file:bg-[#0099CC]"
-                            />
-                        )}
-                        {errors.photo && <p className="mt-2 text-sm text-[#F44336]">{errors.photo}</p>}
-                    </div>
+                    <FileUpload
+                        label="Photo"
+                        required={true}
+                        onChange={(file) => setFormData({ ...formData, photo: file })}
+                        error={errors.photo}
+                        accept="image/jpeg,image/jpg,image/png"
+                        maxSize={5}
+                    />
 
                     {/* Image Preview Modal */}
                     {showImagePreview && formData.photo && (
