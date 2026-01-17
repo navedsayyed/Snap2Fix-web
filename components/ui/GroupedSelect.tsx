@@ -47,7 +47,7 @@ export const GroupedSelect: React.FC<GroupedSelectProps> = ({
                     onChange={onChange}
                     required={required}
                     className={cn(
-                        'w-full px-4 py-3.5 pr-12 rounded-xl border-2 transition-all duration-200 text-base',
+                        'w-full px-3.5 py-2.5 pr-10 rounded-lg border-2 transition-all duration-200 text-sm',
                         'focus:outline-none focus:ring-2 focus:ring-[#00BFFF]/30',
                         'appearance-none bg-[#2C2C2C] text-white font-medium',
                         'hover:border-[#00BFFF] hover:shadow-lg cursor-pointer',
@@ -59,10 +59,11 @@ export const GroupedSelect: React.FC<GroupedSelectProps> = ({
                     style={{
                         backgroundImage: 'none',
                         backgroundColor: '#2C2C2C',
-                        color: 'white'
+                        color: 'white',
+                        maxHeight: '350px'
                     }}
                 >
-                    <option value="" className="bg-[#2C2C2C] text-gray-400 font-normal py-3">
+                    <option value="" className="bg-[#2C2C2C] text-gray-400 font-normal py-2">
                         Select {label.toLowerCase()}...
                     </option>
                     {groups.map((group) => (
@@ -72,10 +73,10 @@ export const GroupedSelect: React.FC<GroupedSelectProps> = ({
                             className="bg-[#1E1E1E] text-[#00BFFF] font-bold"
                             style={{
                                 fontWeight: '700',
-                                fontSize: '0.813rem',
+                                fontSize: '0.75rem',
                                 letterSpacing: '0.05em',
-                                padding: '12px 8px 8px 8px',
-                                marginTop: '4px',
+                                padding: '8px 6px 6px 6px',
+                                marginTop: '2px',
                                 textTransform: 'uppercase'
                             }}
                         >
@@ -85,10 +86,10 @@ export const GroupedSelect: React.FC<GroupedSelectProps> = ({
                                     value={option.value} 
                                     className="bg-[#2C2C2C] text-white font-normal"
                                     style={{
-                                        paddingLeft: '24px',
-                                        paddingTop: '10px',
-                                        paddingBottom: '10px',
-                                        fontSize: '0.938rem'
+                                        paddingLeft: '16px',
+                                        paddingTop: '6px',
+                                        paddingBottom: '6px',
+                                        fontSize: '0.875rem'
                                     }}
                                 >
                                     {option.label}
@@ -97,9 +98,9 @@ export const GroupedSelect: React.FC<GroupedSelectProps> = ({
                         </optgroup>
                     ))}
                 </select>
-                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4">
-                    <div className="bg-[#00BFFF]/10 rounded-lg p-1.5 group-hover:bg-[#00BFFF]/20 transition-colors">
-                        <svg width="18" height="18" className="text-[#00BFFF]" fill="currentColor" viewBox="0 0 20 20">
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                    <div className="bg-[#00BFFF]/10 rounded-lg p-1 group-hover:bg-[#00BFFF]/20 transition-colors">
+                        <svg width="16" height="16" className="text-[#00BFFF]" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
                         </svg>
                     </div>
