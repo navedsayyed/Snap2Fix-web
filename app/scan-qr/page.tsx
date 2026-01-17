@@ -54,9 +54,14 @@ export default function ScanQRPage() {
             setScanning(true);
             setError('');
 
-            // Request camera permission
+            // Request camera permission with high quality settings
             const stream = await navigator.mediaDevices.getUserMedia({ 
-                video: { facingMode: 'environment' } 
+                video: { 
+                    facingMode: 'environment',
+                    width: { ideal: 1920 },
+                    height: { ideal: 1080 },
+                    aspectRatio: { ideal: 16/9 }
+                } 
             });
             
             scannerRef.current = stream;
@@ -174,9 +179,6 @@ export default function ScanQRPage() {
                             muted
                         />
                         <canvas ref={canvasRef} className="hidden" />
-                        
-                        {/* Dark Overlay */}
-                        <div className="absolute inset-0 bg-black/40"></div>
                         
                         {/* Scanning Frame Overlay */}
                         <div className="absolute inset-0 flex flex-col items-center justify-center px-4">
