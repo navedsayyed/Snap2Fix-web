@@ -20,7 +20,7 @@ export default function ResetPasswordPage() {
 
         try {
             const { error } = await supabase.auth.resetPasswordForEmail(email, {
-                redirectTo: `${window.location.origin}/update-password`,
+                redirectTo: `https://smart-maintenance-web.vercel.app/update-password`,
             });
 
             if (error) throw error;
@@ -92,18 +92,11 @@ export default function ResetPasswordPage() {
                             />
                         </div>
 
-                        <div className="flex gap-3">
-                            <button
-                                type="button"
-                                onClick={() => router.push('/login')}
-                                className="flex-1 py-3 px-4 bg-[#2C2C2C] hover:bg-[#363636] text-white font-semibold rounded-lg transition-all duration-300 border border-[#404040]"
-                            >
-                                Cancel
-                            </button>
+                        <div className="space-y-3">
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="flex-1 bg-gradient-to-r from-[#00BFFF] to-[#0099CC] hover:from-[#00A8E6] hover:to-[#0088BB] text-white font-semibold py-3 px-4 rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                                className="w-full bg-gradient-to-r from-[#00BFFF] to-[#0099CC] hover:from-[#00A8E6] hover:to-[#0088BB] text-white font-semibold py-3 px-4 rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                             >
                                 {loading ? (
                                     <>
@@ -113,6 +106,13 @@ export default function ResetPasswordPage() {
                                 ) : (
                                     <span>Send Reset Link</span>
                                 )}
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => router.push('/login')}
+                                className="w-full py-3 px-4 bg-[#2C2C2C] hover:bg-[#363636] text-white font-semibold rounded-lg transition-all duration-300 border border-[#404040]"
+                            >
+                                Cancel
                             </button>
                         </div>
                     </form>
