@@ -19,8 +19,13 @@ export default function ResetPasswordPage() {
         setLoading(true);
 
         try {
+            // Automatically use the correct redirect URL
+            const redirectUrl = typeof window !== 'undefined' 
+                ? `${window.location.origin}/update-password`
+                : 'https://smart-maintenance-web.vercel.app/update-password';
+                
             const { error } = await supabase.auth.resetPasswordForEmail(email, {
-                redirectTo: `https://smart-maintenance-web.vercel.app/update-password`,
+                redirectTo: redirectUrl,
             });
 
             if (error) throw error;
