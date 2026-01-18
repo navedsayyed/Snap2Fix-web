@@ -16,6 +16,10 @@ export interface User {
  * Sign up a new user
  */
 export async function signUp(email: string, password: string, name: string) {
+    const redirectUrl = typeof window !== 'undefined' 
+        ? `${window.location.origin}/login`
+        : 'https://smart-maintenance-web.vercel.app/login';
+        
     const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -23,6 +27,7 @@ export async function signUp(email: string, password: string, name: string) {
             data: {
                 name,
             },
+            emailRedirectTo: redirectUrl,
         },
     });
 

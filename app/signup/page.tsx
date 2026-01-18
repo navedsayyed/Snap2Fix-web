@@ -12,6 +12,7 @@ export default function SignupPage() {
     const [formData, setFormData] = useState({
         name: '',
         email: '',
+        phone: '',
         password: '',
         confirmPassword: '',
     });
@@ -26,6 +27,17 @@ export default function SignupPage() {
         setError('');
 
         // Validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(formData.email)) {
+            setError('Please enter a valid email address');
+            return;
+        }
+
+        if (formData.phone.length !== 10 || !/^\d{10}$/.test(formData.phone)) {
+            setError('Phone number must be exactly 10 digits');
+            return;
+        }
+
         if (formData.password !== formData.confirmPassword) {
             setError('Passwords do not match');
             return;
@@ -40,7 +52,8 @@ export default function SignupPage() {
 
         try {
             await signUp(formData.email, formData.password, formData.name);
-            router.push('/login?message=Account created successfully. Please sign in.');
+            alert('Account created! Please check your email to confirm your account before signing in.');
+            router.push('/login');
         } catch (err: any) {
             setError(err.message || 'Failed to create account');
         } finally {
@@ -53,7 +66,7 @@ export default function SignupPage() {
             <div className={`w-full max-w-md transition-all duration-500 ease-out ${isInputFocused ? '-translate-y-12 sm:translate-y-0' : 'translate-y-0'}`}>
                 {/* Logo and Title */}
                 <div className="text-center mb-6">
-                    <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-[#00BFFF] via-[#0099CC] to-[#007ACC] rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-2xl shadow-[#00BFFF]/60 border border-[#00BFFF]/20">
+                    <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-[#00BFFF] via-[#0099CC] to-[#007ACC] rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4 border border-[#00BFFF]/20">
                         <svg width="32" height="32" className="text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
                         </svg>
@@ -88,7 +101,7 @@ export default function SignupPage() {
                             onFocus={() => setIsInputFocused(true)}
                             onBlur={() => setIsInputFocused(false)}
                             placeholder="John Doe"
-                            className="w-full px-4 py-3 bg-[#2C2C2C] border border-[#404040] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#00BFFF] focus:ring-2 focus:ring-[#00BFFF]/50 transition-all duration-300"
+                            className="w-full px-4 py-3 bg-[#2C2C2C] border border-[#404040] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#00BFFF] transition-all duration-300"
                         />
                     </div>
 
@@ -104,7 +117,29 @@ export default function SignupPage() {
                             onFocus={() => setIsInputFocused(true)}
                             onBlur={() => setIsInputFocused(false)}
                             placeholder="your.email@example.com"
-                            className="w-full px-4 py-3 bg-[#2C2C2C] border border-[#404040] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#00BFFF] focus:ring-2 focus:ring-[#00BFFF]/50 transition-all duration-300"
+                            className="w-full px-4 py-3 bg-[#2C2C2C] border border-[#404040] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#00BFFF] transition-all duration-300"
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium text-white mb-2">
+                            Phone Number
+                        </label>
+                        <input
+                            type="tel"
+                            required
+                            value={formData.phone}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                const value = e.target.value.replace(/\D/g, '');
+                                if (value.length <= 10) {
+                                    setFormData({ ...formData, phone: value });
+                                }
+                            }}
+                            onFocus={() => setIsInputFocused(true)}
+                            onBlur={() => setIsInputFocused(false)}
+                            placeholder="1234567890"
+                            maxLength={10}
+                            className="w-full px-4 py-3 bg-[#2C2C2C] border border-[#404040] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#00BFFF] transition-all duration-300"
                         />
                     </div>
 
@@ -121,7 +156,7 @@ export default function SignupPage() {
                                 onFocus={() => setIsInputFocused(true)}
                                 onBlur={() => setIsInputFocused(false)}
                                 placeholder="At least 6 characters"
-                                className="w-full px-4 py-3 pr-12 bg-[#2C2C2C] border border-[#404040] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#00BFFF] focus:ring-2 focus:ring-[#00BFFF]/50 transition-all duration-300"
+                                className="w-full px-4 py-3 pr-12 bg-[#2C2C2C] border border-[#404040] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#00BFFF] transition-all duration-300"
                             />
                             <button
                                 type="button"
@@ -155,7 +190,7 @@ export default function SignupPage() {
                                 onFocus={() => setIsInputFocused(true)}
                                 onBlur={() => setIsInputFocused(false)}
                                 placeholder="Re-enter password"
-                                className="w-full px-4 py-3 pr-12 bg-[#2C2C2C] border border-[#404040] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#00BFFF] focus:ring-2 focus:ring-[#00BFFF]/50 transition-all duration-300"
+                                className="w-full px-4 py-3 pr-12 bg-[#2C2C2C] border border-[#404040] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#00BFFF] transition-all duration-300"
                             />
                             <button
                                 type="button"
@@ -179,7 +214,7 @@ export default function SignupPage() {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full bg-gradient-to-r from-[#00BFFF] to-[#0099CC] hover:from-[#00A8E6] hover:to-[#0088BB] text-white font-semibold py-3 px-4 rounded-lg transition-all duration-300 shadow-lg shadow-[#00BFFF]/40 hover:shadow-[#00BFFF]/60 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 hover:scale-[1.02]"
+                        className="w-full bg-gradient-to-r from-[#00BFFF] to-[#0099CC] hover:from-[#00A8E6] hover:to-[#0088BB] text-white font-semibold py-3 px-4 rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                     >
                         {loading ? (
                             <>
