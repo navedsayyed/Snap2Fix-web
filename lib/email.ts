@@ -174,7 +174,7 @@ export async function sendConfirmationEmail({
     `;
 
         const { data, error } = await resend.emails.send({
-            from: `${siteName} <noreply@${process.env.RESEND_DOMAIN || 'yourdomain.com'}>`,
+            from: 'Smart Maintenance <onboarding@resend.dev>',
             to: email,
             subject: `✅ Complaint #${shortId} Received`,
             html: htmlContent,

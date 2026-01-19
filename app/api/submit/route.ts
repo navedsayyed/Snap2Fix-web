@@ -5,6 +5,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase, uploadImage } from '@/lib/supabase';
 import { determineDepartment } from '@/lib/departmentMapping';
+import { sendConfirmationEmail } from '@/lib/email';
 
 export async function POST(request: NextRequest) {
     try {
@@ -196,8 +197,44 @@ export async function POST(request: NextRequest) {
             }
         }
 
+        // Try to send email if Resend is configured (optional)
+        if (process.env.RESEND_API_KEY && process.env.RESEND_API_KEY !== 're_placeholder_key') {
+            try {
+                console.log('Sending tracking email to:', email);
+                const emailResult = await sendConfirmationEmail({
+                    email,
+                    complaintId: complaint.id,
+                    userName: name,
+                    complaintDetails: {
+                        title: finalTitle,
+                        floor: floor || 'N/A',
+                        room_number: classRoom || 'N/A',
+                        priority: 'Medium',
+                        description
+                    }
+                });
+                
+                if (emailResult.success) {
+                    console.log('Tracking email sent successfully');
+                } else {
+                    console.error('Failed to send tracking email:', emailResult.error);
+                }
+            } catch (emailError) {
+                console.error('Email sending error:', emailError);
+                // Don't fail the complaint submission if email fails
+            }
+        } else {
+            console.log('Email not configured, skipping email notification');
+        }
+
+        // Generate tracking URL
+        const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://smart-maintenance-web.vercel.app';
+        const trackingUrl = `${siteUrl}/track/${complaint.id}`;
+
         return NextResponse.json({
             success: true,
+            complaintId: complaint.id,
+            trackingUrl: trackingUrl,
             complaintId: complaint.id,
             warning: imageUploadWarning,
         });

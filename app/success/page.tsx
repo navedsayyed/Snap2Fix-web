@@ -104,16 +104,38 @@ function SuccessPageContent() {
                         <p className="text-sm text-[#B0B0B0] mt-2">Save this ID to track your complaint</p>
                     </div>
 
-                    {/* Email Confirmation */}
+                    {/* Tracking Link - Always show */}
                     <div className="bg-[#00BFFF]/10 border border-[#00BFFF]/50 rounded-lg p-4 mb-8">
                         <div className="flex items-start gap-3">
                             <svg width="20" height="20" className="text-[#00BFFF] flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-                                <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
                             </svg>
-                            <div className="text-left">
-                                <p className="text-sm font-medium text-white">Confirmation Email Sent</p>
-                                <p className="text-sm text-[#B0B0B0]">Check your inbox for the tracking link and complaint details</p>
+                            <div className="text-left flex-1">
+                                <p className="text-sm font-medium text-white">Save Your Tracking Link</p>
+                                <p className="text-sm text-[#B0B0B0] mb-3">Use this link to check your complaint status anytime:</p>
+                                <div className="bg-[#2C2C2C] border border-[#404040] rounded-lg p-3 flex items-center justify-between gap-2">
+                                    <code className="text-xs text-[#00BFFF] break-all flex-1">{trackingUrl}</code>
+                                    <button
+                                        onClick={async () => {
+                                            await copyToClipboard(trackingUrl);
+                                            setCopied(true);
+                                            setTimeout(() => setCopied(false), 2000);
+                                        }}
+                                        className="p-1.5 hover:bg-[#404040] rounded transition-colors flex-shrink-0"
+                                        title="Copy tracking link"
+                                    >
+                                        {copied ? (
+                                            <svg width="16" height="16" className="text-[#4CAF50]" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                            </svg>
+                                        ) : (
+                                            <svg width="16" height="16" className="text-[#B0B0B0]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                            </svg>
+                                        )}
+                                    </button>
+                                </div>
+                                <p className="text-xs text-[#B0B0B0] mt-2">💡 Note: Email confirmation may take a few minutes to arrive. Check spam folder if not received.</p>
                             </div>
                         </div>
                     </div>
