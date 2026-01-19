@@ -223,8 +223,8 @@ export async function sendStatusUpdateEmail(
 
         const statusColor = statusColors[newStatus] || { bg: '#F5F5F5', text: '#333333' };
 
-        const { data, error } = await resend.emails.send({
-            from: `${siteName} <noreply@${process.env.RESEND_DOMAIN || 'yourdomain.com'}>`,
+        const info = await transporter.sendMail({
+            from: `"${siteName}" <${process.env.SMTP_USER}>`,
             to: email,
             subject: `🔔 Complaint #${shortId} Status Updated: ${newStatus}`,
             html: `
@@ -249,11 +249,7 @@ export async function sendStatusUpdateEmail(
       `,
         });
 
-        if (error) {
-            console.error('Status update email error:', error);
-            return { success: false, error: error.message };
-        }
-
+        console.log('Status update email sent:', info.messageId);
         return { success: true };
     } catch (error) {
         console.error('Status update email exception:', error);
