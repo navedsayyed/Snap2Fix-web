@@ -206,7 +206,7 @@ export async function POST(request: NextRequest) {
                 console.log('Attempting to send tracking email to:', email);
                 const emailResult = await sendConfirmationEmail({
                     email,
-                    complaintId: complaint.id,
+                    complaintId: String(complaint.id),
                     userName: name,
                     complaintDetails: {
                         title: finalTitle,
