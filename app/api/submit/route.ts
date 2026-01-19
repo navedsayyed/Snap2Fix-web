@@ -197,11 +197,11 @@ export async function POST(request: NextRequest) {
             }
         }
 
-        // Try to send email if Resend is configured (optional)
-        console.log('RESEND_API_KEY exists:', !!process.env.RESEND_API_KEY);
-        console.log('RESEND_API_KEY value:', process.env.RESEND_API_KEY?.substring(0, 10) + '...');
+        // Try to send email if SMTP is configured (optional)
+        console.log('SMTP_USER exists:', !!process.env.SMTP_USER);
+        console.log('SMTP_PASS exists:', !!process.env.SMTP_PASS);
         
-        if (process.env.RESEND_API_KEY && process.env.RESEND_API_KEY !== 're_placeholder_key') {
+        if (process.env.SMTP_USER && process.env.SMTP_PASS) {
             try {
                 console.log('Attempting to send tracking email to:', email);
                 const emailResult = await sendConfirmationEmail({

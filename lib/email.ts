@@ -1,11 +1,20 @@
 /**
- * Email Service using Resend
+ * Email Service using SMTP (Nodemailer)
  * Handles sending confirmation emails to users
  */
 
-import { Resend } from 'resend';
+import nodemailer from 'nodemailer';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Create SMTP transporter
+const transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST || 'smtp.gmail.com',
+    port: parseInt(process.env.SMTP_PORT || '587'),
+    secure: false, // true for 465, false for other ports
+    auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+    },
+});
 
 interface SendConfirmationEmailParams {
     email: string;
@@ -31,7 +40,7 @@ export async function sendConfirmationEmail({
 }: SendConfirmationEmailParams): Promise<{ success: boolean; error?: string }> {
     try {
         const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
-        const siteName = process.env.NEXT_PUBLIC_SITE_NAME || 'College Complaint System';
+        const siteName = process.env.NEXT_PUBLIC_SITE_NAME || 'Smart Maintenance';
         const trackingUrl = `${siteUrl}/track/${complaintId}`;
         const shortId = complaintId.substring(0, 8).toUpperCase();
 
@@ -173,18 +182,16 @@ export async function sendConfirmationEmail({
 </html>
     `;
 
-        const { data, error } = await resend.emails.send({
-            from: 'Smart Maintenance <onboarding@resend.dev>',
+        // Send email using SMTP
+        const info = await transporter.sendMail({
+            from: `"${siteName}" <${process.env.SMTP_USER}>`,
             to: email,
             subject: `✅ Complaint #${shortId} Received`,
             html: htmlContent,
+            text: `✅ COMPLAINT RECEIVED\n\nDear ${userName},\n\nYour complaint has been successfully submitted and is now pending review by our maintenance team.\n\nComplaint ID: #${shortId}\n\nIssue: ${complaintDetails.title}\nLocation: ${complaintDetails.floor}, ${complaintDetails.room_number}\nPriority: ${complaintDetails.priority}\nStatus: Pending\n\nDescription:\n${complaintDetails.description}\n\nTrack Your Complaint: ${trackingUrl}\n\nExpected Response Time: 24-48 hours\n\nThank you,\n${siteName} Team`,
         });
 
-        if (error) {
-            console.error('Email send error:', error);
-            return { success: false, error: error.message };
-        }
-
+        console.log('Email sent successfully:', info.messageId);
         return { success: true };
     } catch (error) {
         console.error('Email send exception:', error);
