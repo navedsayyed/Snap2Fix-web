@@ -235,7 +235,6 @@ export async function POST(request: NextRequest) {
             success: true,
             complaintId: complaint.id,
             trackingUrl: trackingUrl,
-            complaintId: complaint.id,
             warning: imageUploadWarning,
         });
 
