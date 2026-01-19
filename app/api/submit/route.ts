@@ -198,9 +198,12 @@ export async function POST(request: NextRequest) {
         }
 
         // Try to send email if Resend is configured (optional)
+        console.log('RESEND_API_KEY exists:', !!process.env.RESEND_API_KEY);
+        console.log('RESEND_API_KEY value:', process.env.RESEND_API_KEY?.substring(0, 10) + '...');
+        
         if (process.env.RESEND_API_KEY && process.env.RESEND_API_KEY !== 're_placeholder_key') {
             try {
-                console.log('Sending tracking email to:', email);
+                console.log('Attempting to send tracking email to:', email);
                 const emailResult = await sendConfirmationEmail({
                     email,
                     complaintId: complaint.id,
@@ -214,17 +217,19 @@ export async function POST(request: NextRequest) {
                     }
                 });
                 
+                console.log('Email result:', emailResult);
+                
                 if (emailResult.success) {
-                    console.log('Tracking email sent successfully');
+                    console.log('✅ Tracking email sent successfully');
                 } else {
-                    console.error('Failed to send tracking email:', emailResult.error);
+                    console.error('❌ Failed to send tracking email:', emailResult.error);
                 }
             } catch (emailError) {
-                console.error('Email sending error:', emailError);
+                console.error('❌ Email sending exception:', emailError);
                 // Don't fail the complaint submission if email fails
             }
         } else {
-            console.log('Email not configured, skipping email notification');
+            console.log('⚠️ Email not configured - RESEND_API_KEY missing or placeholder');
         }
 
         // Generate tracking URL
