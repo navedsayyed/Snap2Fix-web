@@ -229,7 +229,54 @@ export async function POST(request: NextRequest) {
                 // Don't fail the complaint submission if email fails
             }
         } else {
-            console.log('⚠️ Email not configured - RESEND_API_KEY missing or placeholder');
+            console.log('⚠️ Email not configured - SMTP credentials missing');
+        }
+
+        // Send push notifications to admins/technicians (matching mobile app behavior)
+        try {
+            console.log('📱 Sending push notifications to admins/technicians...');
+            
+            // Get all admin and technician user IDs
+            const { data: adminUsers, error: adminError } = await supabase
+                .from('users')
+                .select('id')
+                .in('role', ['admin', 'technician']);
+
+            if (adminError) {
+                console.error('Failed to fetch admin users:', adminError);
+            } else if (adminUsers && adminUsers.length > 0) {
+                const userIds = adminUsers.map(u => u.id);
+                
+                // Call Supabase Edge Function to send push notifications
+                const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+                const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+                
+                const pushResponse = await fetch(`${supabaseUrl}/functions/v1/send-push-notification`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${supabaseKey}`,
+                    },
+                    body: JSON.stringify({
+                        userIds,
+                        title: '🆕 New Complaint',
+                        body: `${finalTitle} - ${location}`,
+                        data: {
+                            type: 'new_complaint',
+                            complaintId: String(complaint.id),
+                            status: 'in-progress',
+                        },
+                    }),
+                });
+
+                const pushResult = await pushResponse.json();
+                console.log('Push notification result:', pushResult);
+            } else {
+                console.log('No admin/technician users found for push notifications');
+            }
+        } catch (pushError) {
+            console.error('Push notification error:', pushError);
+            // Don't fail the complaint submission if push fails
         }
 
         // Generate tracking URL
