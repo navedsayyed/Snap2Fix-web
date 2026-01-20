@@ -260,11 +260,14 @@ export async function POST(request: NextRequest) {
                     body: JSON.stringify({
                         userIds,
                         title: '📝 New Complaint Filed',
-                        body: `New ${type} complaint: "${description}"`,
+                        body: `New ${type} complaint: ${description.substring(0, 50)}${description.length > 50 ? '...' : ''}`,
                         data: {
                             type: 'new_complaint',
                             complaintId: String(complaint.id),
                             status: 'in-progress',
+                            title: finalTitle,
+                            description: description,
+                            location: location,
                         },
                     }),
                 });
