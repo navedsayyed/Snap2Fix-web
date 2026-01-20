@@ -259,8 +259,8 @@ export async function POST(request: NextRequest) {
                     },
                     body: JSON.stringify({
                         userIds,
-                        title: '🆕 New Complaint',
-                        body: `${finalTitle} - ${location}`,
+                        title: '📝 New Complaint Filed',
+                        body: `New ${type} complaint: "${description}"`,
                         data: {
                             type: 'new_complaint',
                             complaintId: String(complaint.id),
