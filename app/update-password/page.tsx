@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 
-export default function UpdatePasswordPage() {
+function UpdatePasswordForm() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [password, setPassword] = useState('');
@@ -199,5 +199,17 @@ export default function UpdatePasswordPage() {
                 </div>
             </div>
         </div>
+    );
+}
+
+export default function UpdatePasswordPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen bg-[#121212] flex items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#00BFFF]"></div>
+            </div>
+        }>
+            <UpdatePasswordForm />
+        </Suspense>
     );
 }
