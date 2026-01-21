@@ -20,6 +20,22 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     },
 });
 
+// Admin client for server-side operations (requires service role key)
+export const getAdminClient = () => {
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    
+    if (!supabaseServiceKey) {
+        throw new Error('Missing SUPABASE_SERVICE_ROLE_KEY environment variable');
+    }
+    
+    return createClient(supabaseUrl, supabaseServiceKey, {
+        auth: {
+            autoRefreshToken: false,
+            persistSession: false
+        }
+    });
+};
+
 /**
  * Upload an image to Supabase Storage
  * @param file - The file to upload

@@ -3,9 +3,9 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase, uploadImage } from '@/lib/supabase';
+import { supabase, uploadImage, getAdminClient } from '@/lib/supabase';
 import { determineDepartment } from '@/lib/departmentMapping';
-import { sendConfirmationEmail } from '@/lib/email';
+import { sendConfirmationEmail, sendWelcomeEmail } from '@/lib/email';
 
 export async function POST(request: NextRequest) {
     try {
@@ -49,6 +49,7 @@ export async function POST(request: NextRequest) {
 
         // Find or create user by email
         let userId: string;
+        let isNewUser = false;
         
         // Check if user exists
         const { data: existingUser } = await supabase
@@ -61,15 +62,16 @@ export async function POST(request: NextRequest) {
             userId = existingUser.id;
             console.log('Using existing user:', userId);
         } else {
-            // Create new user account
-            const { data: newUser, error: signUpError } = await supabase.auth.signUp({
+            // Create new user account using admin API to skip Supabase's automatic confirmation email
+            const adminClient = getAdminClient();
+            const tempPassword = Math.random().toString(36).substring(2, 15);
+            const { data: newUser, error: signUpError } = await adminClient.auth.admin.createUser({
                 email,
-                password: Math.random().toString(36).substring(2, 15), // Random password
-                options: {
-                    data: {
-                        name: name,
-                        phone: phone,
-                    }
+                password: tempPassword,
+                email_confirm: true, // Auto-confirm to prevent Supabase from sending confirmation email
+                user_metadata: {
+                    name: name,
+                    phone: phone,
                 }
             });
 
@@ -82,7 +84,8 @@ export async function POST(request: NextRequest) {
             }
 
             userId = newUser.user.id;
-            console.log('Created new user:', userId);
+            isNewUser = true;
+            console.log('Created new user with admin API:', userId);
 
             // Update user table with name and phone
             const { error: userUpdateError } = await supabase
@@ -203,26 +206,49 @@ export async function POST(request: NextRequest) {
         
         if (process.env.SMTP_USER && process.env.SMTP_PASS) {
             try {
-                console.log('Attempting to send tracking email to:', email);
-                const emailResult = await sendConfirmationEmail({
-                    email,
-                    complaintId: String(complaint.id),
-                    userName: name,
-                    complaintDetails: {
-                        title: finalTitle,
-                        floor: floor || 'N/A',
-                        room_number: classRoom || 'N/A',
-                        priority: 'Medium',
-                        description
+                console.log('Attempting to send email to:', email);
+                
+                if (isNewUser) {
+                    // For new users: Send welcome email with password setup link
+                    const setPasswordUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://smart-maintenance-web.vercel.app'}/update-password?newUser=true&email=${encodeURIComponent(email)}`;
+                    
+                    const welcomeEmailResult = await sendWelcomeEmail({
+                        email,
+                        userName: name,
+                        setPasswordUrl,
+                        complaintId: String(complaint.id),
+                        trackingUrl: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://smart-maintenance-web.vercel.app'}/track/${complaint.id}`,
+                    });
+                    
+                    console.log('Welcome email result:', welcomeEmailResult);
+                    
+                    if (welcomeEmailResult.success) {
+                        console.log('✅ Welcome email sent to new user');
+                    } else {
+                        console.error('❌ Failed to send welcome email:', welcomeEmailResult.error);
                     }
-                });
-                
-                console.log('Email result:', emailResult);
-                
-                if (emailResult.success) {
-                    console.log('✅ Tracking email sent successfully');
                 } else {
-                    console.error('❌ Failed to send tracking email:', emailResult.error);
+                    // For existing users: Send normal tracking email
+                    const emailResult = await sendConfirmationEmail({
+                        email,
+                        complaintId: String(complaint.id),
+                        userName: name,
+                        complaintDetails: {
+                            title: finalTitle,
+                            floor: floor || 'N/A',
+                            room_number: classRoom || 'N/A',
+                            priority: 'Medium',
+                            description
+                        }
+                    });
+                    
+                    console.log('Email result:', emailResult);
+                    
+                    if (emailResult.success) {
+                        console.log('✅ Tracking email sent successfully');
+                    } else {
+                        console.error('❌ Failed to send tracking email:', emailResult.error);
+                    }
                 }
             } catch (emailError) {
                 console.error('❌ Email sending exception:', emailError);

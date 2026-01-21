@@ -1,27 +1,40 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 
 export default function UpdatePasswordPage() {
     const router = useRouter();
+    const searchParams = useSearchParams();
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [isNewUser, setIsNewUser] = useState(false);
+    const [email, setEmail] = useState('');
 
     useEffect(() => {
-        // Check if user came from reset password email
+        // Check if this is a new user from complaint submission
+        const newUserParam = searchParams.get('newUser');
+        const emailParam = searchParams.get('email');
+        
+        if (newUserParam === 'true' && emailParam) {
+            setIsNewUser(true);
+            setEmail(emailParam);
+            return;
+        }
+        
+        // Otherwise, check for reset password token
         const hashParams = new URLSearchParams(window.location.hash.substring(1));
         const accessToken = hashParams.get('access_token');
         
         if (!accessToken) {
             setError('Invalid or expired reset link. Please request a new one.');
         }
-    }, []);
+    }, [searchParams]);
 
     const handleUpdatePassword = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -40,14 +53,33 @@ export default function UpdatePasswordPage() {
         setLoading(true);
 
         try {
-            const { error } = await supabase.auth.updateUser({
-                password: password
-            });
+            if (isNewUser) {
+                // For new users: sign in with email and update password via API
+                const response = await fetch('/api/set-password', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to set password');
+                }
+                
+                alert('Password set successfully! You can now login with your credentials.');
+                router.push('/login');
+            } else {
+                // For existing users with reset token
+                const { error } = await supabase.auth.updateUser({
+                    password: password
+                });
 
-            if (error) throw error;
+                if (error) throw error;
 
-            alert('Password updated successfully! You can now login with your new password.');
-            router.push('/login');
+                alert('Password updated successfully! You can now login with your new password.');
+                router.push('/login');
+            }
         } catch (err: any) {
             setError(err.message || 'Failed to update password');
         } finally {

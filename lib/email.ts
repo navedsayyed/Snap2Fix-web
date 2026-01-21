@@ -256,3 +256,134 @@ export async function sendStatusUpdateEmail(
         return { success: false, error: 'Failed to send status update email' };
     }
 }
+
+/**
+ * Send welcome email to new users with password setup link
+ */
+export async function sendWelcomeEmail({
+    email,
+    userName,
+    setPasswordUrl,
+    complaintId,
+    trackingUrl,
+}: {
+    email: string;
+    userName: string;
+    setPasswordUrl: string;
+    complaintId: string;
+    trackingUrl: string;
+}): Promise<{ success: boolean; error?: string }> {
+    try {
+        const siteName = process.env.NEXT_PUBLIC_SITE_NAME || 'Smart Maintenance';
+        const shortId = complaintId.substring(0, 8).toUpperCase();
+
+        const htmlContent = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome to ${siteName}</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f5f5f5; padding: 20px;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+          
+          <!-- Header -->
+          <tr>
+            <td style="background-color: #4CAF50; padding: 30px 20px; text-align: center;">
+              <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 600;">
+                🎉 Welcome to ${siteName}!
+              </h1>
+            </td>
+          </tr>
+          
+          <!-- Content -->
+          <tr>
+            <td style="padding: 40px 30px;">
+              <p style="margin: 0 0 20px; font-size: 16px; color: #333333; line-height: 1.6;">
+                Hi <strong>${userName}</strong>,
+              </p>
+              
+              <p style="margin: 0 0 30px; font-size: 16px; color: #333333; line-height: 1.6;">
+                Thank you for submitting your complaint <strong>#${shortId}</strong>! We've created an account for you to track your complaints and manage your profile.
+              </p>
+              
+              <!-- Set Password Button -->
+              <div style="text-align: center; margin: 40px 0;">
+                <a href="${setPasswordUrl}" style="display: inline-block; background-color: #4CAF50; color: #ffffff; text-decoration: none; padding: 14px 40px; border-radius: 6px; font-size: 16px; font-weight: 600; box-shadow: 0 2px 4px rgba(76, 175, 80, 0.3);">
+                  🔐 Set Your Password
+                </a>
+              </div>
+              
+              <p style="margin: 0 0 20px; font-size: 14px; color: #666666; line-height: 1.6;">
+                Click the button above to set your password and access your account. Once done, you can:
+              </p>
+              
+              <ul style="margin: 0 0 30px; padding-left: 20px; color: #666666; font-size: 14px; line-height: 1.8;">
+                <li>Track all your complaints in one place</li>
+                <li>View real-time status updates</li>
+                <li>Access your complaint history</li>
+                <li>Update your profile information</li>
+              </ul>
+              
+              <!-- Complaint Info Box -->
+              <div style="background-color: #f8f9fa; border-left: 4px solid #4CAF50; padding: 20px; margin-bottom: 30px; border-radius: 4px;">
+                <p style="margin: 0 0 8px; font-size: 14px; color: #666666; text-transform: uppercase; letter-spacing: 0.5px;">
+                  Your Current Complaint
+                </p>
+                <p style="margin: 0; font-size: 24px; color: #333333; font-weight: 700; font-family: 'Courier New', monospace;">
+                  #${shortId}
+                </p>
+                <div style="margin-top: 15px;">
+                  <a href="${trackingUrl}" style="color: #4CAF50; text-decoration: none; font-size: 14px; font-weight: 600;">
+                    → Track this complaint
+                  </a>
+                </div>
+              </div>
+              
+              <p style="margin: 0; font-size: 14px; color: #999999; line-height: 1.6;">
+                If you didn't submit a complaint, please ignore this email.
+              </p>
+            </td>
+          </tr>
+          
+          <!-- Footer -->
+          <tr>
+            <td style="background-color: #f8f9fa; padding: 20px 30px; text-align: center; border-top: 1px solid #e0e0e0;">
+              <p style="margin: 0 0 10px; font-size: 14px; color: #666666;">
+                Thank you,<br>
+                <strong>${siteName} Team</strong>
+              </p>
+              <p style="margin: 0; font-size: 12px; color: #999999;">
+                This is an automated email. Please do not reply to this message.
+              </p>
+            </td>
+          </tr>
+          
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+        `;
+
+        // Send email using SMTP
+        const info = await transporter.sendMail({
+            from: `"${siteName}" <${process.env.SMTP_USER}>`,
+            to: email,
+            subject: `🎉 Welcome to ${siteName} - Set Your Password`,
+            html: htmlContent,
+            text: `Welcome to ${siteName}!\n\nHi ${userName},\n\nThank you for submitting your complaint #${shortId}! We've created an account for you.\n\nSet your password: ${setPasswordUrl}\n\nTrack your complaint: ${trackingUrl}\n\nThank you,\n${siteName} Team`,
+        });
+
+        console.log('Welcome email sent successfully:', info.messageId);
+        return { success: true };
+    } catch (error) {
+        console.error('Welcome email send exception:', error);
+        return { success: false, error: 'Failed to send welcome email' };
+    }
+}
