@@ -135,7 +135,7 @@ export default function TrackPage() {
 
                 <div className="mt-8 text-center">
                     <p className="text-gray-400 mb-4">Don't have a complaint ID yet?</p>
-                    <Link href="/submit">
+                    <Link href="/scan-qr">
                         <button className="px-6 py-2.5 text-sm font-medium text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200 border border-white/10 hover:border-white/20">
                             Submit a New Complaint
                         </button>

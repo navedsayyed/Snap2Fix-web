@@ -92,12 +92,8 @@ function UpdatePasswordForm() {
             <div className="w-full max-w-md">
                 {/* Logo and Title */}
                 <div className="text-center mb-6">
-                    <div className="w-16 h-16 bg-gradient-to-br from-[#00BFFF] via-[#0099CC] to-[#007ACC] rounded-2xl flex items-center justify-center mx-auto mb-3 border border-[#00BFFF]/20">
-                        <svg width="32" height="32" className="text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
-                        </svg>
-                    </div>
-                    <h1 className="text-2xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent mb-1">Smart Maintenance</h1>
+                    <img src="/main-logo.svg" alt="Snap2Fix Logo" className="w-16 h-16 object-contain mx-auto mb-3" />
+                    <h1 className="text-2xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent mb-1">Snap2Fix</h1>
                     <p className="text-sm text-[#00BFFF] font-semibold">Professional Issue Management</p>
                 </div>
 

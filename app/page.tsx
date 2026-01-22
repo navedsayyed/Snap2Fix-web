@@ -50,13 +50,9 @@ export default function HomePage() {
           <div className="flex items-center justify-between h-16 sm:h-20">
             {/* Logo Section */}
             <Link href="/" className="flex items-center gap-3 group">
-              <div className="w-11 h-11 sm:w-12 sm:h-12 bg-gradient-to-br from-[#00BFFF] via-[#0099CC] to-[#007ACC] rounded-xl flex items-center justify-center border border-[#00BFFF]/20">
-                <svg className="w-6 h-6 sm:w-7 sm:h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-                </svg>
-              </div>
+              <img src="/main-logo.svg" alt="Snap2Fix Logo" className="w-11 h-11 sm:w-12 sm:h-12 object-contain" />
               <div>
-                <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">Smart Maintenance</h1>
+                <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">Snap2Fix</h1>
                 <p className="text-[#00BFFF] text-xs sm:text-sm font-semibold hidden sm:block">Professional Issue Management</p>
               </div>
             </Link>
@@ -148,7 +144,7 @@ export default function HomePage() {
           {/* Track Complaint Card */}
           <div className="group bg-gradient-to-br from-[#1E1E1E] to-[#1A1A1A] rounded-3xl p-8 sm:p-12 border border-[#333333] hover:border-[#0099CC]/50 transition-all duration-300 hover:-translate-y-1">
             <div className="flex flex-col items-center text-center">
-              <div className="w-20 h-20 bg-gradient-to-br from-[#0099CC] to-[#007ACC] rounded-2xl flex items-center justify-center mb-6 group-hover:scale-105 transition-transform duration-300">
+              <div className="w-20 h-20 bg-gradient-to-br from-[#00BFFF] to-[#0099CC] rounded-2xl flex items-center justify-center mb-6 group-hover:scale-105 transition-transform duration-300">
                 <svg width="36" height="36" className="text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
                 </svg>
@@ -211,13 +207,9 @@ export default function HomePage() {
           <div className="flex flex-col items-center justify-center text-center gap-5">
             {/* Logo */}
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-[#00BFFF] to-[#0099CC] rounded-xl flex items-center justify-center">
-                <svg width="20" height="20" className="text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-                </svg>
-              </div>
+              <img src="/main-logo.svg" alt="Snap2Fix Logo" className="w-10 h-10 object-contain" />
               <div>
-                <h3 className="text-lg font-bold text-white">Smart Maintenance</h3>
+                <h3 className="text-lg font-bold text-white">Snap2Fix</h3>
               </div>
             </div>
             
@@ -226,7 +218,7 @@ export default function HomePage() {
             </p>
             
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 text-xs text-[#606060] pt-4 border-t border-[#2A2A2A] w-full">
-              <span>© {new Date().getFullYear()} Smart Maintenance System</span>
+              <span>© {new Date().getFullYear()} Snap2Fix System</span>
               <span className="hidden sm:inline">•</span>
               <span>All Rights Reserved</span>
             </div>

@@ -40,7 +40,7 @@ export async function sendConfirmationEmail({
 }: SendConfirmationEmailParams): Promise<{ success: boolean; error?: string }> {
     try {
         const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
-        const siteName = process.env.NEXT_PUBLIC_SITE_NAME || 'Smart Maintenance';
+        const siteName = process.env.NEXT_PUBLIC_SITE_NAME || 'Snap2Fix';
         const trackingUrl = `${siteUrl}/track/${complaintId}`;
         const shortId = complaintId.substring(0, 8).toUpperCase();
 
@@ -274,7 +274,7 @@ export async function sendWelcomeEmail({
     trackingUrl: string;
 }): Promise<{ success: boolean; error?: string }> {
     try {
-        const siteName = process.env.NEXT_PUBLIC_SITE_NAME || 'Smart Maintenance';
+        const siteName = process.env.NEXT_PUBLIC_SITE_NAME || 'Snap2Fix';
         const shortId = complaintId.substring(0, 8).toUpperCase();
 
         const htmlContent = `
