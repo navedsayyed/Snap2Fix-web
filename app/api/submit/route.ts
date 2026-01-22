@@ -210,14 +210,14 @@ export async function POST(request: NextRequest) {
                 
                 if (isNewUser) {
                     // For new users: Send welcome email with password setup link
-                    const setPasswordUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://smart-maintenance-web.vercel.app'}/update-password?newUser=true&email=${encodeURIComponent(email)}`;
+                    const setPasswordUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://snap2fix.vercel.app'}/update-password?newUser=true&email=${encodeURIComponent(email)}`;
                     
                     const welcomeEmailResult = await sendWelcomeEmail({
                         email,
                         userName: name,
                         setPasswordUrl,
                         complaintId: String(complaint.id),
-                        trackingUrl: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://smart-maintenance-web.vercel.app'}/track/${complaint.id}`,
+                        trackingUrl: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://snap2fix.vercel.app'}/track/${complaint.id}`,
                     });
                     
                     console.log('Welcome email result:', welcomeEmailResult);
@@ -309,7 +309,7 @@ export async function POST(request: NextRequest) {
         }
 
         // Generate tracking URL
-        const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://smart-maintenance-web.vercel.app';
+        const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://snap2fix.vercel.app';
         const trackingUrl = `${siteUrl}/track/${complaint.id}`;
 
         return NextResponse.json({

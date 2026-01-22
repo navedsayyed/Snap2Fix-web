@@ -18,7 +18,7 @@ export interface User {
 export async function signUp(email: string, password: string, name: string) {
     const redirectUrl = typeof window !== 'undefined' 
         ? `${window.location.origin}/login`
-        : 'https://smart-maintenance-web.vercel.app/login';
+        : 'https://snap2fix.vercel.app/login';
         
     const { data, error } = await supabase.auth.signUp({
         email,

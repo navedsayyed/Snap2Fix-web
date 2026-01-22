@@ -22,7 +22,7 @@ export default function ResetPasswordPage() {
             // Automatically use the correct redirect URL
             const redirectUrl = typeof window !== 'undefined' 
                 ? `${window.location.origin}/update-password`
-                : 'https://smart-maintenance-web.vercel.app/update-password';
+                : 'https://snap2fix.vercel.app/update-password';
                 
             const { error } = await supabase.auth.resetPasswordForEmail(email, {
                 redirectTo: redirectUrl,
