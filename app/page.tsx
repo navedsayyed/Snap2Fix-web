@@ -101,7 +101,7 @@ export default function HomePage() {
             </span>
           </div>
           <h2 className="text-4xl sm:text-6xl lg:text-7xl font-bold text-white mb-5 sm:mb-7 leading-tight tracking-tight">
-            Manage <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00BFFF] via-[#00D4FF] to-[#0099CC] drop-shadow-[0_0_30px_rgba(0,191,255,0.3)]">Complaints</span>
+            Manage <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00BFFF] via-[#00D4FF] to-[#0099CC]">Complaints</span>
             <br />
             <span className="text-3xl sm:text-5xl lg:text-6xl text-gray-300">Effortlessly</span>
           </h2>
