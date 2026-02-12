@@ -40,20 +40,22 @@ export default function TrackPage() {
     };
 
     return (
-        <div className="min-h-screen bg-[#121212] overflow-hidden">
+        <div className="min-h-screen bg-[#121212] dotted-background">
             {/* Header */}
-            <header className="bg-[#0A0A0A]/80 backdrop-blur-xl border-b border-white/10 sticky top-0 z-50 shadow-2xl">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex items-center gap-4 h-16">
-                        <Link href="/" className="flex items-center gap-2 group hover:opacity-80 transition-opacity">
-                            <div className="w-10 h-10 bg-white/5 rounded-lg flex items-center justify-center group-hover:bg-white/10 transition-colors">
-                                <svg width="20" height="20" className="text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                                </svg>
+            <header className="sticky top-0 z-50 pt-4 pb-4 bg-[#121212]">
+                <div className="max-w-7xl mx-auto px-6 lg:px-8">
+                    <div className="bg-[#1A1A1A]/80 backdrop-blur-md border border-white/10 rounded-full px-6 py-3">
+                        <div className="flex items-center justify-between h-10">
+                            {/* Back Button and Title */}
+                            <div className="flex items-center gap-3">
+                                <Link href="/" className="p-2 hover:bg-[#2C2C2C] rounded-full transition-colors">
+                                    <svg className="w-5 h-5 text-gray-300 hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                                    </svg>
+                                </Link>
+                                <h1 className="text-xl font-bold text-white">Track Complaint</h1>
                             </div>
-                            <span className="text-xl font-bold text-white hidden sm:inline">Back</span>
-                        </Link>
-                        <h1 className="text-xl font-bold text-white flex-1">Track Complaint</h1>
+                        </div>
                     </div>
                 </div>
             </header>

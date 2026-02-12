@@ -50,7 +50,7 @@ export default function TrackComplaintPage() {
             console.log('API Response:', data);
             console.log('Image URL:', data.complaint?.image_url);
             console.log('Proof Image:', data.complaint?.proof_image);
-            
+
             if (!response.ok || !data.success) {
                 throw new Error(data.error || 'Failed to fetch complaint');
             }
@@ -108,8 +108,8 @@ export default function TrackComplaintPage() {
             <header className="bg-[#0A0A0A]/80 backdrop-blur-xl border-b border-white/10 sticky top-0 z-50 shadow-2xl">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex items-center gap-4 h-16">
-                        <button 
-                            onClick={() => router.back()} 
+                        <button
+                            onClick={() => router.back()}
                             className="flex items-center gap-2 group hover:opacity-80 transition-opacity"
                         >
                             <div className="w-10 h-10 bg-white/5 rounded-lg flex items-center justify-center group-hover:bg-white/10 transition-colors">
@@ -207,7 +207,7 @@ export default function TrackComplaintPage() {
                                 <p className="text-sm text-[#4CAF50] font-medium">Your complaint has been resolved!</p>
                             </div>
                         </div>
-                        
+
                         <div className="space-y-8 mt-6">
                             {/* User's Original Photo */}
                             {complaint.image_url && (
@@ -216,8 +216,8 @@ export default function TrackComplaintPage() {
                                         <span className="text-xl">📷</span>
                                         <h4 className="text-base font-bold text-white">Before (Your Photo)</h4>
                                     </div>
-                                    <button 
-                                        onClick={() => openImageViewer(complaint.image_url!)} 
+                                    <button
+                                        onClick={() => openImageViewer(complaint.image_url!)}
                                         className="w-full group relative overflow-hidden rounded-xl"
                                     >
                                         <img
@@ -242,8 +242,8 @@ export default function TrackComplaintPage() {
                                         <span className="text-xl">✅</span>
                                         <h4 className="text-base font-bold text-white">After (Completed Work)</h4>
                                     </div>
-                                    <button 
-                                        onClick={() => openImageViewer(complaint.proof_image!)} 
+                                    <button
+                                        onClick={() => openImageViewer(complaint.proof_image!)}
                                         className="w-full group relative overflow-hidden rounded-xl"
                                     >
                                         <img
@@ -265,8 +265,8 @@ export default function TrackComplaintPage() {
                 ) : complaint && complaint.image_url && (
                     <div className="bg-gradient-to-br from-[#1E1E1E] via-[#252525] to-[#1A1A1A] border border-[#333333] rounded-2xl shadow-2xl p-6 sm:p-8 mb-6 hover:border-[#00BFFF]/30 transition-all duration-500">
                         <h3 className="text-xl font-bold text-white mb-4">Complaint Photo</h3>
-                        <button 
-                            onClick={() => openImageViewer(complaint.image_url!)} 
+                        <button
+                            onClick={() => openImageViewer(complaint.image_url!)}
                             className="w-full group relative overflow-hidden rounded-xl"
                         >
                             <img
@@ -304,7 +304,7 @@ export default function TrackComplaintPage() {
                             </div>
                             <h4 className="text-xl font-bold text-white mb-2">Work In Progress</h4>
                             <p className="text-[#B0B0B0] leading-relaxed">
-                                Your complaint is being worked on by our technician team. 
+                                Your complaint is being worked on by our technician team.
                                 You'll be able to see the completion photos once the work is done.
                             </p>
                         </div>
@@ -324,13 +324,12 @@ export default function TrackComplaintPage() {
                     {/* Priority */}
                     <div className="bg-gradient-to-br from-[#1E1E1E] via-[#252525] to-[#1A1A1A] border border-[#333333] rounded-2xl shadow-2xl p-6 hover:border-[#00BFFF]/30 transition-all duration-500">
                         <h4 className="text-base font-bold text-white mb-3">Priority</h4>
-                        <span className={`inline-flex items-center px-4 py-2 rounded-lg text-sm font-bold ${
-                            complaint.priority === 'High'
+                        <span className={`inline-flex items-center px-4 py-2 rounded-lg text-sm font-bold ${complaint.priority === 'High'
                                 ? 'bg-[#F44336]/20 text-[#F44336] border border-[#F44336]/30'
                                 : complaint.priority === 'Medium'
                                     ? 'bg-[#FF9800]/20 text-[#FF9800] border border-[#FF9800]/30'
                                     : 'bg-[#4CAF50]/20 text-[#4CAF50] border border-[#4CAF50]/30'
-                        }`}>
+                            }`}>
                             {complaint.priority}
                         </span>
                     </div>
@@ -356,11 +355,11 @@ export default function TrackComplaintPage() {
 
                 {/* Full Screen Image Viewer Modal */}
                 {showImageViewer && selectedImage && (
-                    <div 
+                    <div
                         className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4"
                         onClick={() => setShowImageViewer(false)}
                     >
-                        <button 
+                        <button
                             onClick={() => setShowImageViewer(false)}
                             className="absolute top-4 right-4 w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-colors z-10"
                         >
@@ -368,7 +367,7 @@ export default function TrackComplaintPage() {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                             </svg>
                         </button>
-                        <img 
+                        <img
                             src={selectedImage}
                             alt="Full size"
                             className="max-w-full max-h-full object-contain"

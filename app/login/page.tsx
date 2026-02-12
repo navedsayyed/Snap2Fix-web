@@ -25,7 +25,7 @@ export default function LoginPage() {
 
         try {
             await signIn(formData.email, formData.password);
-            router.push('/profile');
+            router.replace('/profile');
         } catch (err: any) {
             setError(err.message || 'Failed to sign in');
         } finally {
