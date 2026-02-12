@@ -38,9 +38,8 @@ export default function LoginPage() {
             <div className={`w-full max-w-md transition-all duration-500 ease-out ${isInputFocused ? '-translate-y-8 sm:translate-y-0' : 'translate-y-0'}`}>
                 {/* Logo and Title */}
                 <div className="text-center mb-6">
-                    <img src="/main-logo.svg" alt="Snap2Fix Logo" className="w-16 h-16 sm:w-20 sm:h-20 object-contain mx-auto mb-3 sm:mb-4" />
-                    <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent mb-1">Snap2Fix</h1>
-                    <p className="text-sm sm:text-base text-[#00BFFF] font-semibold">Professional Issue Management</p>
+                    <img src="/snap2fix-logo.svg" alt="Snap2Fix" className="w-32 sm:w-40 h-auto object-contain mx-auto mb-1" />
+                    <p className="text-sm sm:text-base text-white font-semibold">Professional Issue Management</p>
                 </div>
 
                 {/* Login Card */}

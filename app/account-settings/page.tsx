@@ -12,7 +12,7 @@ export default function AccountSettingsPage() {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [message, setMessage] = useState({ type: '', text: '' });
-    
+
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -33,10 +33,10 @@ export default function AccountSettingsPage() {
                 return;
             }
             setUser(currentUser);
-            
+
             // Fetch profile from users table
             const { data: profileData, error: profileError } = await getUserProfile(currentUser.id);
-            
+
             if (profileData) {
                 setFormData({
                     name: profileData.full_name || '',
@@ -72,9 +72,9 @@ export default function AccountSettingsPage() {
             // Update in users table
             const { error: updateError } = await supabase
                 .from('users')
-                .update({ 
+                .update({
                     full_name: formData.name,
-                    phone: formData.phone 
+                    phone: formData.phone
                 })
                 .eq('id', user.id);
 
@@ -88,7 +88,7 @@ export default function AccountSettingsPage() {
             if (authError) throw authError;
 
             setMessage({ type: 'success', text: 'Profile updated successfully!' });
-            
+
             // Refresh user data
             await checkAuth();
         } catch (error: any) {
@@ -109,21 +109,31 @@ export default function AccountSettingsPage() {
     return (
         <div className="min-h-screen bg-[#121212]">
             {/* Header */}
-            <header className="bg-[#0A0A0A]/80 backdrop-blur-xl border-b border-white/10 sticky top-0 z-50 shadow-2xl">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex items-center gap-4 h-16">
-                        <Link 
-                            href="/profile"
-                            className="flex items-center gap-2 group hover:opacity-80 transition-opacity"
-                        >
-                            <div className="w-10 h-10 bg-white/5 rounded-lg flex items-center justify-center group-hover:bg-white/10 transition-colors">
-                                <svg width="20" height="20" className="text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                                </svg>
+            <header className="sticky top-0 z-50 pt-4 pb-4">
+                <div className="max-w-7xl mx-auto px-6 lg:px-8">
+                    <div className="bg-[#1A1A1A]/80 backdrop-blur-md border border-white/10 rounded-full px-6 py-3">
+                        <div className="flex items-center justify-between h-10">
+                            {/* Account Settings Text */}
+                            <div className="flex items-center gap-2">
+                                <h2 className="text-xl font-bold text-white">Account Settings</h2>
                             </div>
-                            <span className="text-xl font-bold text-white hidden sm:inline">Back</span>
-                        </Link>
-                        <h1 className="text-xl font-bold text-white flex-1">Account Settings</h1>
+
+                            {/* Desktop Actions */}
+                            <div className="hidden lg:flex items-center gap-3">
+                                <Link href="/profile" className="text-[#B0B0B0] hover:text-white transition-colors text-sm font-medium">
+                                    Back to Profile
+                                </Link>
+                            </div>
+
+                            {/* Mobile Menu - Back Button */}
+                            <div className="lg:hidden">
+                                <Link href="/profile" className="text-[#B0B0B0] hover:text-white transition-colors">
+                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                                    </svg>
+                                </Link>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </header>
@@ -240,11 +250,10 @@ export default function AccountSettingsPage() {
 
                             {/* Message */}
                             {message.text && (
-                                <div className={`p-4 rounded-xl ${
-                                    message.type === 'success' 
-                                        ? 'bg-green-500/10 border border-green-500/30 text-green-400' 
-                                        : 'bg-red-500/10 border border-red-500/30 text-red-400'
-                                }`}>
+                                <div className={`p-4 rounded-xl ${message.type === 'success'
+                                    ? 'bg-green-500/10 border border-green-500/30 text-green-400'
+                                    : 'bg-red-500/10 border border-red-500/30 text-red-400'
+                                    }`}>
                                     {message.text}
                                 </div>
                             )}
