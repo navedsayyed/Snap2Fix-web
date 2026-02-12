@@ -24,45 +24,8 @@ export default function HomePage() {
     const handleFocus = () => checkAuth();
     window.addEventListener('focus', handleFocus);
 
-
-    // Scrollytelling: fixed center line + growing red line from top
-    const handleScroll = () => {
-      if (!timelineRef.current || !progressLineRef.current) return;
-
-      const rect = timelineRef.current.getBoundingClientRect();
-      const center = window.innerHeight / 2;
-
-      // Calculate how much red line to show from top of timeline to center line
-      // When center is at timeline top (rect.top), show 0%
-      // When center is at timeline bottom (rect.bottom), show 100%
-      const scrollProgress = (center - rect.top) / rect.height;
-      const progress = Math.max(0, Math.min(100, scrollProgress * 100));
-      progressLineRef.current.style.height = `${progress}%`;
-
-      // Activate dots when they pass through the fixed center line
-      circleRefs.current.forEach((circle) => {
-        if (!circle) return;
-
-        const circleRect = circle.getBoundingClientRect();
-        const circleCenterY = circleRect.top + circleRect.height / 2;
-
-        // Dot is active if it has passed through (or is at) the viewport center
-        const isActive = circleCenterY <= center;
-
-        circle.style.backgroundColor = isActive ? '#FF0000' : '#FFFFFF';
-        circle.style.boxShadow = isActive
-          ? '0 0 10px rgba(255,0,0,0.5), 0 0 20px rgba(255,0,0,0.3)'
-          : '0 0 10px rgba(255,255,255,0.3)';
-        circle.style.transform = `translate(-50%, -50%) scale(${isActive ? 1.2 : 1})`;
-      });
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
-
     return () => {
       window.removeEventListener('focus', handleFocus);
-      window.removeEventListener('scroll', handleScroll);
     };
   }, []);
 
