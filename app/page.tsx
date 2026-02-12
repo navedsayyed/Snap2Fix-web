@@ -5,7 +5,7 @@
 
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
@@ -15,15 +15,55 @@ export default function HomePage() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     checkAuth();
-    
+
     // Listen for navigation events to recheck auth
     const handleFocus = () => checkAuth();
     window.addEventListener('focus', handleFocus);
-    
-    return () => window.removeEventListener('focus', handleFocus);
+
+
+    // Scrollytelling: fixed center line + growing red line from top
+    const handleScroll = () => {
+      if (!timelineRef.current || !progressLineRef.current) return;
+
+      const rect = timelineRef.current.getBoundingClientRect();
+      const center = window.innerHeight / 2;
+
+      // Calculate how much red line to show from top of timeline to center line
+      // When center is at timeline top (rect.top), show 0%
+      // When center is at timeline bottom (rect.bottom), show 100%
+      const scrollProgress = (center - rect.top) / rect.height;
+      const progress = Math.max(0, Math.min(100, scrollProgress * 100));
+      progressLineRef.current.style.height = `${progress}%`;
+
+      // Activate dots when they pass through the fixed center line
+      circleRefs.current.forEach((circle) => {
+        if (!circle) return;
+
+        const circleRect = circle.getBoundingClientRect();
+        const circleCenterY = circleRect.top + circleRect.height / 2;
+
+        // Dot is active if it has passed through (or is at) the viewport center
+        const isActive = circleCenterY <= center;
+
+        circle.style.backgroundColor = isActive ? '#FF0000' : '#FFFFFF';
+        circle.style.boxShadow = isActive
+          ? '0 0 10px rgba(255,0,0,0.5), 0 0 20px rgba(255,0,0,0.3)'
+          : '0 0 10px rgba(255,255,255,0.3)';
+        circle.style.transform = `translate(-50%, -50%) scale(${isActive ? 1.2 : 1})`;
+      });
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+
+    return () => {
+      window.removeEventListener('focus', handleFocus);
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, []);
 
   const checkAuth = async () => {
@@ -43,63 +83,138 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#121212]">
+    <div className="min-h-screen bg-[#121212] dotted-background">
       {/* Header */}
-      <header className="bg-[#0A0A0A]/80 backdrop-blur-xl border-b border-white/10 sticky top-0 z-50 shadow-2xl">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16 sm:h-20">
-            {/* Logo Section */}
-            <Link href="/" className="flex items-center gap-3 group">
-              <img src="/main-logo.svg" alt="Snap2Fix Logo" className="w-11 h-11 sm:w-12 sm:h-12 object-contain" />
-              <div>
-                <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">Snap2Fix</h1>
-                <p className="text-[#00BFFF] text-xs sm:text-sm font-semibold hidden sm:block">Professional Issue Management</p>
-              </div>
-            </Link>
-
-            {/* Navigation Section */}
-            <nav className="flex items-center gap-2 sm:gap-3">
-              <Link href="/track">
-                <button className="flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-2.5 text-sm font-medium text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200 border border-transparent hover:border-white/10">
-                  <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
-                  <span className="hidden sm:inline">Track</span>
-                </button>
+      <header className="sticky top-0 z-50 pt-4 pb-4">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="bg-[#1A1A1A]/80 backdrop-blur-md border border-white/10 rounded-full px-6 py-3">
+            <div className="flex items-center justify-between h-10">
+              {/* Logo Section */}
+              <Link href="/" className="flex items-center gap-2 group">
+                <img src="/snap2fix-logo.svg" alt="Snap2Fix" className="h-7 w-auto" />
               </Link>
-              
-              {user ? (
-                <Link href="/profile">
-                  <button className="flex items-center gap-2 px-3 sm:px-5 py-2 sm:py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-[#00BFFF] to-[#0099CC] hover:from-[#00A8E6] hover:to-[#0088BB] rounded-lg transition-all duration-200 hover:scale-[1.02]">
-                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                    <span className="hidden sm:inline">Profile</span>
-                  </button>
+
+              {/* Desktop Navigation - Center */}
+              <nav className="hidden lg:flex items-center gap-10 absolute left-1/2 -translate-x-1/2">
+                <Link href="/track" className="text-sm font-medium text-gray-300 hover:text-white transition-colors uppercase tracking-wide">
+                  TRACK
                 </Link>
-              ) : (
-                <Link href="/login">
-                  <button className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-semibold text-white bg-gradient-to-r from-[#00BFFF] to-[#0099CC] hover:from-[#00A8E6] hover:to-[#0088BB] rounded-lg transition-all duration-200 hover:scale-[1.02] border border-[#00BFFF]/30">
-                    <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
-                    </svg>
-                    <span>Login</span>
-                  </button>
+                {user ? (
+                  <Link href="/profile" className="text-sm font-medium text-gray-300 hover:text-white transition-colors uppercase tracking-wide">
+                    PROFILE
+                  </Link>
+                ) : (
+                  <Link href="/login" className="text-sm font-medium text-gray-300 hover:text-white transition-colors uppercase tracking-wide">
+                    LOGIN
+                  </Link>
+                )}
+                <Link href="/our-team" className="text-sm font-medium text-gray-300 hover:text-white transition-colors uppercase tracking-wide">
+                  OUR TEAM
                 </Link>
-              )}
-            </nav>
+                <Link href="/how-to-use" className="text-sm font-medium text-gray-300 hover:text-white transition-colors uppercase tracking-wide">
+                  HOW TO USE
+                </Link>
+                <Link href="/pricing" className="text-sm font-medium text-gray-300 hover:text-white transition-colors uppercase tracking-wide">
+                  PRICING
+                </Link>
+              </nav>
+
+              {/* CTA Button - Desktop */}
+              <div className="hidden lg:block">
+                <button
+                  onClick={handleSubmitClick}
+                  className="px-7 py-2.5 bg-gradient-to-r from-[#8B0000] to-[#6B0000] hover:from-[#A00000] hover:to-[#7B0000] text-white text-sm font-semibold rounded-full transition-all duration-300 uppercase tracking-wide border border-[#A00000]/30"
+                >
+                  SUBMIT COMPLAINT
+                </button>
+              </div>
+
+              {/* Mobile Menu Button */}
+              <button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="lg:hidden p-2 text-gray-300 hover:text-white transition-colors"
+                aria-label="Toggle menu"
+              >
+                {isMobileMenuOpen ? (
+                  <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                ) : (
+                  <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  </svg>
+                )}
+              </button>
+            </div>
           </div>
         </div>
+
+        {/* Mobile Menu */}
+        {isMobileMenuOpen && (
+          <div className="lg:hidden mt-4 mx-6">
+            <div className="bg-[#1A1A1A] border border-white/10 rounded-3xl px-6 py-8 space-y-6 animate-slide-in-down">
+              <Link
+                href="/track"
+                className="block text-base font-medium text-gray-300 hover:text-white transition-colors uppercase tracking-wide"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                TRACK
+              </Link>
+              {user ? (
+                <Link
+                  href="/profile"
+                  className="block text-base font-medium text-gray-300 hover:text-white transition-colors uppercase tracking-wide"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  PROFILE
+                </Link>
+              ) : (
+                <Link
+                  href="/login"
+                  className="block text-base font-medium text-gray-300 hover:text-white transition-colors uppercase tracking-wide"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  LOGIN
+                </Link>
+              )}
+              <Link
+                href="/our-team"
+                className="block text-base font-medium text-gray-300 hover:text-white transition-colors uppercase tracking-wide"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                OUR TEAM
+              </Link>
+              <Link
+                href="/how-to-use"
+                className="block text-base font-medium text-gray-300 hover:text-white transition-colors uppercase tracking-wide"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                HOW TO USE
+              </Link>
+              <Link
+                href="/pricing"
+                className="block text-base font-medium text-gray-300 hover:text-white transition-colors uppercase tracking-wide"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                PRICING
+              </Link>
+              <button
+                onClick={() => {
+                  handleSubmitClick();
+                  setIsMobileMenuOpen(false);
+                }}
+                className="w-full px-8 py-3 bg-gradient-to-r from-[#8B0000] to-[#6B0000] hover:from-[#A00000] hover:to-[#7B0000] text-white text-sm font-semibold rounded-full transition-all duration-300 uppercase tracking-wide border border-[#A00000]/30"
+              >
+                SUBMIT COMPLAINT
+              </button>
+            </div>
+          </div>
+        )}
       </header>
 
       {/* Hero Section */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-20">
         <div className="text-center mb-12 sm:mb-20 animate-fade-in px-2">
-          <div className="inline-block mb-4 sm:mb-6">
-            <span className="text-xs sm:text-sm font-bold text-[#00BFFF] bg-gradient-to-r from-[#00BFFF]/15 to-[#0099CC]/15 px-5 py-2.5 rounded-full border border-[#00BFFF]/30 backdrop-blur-sm">
-              ⚡ Fast & Professional Issue Reporting
-            </span>
-          </div>
           <h2 className="text-4xl sm:text-6xl lg:text-7xl font-bold text-white mb-5 sm:mb-7 leading-tight tracking-tight">
             Manage <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00BFFF] via-[#00D4FF] to-[#0099CC]">Complaints</span>
             <br />
@@ -126,8 +241,8 @@ export default function HomePage() {
               <p className="text-[#B0B0B0] mb-8 leading-relaxed text-base">
                 Report any facility issues including computers, projectors, AC, furniture, and electrical systems.
               </p>
-              <Button 
-                size="lg" 
+              <Button
+                size="lg"
                 className="w-full transition-all duration-300 text-base font-semibold py-4"
                 onClick={handleSubmitClick}
               >
@@ -212,11 +327,11 @@ export default function HomePage() {
                 <h3 className="text-lg font-bold text-white">Snap2Fix</h3>
               </div>
             </div>
-            
+
             <p className="text-[#808080] text-sm max-w-md">
               Professional complaint management system for efficient facility maintenance and support.
             </p>
-            
+
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 text-xs text-[#606060] pt-4 border-t border-[#2A2A2A] w-full">
               <span>© {new Date().getFullYear()} Snap2Fix System</span>
               <span className="hidden sm:inline">•</span>
