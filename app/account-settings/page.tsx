@@ -113,25 +113,14 @@ export default function AccountSettingsPage() {
                 <div className="max-w-7xl mx-auto px-6 lg:px-8">
                     <div className="bg-[#1A1A1A]/80 backdrop-blur-md border border-white/10 rounded-full px-6 py-3">
                         <div className="flex items-center justify-between h-10">
-                            {/* Account Settings Text */}
-                            <div className="flex items-center gap-2">
-                                <h2 className="text-xl font-bold text-white">Account Settings</h2>
-                            </div>
-
-                            {/* Desktop Actions */}
-                            <div className="hidden lg:flex items-center gap-3">
-                                <Link href="/profile" className="text-[#B0B0B0] hover:text-white transition-colors text-sm font-medium">
-                                    Back to Profile
-                                </Link>
-                            </div>
-
-                            {/* Mobile Menu - Back Button */}
-                            <div className="lg:hidden">
-                                <Link href="/profile" className="text-[#B0B0B0] hover:text-white transition-colors">
-                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                            {/* Back Button and Account Settings Text */}
+                            <div className="flex items-center gap-3">
+                                <Link href="/profile" className="p-2 hover:bg-[#2C2C2C] rounded-full transition-colors">
+                                    <svg className="w-5 h-5 text-gray-300 hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                                     </svg>
                                 </Link>
+                                <h2 className="text-xl font-bold text-white">Account Settings</h2>
                             </div>
                         </div>
                     </div>
