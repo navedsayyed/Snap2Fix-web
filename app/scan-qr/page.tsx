@@ -267,13 +267,52 @@ export default function ScanQRPage() {
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                                 </svg>
                             </div>
-                            <h3 className="text-xl font-bold text-white mb-2">Camera Access Error</h3>
+                            <h3 className="text-xl font-bold text-white mb-2">Camera Access Required</h3>
                             <p className="text-red-400 mb-6">{error}</p>
+                            
+                            <div className="text-left space-y-4 mb-6">
+                                <div className="bg-[#1A1A1A] border border-white/10 rounded-lg p-4">
+                                    <h4 className="text-white font-semibold mb-2 flex items-center gap-2">
+                                        <svg className="w-5 h-5 text-[#00BFFF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        Enable Camera Permission
+                                    </h4>
+                                    <p className="text-sm text-gray-400">
+                                        Grant camera access in your browser settings to scan QR codes
+                                    </p>
+                                </div>
+
+                                <div className="text-center text-gray-500">— OR —</div>
+
+                                <div className="bg-[#1A1A1A] border border-white/10 rounded-lg p-4">
+                                    <h4 className="text-white font-semibold mb-2 flex items-center gap-2">
+                                        <svg className="w-5 h-5 text-[#00BFFF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
+                                        </svg>
+                                        Use External QR Scanner
+                                    </h4>
+                                    <p className="text-sm text-gray-400">
+                                        Scan the QR code using Google Lens, your phone's camera app, or any QR scanner
+                                    </p>
+                                </div>
+                            </div>
+
                             <button
-                                onClick={() => router.push('/submit')}
-                                className="w-full px-6 py-3 bg-gradient-to-r from-[#00BFFF] to-[#0099CC] hover:from-[#00BFFF]/90 hover:to-[#0099CC]/90 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg"
+                                onClick={() => {
+                                    stopScanner();
+                                    startScanner();
+                                }}
+                                className="w-full px-6 py-3 bg-gradient-to-r from-[#00BFFF] to-[#0099CC] hover:from-[#00BFFF]/90 hover:to-[#0099CC]/90 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg mb-3"
                             >
-                                Enter Location Manually
+                                Try Again
+                            </button>
+                            
+                            <button
+                                onClick={() => router.push('/')}
+                                className="w-full px-6 py-3 bg-[#2A2A2A] hover:bg-[#333333] text-white font-semibold rounded-xl transition-all duration-300"
+                            >
+                                Go Back
                             </button>
                         </div>
                     </div>

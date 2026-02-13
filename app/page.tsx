@@ -178,10 +178,11 @@ export default function HomePage() {
       {/* Hero Section */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-20">
         <div className="text-center mb-12 sm:mb-20 animate-fade-in px-2">
-          <h2 className="text-4xl sm:text-6xl lg:text-7xl font-bold text-white mb-5 sm:mb-7 leading-tight tracking-tight">
-            Manage <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00BFFF] via-[#00D4FF] to-[#0099CC]">Complaints</span>
-            <br />
-            <span className="text-3xl sm:text-5xl lg:text-6xl text-gray-300">Effortlessly</span>
+          <h2 className="text-4xl sm:text-6xl lg:text-7xl font-bold text-white mb-5 sm:mb-7 leading-tight tracking-tight flex flex-col items-center justify-center gap-2">
+            <span className="flex items-baseline justify-center gap-3">
+              Manage <img src="/Complaints.svg" alt="Complaints" className="h-10 sm:h-14 lg:h-16 w-auto inline-block relative" style={{top: '0.2em'}} />
+            </span>
+            <span className="text-3xl sm:text-5xl lg:text-6xl text-gray-300 mt-2">Effortlessly</span>
           </h2>
           <p className="text-base sm:text-xl text-[#B0B0B0] max-w-3xl mx-auto leading-relaxed font-light">
             Submit and track complaints about infrastructure, IT equipment, or facilities.
