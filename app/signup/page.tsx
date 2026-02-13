@@ -64,12 +64,7 @@ export default function SignupPage() {
     return (
         <div className="min-h-screen bg-[#121212] flex items-center justify-center p-4 overflow-hidden">
             <div className={`w-full max-w-md transition-all duration-500 ease-out ${isInputFocused ? '-translate-y-12 sm:translate-y-0' : 'translate-y-0'}`}>
-                {/* Logo and Title */}
-                <div className="text-center mb-6">
-                    <img src="/main-logo.svg" alt="Snap2Fix Logo" className="w-16 h-16 sm:w-20 sm:h-20 object-contain mx-auto mb-3 sm:mb-4" />
-                    <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent mb-1">Snap2Fix</h1>
-                    <p className="text-sm sm:text-base text-[#00BFFF] font-semibold">Professional Issue Management</p>
-                </div>
+
 
                 {/* Signup Card */}
                 <div className="bg-[#1E1E1E] rounded-2xl shadow-xl p-6 sm:p-8 border border-[#404040]">
@@ -78,169 +73,169 @@ export default function SignupPage() {
                         <p className="text-sm text-gray-400">Sign up to manage your complaints</p>
                     </div>
 
-                {error && (
-                    <div className="bg-[#F44336]/10 border border-[#F44336]/50 text-[#F44336] px-4 py-3 rounded-lg mb-5 text-sm">
-                        {error}
-                    </div>
-                )}
+                    {error && (
+                        <div className="bg-[#F44336]/10 border border-[#F44336]/50 text-[#F44336] px-4 py-3 rounded-lg mb-5 text-sm">
+                            {error}
+                        </div>
+                    )}
 
-                <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
-                    <div>
-                        <label className="block text-sm font-medium text-white mb-2">
-                            Full Name
-                        </label>
-                        <input
-                            type="text"
-                            required
-                            value={formData.name}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, name: e.target.value })}
-                            onFocus={() => setIsInputFocused(true)}
-                            onBlur={() => setIsInputFocused(false)}
-                            placeholder="John Doe"
-                            className="w-full px-4 py-3 bg-[#2C2C2C] border border-[#404040] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#00BFFF] transition-all duration-300"
-                        />
-                    </div>
-
-                    <div>
-                        <label className="block text-sm font-medium text-white mb-2">
-                            Email
-                        </label>
-                        <input
-                            type="email"
-                            required
-                            value={formData.email}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, email: e.target.value })}
-                            onFocus={() => setIsInputFocused(true)}
-                            onBlur={() => setIsInputFocused(false)}
-                            placeholder="your.email@example.com"
-                            className="w-full px-4 py-3 bg-[#2C2C2C] border border-[#404040] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#00BFFF] transition-all duration-300"
-                        />
-                    </div>
-
-                    <div>
-                        <label className="block text-sm font-medium text-white mb-2">
-                            Phone Number
-                        </label>
-                        <input
-                            type="tel"
-                            required
-                            value={formData.phone}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                const value = e.target.value.replace(/\D/g, '');
-                                if (value.length <= 10) {
-                                    setFormData({ ...formData, phone: value });
-                                }
-                            }}
-                            onFocus={() => setIsInputFocused(true)}
-                            onBlur={() => setIsInputFocused(false)}
-                            placeholder="1234567890"
-                            maxLength={10}
-                            className="w-full px-4 py-3 bg-[#2C2C2C] border border-[#404040] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#00BFFF] transition-all duration-300"
-                        />
-                    </div>
-
-                    <div>
-                        <label className="block text-sm font-medium text-white mb-2">
-                            Password
-                        </label>
-                        <div className="relative">
+                    <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
+                        <div>
+                            <label className="block text-sm font-medium text-white mb-2">
+                                Full Name
+                            </label>
                             <input
-                                type={showPassword ? "text" : "password"}
+                                type="text"
                                 required
-                                value={formData.password}
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, password: e.target.value })}
+                                value={formData.name}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, name: e.target.value })}
                                 onFocus={() => setIsInputFocused(true)}
                                 onBlur={() => setIsInputFocused(false)}
-                                placeholder="At least 6 characters"
-                                className="w-full px-4 py-3 pr-12 bg-[#2C2C2C] border border-[#404040] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#00BFFF] transition-all duration-300"
+                                placeholder="John Doe"
+                                className="w-full px-4 py-3 bg-[#2C2C2C] border border-[#404040] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#00BFFF] transition-all duration-300"
                             />
-                            <button
-                                type="button"
-                                onClick={() => setShowPassword(!showPassword)}
-                                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
-                            >
-                                {showPassword ? (
-                                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                    </svg>
-                                ) : (
-                                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
-                                    </svg>
-                                )}
-                            </button>
                         </div>
-                    </div>
 
-                    <div>
-                        <label className="block text-sm font-medium text-white mb-2">
-                            Confirm Password
-                        </label>
-                        <div className="relative">
+                        <div>
+                            <label className="block text-sm font-medium text-white mb-2">
+                                Email
+                            </label>
                             <input
-                                type={showConfirmPassword ? "text" : "password"}
+                                type="email"
                                 required
-                                value={formData.confirmPassword}
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                                value={formData.email}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, email: e.target.value })}
                                 onFocus={() => setIsInputFocused(true)}
                                 onBlur={() => setIsInputFocused(false)}
-                                placeholder="Re-enter password"
-                                className="w-full px-4 py-3 pr-12 bg-[#2C2C2C] border border-[#404040] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#00BFFF] transition-all duration-300"
+                                placeholder="your.email@example.com"
+                                className="w-full px-4 py-3 bg-[#2C2C2C] border border-[#404040] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#00BFFF] transition-all duration-300"
                             />
-                            <button
-                                type="button"
-                                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
-                            >
-                                {showConfirmPassword ? (
-                                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                    </svg>
-                                ) : (
-                                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
-                                    </svg>
-                                )}
-                            </button>
                         </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-white mb-2">
+                                Phone Number
+                            </label>
+                            <input
+                                type="tel"
+                                required
+                                value={formData.phone}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                    const value = e.target.value.replace(/\D/g, '');
+                                    if (value.length <= 10) {
+                                        setFormData({ ...formData, phone: value });
+                                    }
+                                }}
+                                onFocus={() => setIsInputFocused(true)}
+                                onBlur={() => setIsInputFocused(false)}
+                                placeholder="1234567890"
+                                maxLength={10}
+                                className="w-full px-4 py-3 bg-[#2C2C2C] border border-[#404040] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#00BFFF] transition-all duration-300"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-white mb-2">
+                                Password
+                            </label>
+                            <div className="relative">
+                                <input
+                                    type={showPassword ? "text" : "password"}
+                                    required
+                                    value={formData.password}
+                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, password: e.target.value })}
+                                    onFocus={() => setIsInputFocused(true)}
+                                    onBlur={() => setIsInputFocused(false)}
+                                    placeholder="At least 6 characters"
+                                    className="w-full px-4 py-3 pr-12 bg-[#2C2C2C] border border-[#404040] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#00BFFF] transition-all duration-300"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+                                >
+                                    {showPassword ? (
+                                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                        </svg>
+                                    ) : (
+                                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                                        </svg>
+                                    )}
+                                </button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-white mb-2">
+                                Confirm Password
+                            </label>
+                            <div className="relative">
+                                <input
+                                    type={showConfirmPassword ? "text" : "password"}
+                                    required
+                                    value={formData.confirmPassword}
+                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                                    onFocus={() => setIsInputFocused(true)}
+                                    onBlur={() => setIsInputFocused(false)}
+                                    placeholder="Re-enter password"
+                                    className="w-full px-4 py-3 pr-12 bg-[#2C2C2C] border border-[#404040] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#00BFFF] transition-all duration-300"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+                                >
+                                    {showConfirmPassword ? (
+                                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                        </svg>
+                                    ) : (
+                                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                                        </svg>
+                                    )}
+                                </button>
+                            </div>
+                        </div>
+
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="w-full bg-gradient-to-r from-[#00BFFF] to-[#0099CC] hover:from-[#00A8E6] hover:to-[#0088BB] text-white font-semibold py-3 px-4 rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                        >
+                            {loading ? (
+                                <>
+                                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                                    <span>Creating account...</span>
+                                </>
+                            ) : (
+                                <span>Sign Up</span>
+                            )}
+                        </button>
+                    </form>
+
+                    <div className="mt-5 sm:mt-6 text-center">
+                        <p className="text-sm text-gray-400">
+                            Already have an account?{' '}
+                            <Link href="/login" className="text-[#00BFFF] hover:text-[#0099CC] font-semibold transition-colors">
+                                Sign in
+                            </Link>
+                        </p>
                     </div>
 
-                    <button
-                        type="submit"
-                        disabled={loading}
-                        className="w-full bg-gradient-to-r from-[#00BFFF] to-[#0099CC] hover:from-[#00A8E6] hover:to-[#0088BB] text-white font-semibold py-3 px-4 rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                    >
-                        {loading ? (
-                            <>
-                                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                                <span>Creating account...</span>
-                            </>
-                        ) : (
-                            <span>Sign Up</span>
-                        )}
-                    </button>
-                </form>
-
-                <div className="mt-5 sm:mt-6 text-center">
-                    <p className="text-sm text-gray-400">
-                        Already have an account?{' '}
-                        <Link href="/login" className="text-[#00BFFF] hover:text-[#0099CC] font-semibold transition-colors">
-                            Sign in
+                    <div className="mt-3 sm:mt-4 text-center">
+                        <Link href="/" className="text-sm text-gray-500 hover:text-white transition-colors inline-flex items-center gap-1">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                            </svg>
+                            Back to home
                         </Link>
-                    </p>
+                    </div>
                 </div>
-
-                <div className="mt-3 sm:mt-4 text-center">
-                    <Link href="/" className="text-sm text-gray-500 hover:text-white transition-colors inline-flex items-center gap-1">
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                        </svg>
-                        Back to home
-                    </Link>
-                </div>
-            </div>
             </div>
         </div>
     );

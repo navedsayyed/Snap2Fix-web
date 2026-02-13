@@ -188,19 +188,22 @@ function SubmitForm() {
     };
 
     return (
-        <div className="min-h-screen bg-[#121212]">
-            <header className="bg-[#0A0A0A]/80 backdrop-blur-xl border-b border-white/10 sticky top-0 z-50 shadow-2xl">
-                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex items-center gap-4 h-16">
-                        <Link href="/" className="flex items-center gap-2 group hover:opacity-80 transition-opacity">
-                            <div className="w-10 h-10 bg-white/5 rounded-lg flex items-center justify-center group-hover:bg-white/10 transition-colors">
-                                <svg width="20" height="20" className="text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                                </svg>
+        <div className="min-h-screen bg-[#121212] dotted-background">
+            {/* Header */}
+            <header className="sticky top-0 z-50 pt-4 pb-4">
+                <div className="max-w-7xl mx-auto px-6 lg:px-8">
+                    <div className="bg-[#1A1A1A]/80 backdrop-blur-md border border-white/10 rounded-full px-6 py-3">
+                        <div className="flex items-center justify-between h-10">
+                            {/* Back Button and Title */}
+                            <div className="flex items-center gap-3">
+                                <Link href="/" className="p-2 hover:bg-[#2C2C2C] rounded-full transition-colors">
+                                    <svg className="w-5 h-5 text-gray-300 hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                                    </svg>
+                                </Link>
+                                <h1 className="text-xl font-bold text-white">Submit Complaint</h1>
                             </div>
-                            <span className="text-xl font-bold text-white hidden sm:inline">Back</span>
-                        </Link>
-                        <h1 className="text-xl font-bold text-white flex-1">Complaint Form</h1>
+                        </div>
                     </div>
                 </div>
             </header>
@@ -208,12 +211,21 @@ function SubmitForm() {
             <main className="max-w-4xl mx-auto px-4 py-8">
                 <p className="text-gray-400 mb-6">Fill out the form below to report an issue</p>
 
-                {(formData.department || formData.floor || formData.class) && (
-                    <div className="mb-6 p-4 bg-[#1E1E1E] border border-[#00BFFF]/30 rounded-lg">
-                        <p className="text-sm font-medium text-white mb-2">🎯 QR Code Scanned</p>
-                        {formData.department && <p className="text-xs text-gray-400">Dept: {formData.department}</p>}
-                        {formData.floor && <p className="text-xs text-gray-400">Floor: {formData.floor}</p>}
-                        {formData.class && <p className="text-xs text-gray-400">Room: {formData.class}</p>}
+                {/* Location Display Box (Read-Only) */}
+                {(formData.location || formData.place) && (
+                    <div className="mb-6 p-4 bg-[#1E1E1E] border border-[#00BFFF]/30 rounded-lg space-y-2">
+                        {formData.location && (
+                            <div>
+                                <p className="text-xs text-gray-400 mb-1">Location <span className="text-[#00BFFF]">*</span></p>
+                                <p className="text-white font-medium">{formData.location}</p>
+                            </div>
+                        )}
+                        {formData.place && (
+                            <div>
+                                <p className="text-xs text-gray-400 mb-1">Place <span className="text-[#00BFFF]">*</span></p>
+                                <p className="text-white font-medium">{formData.place}</p>
+                            </div>
+                        )}
                     </div>
                 )}
 
@@ -343,7 +355,8 @@ function SubmitForm() {
                             value={formData.location}
                             onChange={(e) => setFormData({ ...formData, location: e.target.value })}
                             placeholder="Building & Floor"
-                            className="w-full px-4 py-3 bg-[#2C2C2C] border border-[#00BFFF]/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#00BFFF] focus:ring-2 focus:ring-[#00BFFF]/50"
+                            disabled={!!(formData.department || formData.floor || formData.class)}
+                            className="w-full px-4 py-3 bg-[#2C2C2C] border border-[#00BFFF]/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#00BFFF] focus:ring-2 focus:ring-[#00BFFF]/50 disabled:opacity-50 disabled:cursor-not-allowed"
                         />
                         {errors.location && <p className="mt-2 text-sm text-[#F44336]">{errors.location}</p>}
                     </div>
@@ -359,7 +372,8 @@ function SubmitForm() {
                             value={formData.place}
                             onChange={(e) => setFormData({ ...formData, place: e.target.value })}
                             placeholder="Dept / Room"
-                            className="w-full px-4 py-3 bg-[#2C2C2C] border border-[#00BFFF]/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#00BFFF] focus:ring-2 focus:ring-[#00BFFF]/50"
+                            disabled={!!(formData.department || formData.floor || formData.class)}
+                            className="w-full px-4 py-3 bg-[#2C2C2C] border border-[#00BFFF]/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#00BFFF] focus:ring-2 focus:ring-[#00BFFF]/50 disabled:opacity-50 disabled:cursor-not-allowed"
                         />
                         {errors.place && <p className="mt-2 text-sm text-[#F44336]">{errors.place}</p>}
                     </div>

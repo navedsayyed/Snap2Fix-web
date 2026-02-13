@@ -20,17 +20,17 @@ function UpdatePasswordForm() {
         // Check if this is a new user from complaint submission
         const newUserParam = searchParams.get('newUser');
         const emailParam = searchParams.get('email');
-        
+
         if (newUserParam === 'true' && emailParam) {
             setIsNewUser(true);
             setEmail(emailParam);
             return;
         }
-        
+
         // Otherwise, check for reset password token
         const hashParams = new URLSearchParams(window.location.hash.substring(1));
         const accessToken = hashParams.get('access_token');
-        
+
         if (!accessToken) {
             setError('Invalid or expired reset link. Please request a new one.');
         }
@@ -60,13 +60,13 @@ function UpdatePasswordForm() {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, password })
                 });
-                
+
                 const data = await response.json();
-                
+
                 if (!response.ok) {
                     throw new Error(data.error || 'Failed to set password');
                 }
-                
+
                 alert('Password set successfully! You can now login with your credentials.');
                 router.push('/login');
             } else {
@@ -90,12 +90,7 @@ function UpdatePasswordForm() {
     return (
         <div className="min-h-screen bg-[#121212] flex items-center justify-center p-4">
             <div className="w-full max-w-md">
-                {/* Logo and Title */}
-                <div className="text-center mb-6">
-                    <img src="/main-logo.svg" alt="Snap2Fix Logo" className="w-16 h-16 object-contain mx-auto mb-3" />
-                    <h1 className="text-2xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent mb-1">Snap2Fix</h1>
-                    <p className="text-sm text-[#00BFFF] font-semibold">Professional Issue Management</p>
-                </div>
+
 
                 {/* Update Password Card */}
                 <div className="bg-[#1E1E1E] rounded-2xl shadow-2xl p-6 sm:p-8 border border-[#404040]">

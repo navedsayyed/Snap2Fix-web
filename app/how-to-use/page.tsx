@@ -77,7 +77,7 @@ export default function HowToUsePage() {
             {/* Main Content */}
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
                 <div className="text-center mb-16">
-                    <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4 flex items-baseline justify-center gap-4">
+                    <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4 flex items-baseline justify-center gap-3">
                         <span>How</span>
                         <img src="/snap2fix-logo.svg" alt="Snap2Fix" className="h-10 sm:h-12 w-auto relative" style={{top: '0.3em'}} />
                         <span>Works</span>

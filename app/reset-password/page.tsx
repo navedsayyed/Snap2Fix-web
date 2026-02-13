@@ -20,10 +20,10 @@ export default function ResetPasswordPage() {
 
         try {
             // Automatically use the correct redirect URL
-            const redirectUrl = typeof window !== 'undefined' 
+            const redirectUrl = typeof window !== 'undefined'
                 ? `${window.location.origin}/update-password`
                 : 'https://snap2fix.vercel.app/update-password';
-                
+
             const { error } = await supabase.auth.resetPasswordForEmail(email, {
                 redirectTo: redirectUrl,
             });
@@ -44,12 +44,7 @@ export default function ResetPasswordPage() {
     return (
         <div className="min-h-screen bg-[#121212] flex items-center justify-center p-4">
             <div className="w-full max-w-md">
-                {/* Logo and Title */}
-                <div className="text-center mb-6">
-                    <img src="/main-logo.svg" alt="Snap2Fix Logo" className="w-16 h-16 object-contain mx-auto mb-3" />
-                    <h1 className="text-2xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent mb-1">Snap2Fix</h1>
-                    <p className="text-sm text-[#00BFFF] font-semibold">Professional Issue Management</p>
-                </div>
+
 
                 {/* Reset Password Card */}
                 <div className="bg-[#1E1E1E] rounded-2xl shadow-2xl p-6 sm:p-8 border border-[#404040]">
