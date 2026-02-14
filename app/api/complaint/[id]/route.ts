@@ -77,11 +77,13 @@ export async function GET(
             id: complaint.id,
             title: complaint.title,
             description: complaint.description,
+            type: complaint.type,
             status: complaint.status,
             priority: complaint.priority,
             floor: complaint.floor,
             room_number: complaint.room_number,
             department: complaint.department,
+            complaint_type: complaint.complaint_type,
             // Support multiple field name variations for images
             // Check complaint_images table first, then fallback to image field
             image_url: complaint.complaint_images?.[0]?.url || complaint.image_url || complaint.image || null,

@@ -88,18 +88,18 @@ export function getCategories(): string[] {
 }
 
 /**
- * Get department from complaint type
+ * Get department from complaint type - MATCHING React Native App
  */
 export function getDepartmentFromType(typeValue: string): string {
     const type = COMPLAINT_TYPES.find(t => t.value === typeValue);
     if (!type) return 'Administration';
 
     const categoryToDepartment: Record<string, string> = {
-        'Infrastructure': 'Infrastructure',
-        'Electrical': 'Infrastructure',
-        'Mechanical': 'Infrastructure',
-        'IT/Technical': 'IT Support',
-        'Housekeeping': 'Infrastructure',
+        'Infrastructure': 'Civil',
+        'Electrical': 'Electrical',
+        'Mechanical': 'Mechanical',
+        'IT/Technical': 'IT',
+        'Housekeeping': 'Housekeeping',
         'Other': 'Administration'
     };
 

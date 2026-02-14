@@ -6,18 +6,60 @@
 import { IssueType, Department } from './types';
 
 /**
- * Map issue types to departments
+ * Map issue types to departments - MATCHING React Native App
  */
 const ISSUE_TO_DEPARTMENT: Record<string, Department> = {
-    'Computer': 'IT Support',
-    'Projector': 'IT Support',
-    'Network': 'IT Support',
-    'AC': 'Infrastructure',
-    'Furniture': 'Infrastructure',
-    'Electrical': 'Infrastructure',
-    'Plumbing': 'Infrastructure',
-    'Lighting': 'Infrastructure',
-    'Other': 'Administration',
+    // ===== CIVIL DEPARTMENT =====
+    'wall': 'Civil',
+    'ceiling': 'Civil',
+    'floor': 'Civil',
+    'window': 'Civil',
+    'door': 'Civil',
+    'furniture': 'Civil',
+    'structure': 'Civil',
+    'civil-other': 'Civil',
+    
+    // ===== ELECTRICAL DEPARTMENT =====
+    'electrical': 'Electrical',
+    'lighting': 'Electrical',
+    'power': 'Electrical',
+    'switch': 'Electrical',
+    'fan': 'Electrical',
+    'electrical-safety': 'Electrical',
+    'electrical-other': 'Electrical',
+    
+    // ===== MECHANICAL DEPARTMENT =====
+    'ac': 'Mechanical',
+    'heating': 'Mechanical',
+    'plumbing': 'Mechanical',
+    'drainage': 'Mechanical',
+    'ventilation': 'Mechanical',
+    'elevator': 'Mechanical',
+    'mechanical-other': 'Mechanical',
+    
+    // ===== IT DEPARTMENT =====
+    'computer': 'IT',
+    'projector': 'IT',
+    'network': 'IT',
+    'lab': 'IT',
+    'software': 'IT',
+    'printer': 'IT',
+    'teaching': 'IT',
+    'it-other': 'IT',
+    
+    // ===== HOUSEKEEPING DEPARTMENT =====
+    'cleanliness': 'Housekeeping',
+    'washroom': 'Housekeeping',
+    'garbage': 'Housekeeping',
+    'pest': 'Housekeeping',
+    'garden': 'Housekeeping',
+    'maintenance': 'Housekeeping',
+    'housekeeping-other': 'Housekeeping',
+    
+    // ===== GENERAL OTHER =====
+    'security': 'Housekeeping',
+    'fire': 'Civil',
+    'other': 'Civil',
 };
 
 /**
@@ -30,18 +72,18 @@ export function getDepartmentByIssueType(issueType: string): Department {
 }
 
 /**
- * Get department based on floor (for QR code scans)
- * This is a fallback when location doesn't specify department
- * @param floor - Floor name
+ * Get department based on floor (for QR code scans) - MATCHING React Native App
+ * This is for ORIGIN tracking only
+ * @param floor - Floor number
  * @returns Department name
  */
 export function getDepartmentByFloor(floor: string): Department {
-    // Default floor-based routing (can be customized)
     const floorMapping: Record<string, Department> = {
-        'Ground Floor': 'Administration',
-        'First Floor': 'IT Support',
-        'Second Floor': 'IT Support',
-        'Third Floor': 'Academic',
+        '1': 'Civil',
+        '2': 'Civil', // First Year
+        '3': 'IT',
+        '4': 'Electrical',
+        '5': 'Mechanical',
     };
 
     return floorMapping[floor] || 'Administration';
@@ -49,7 +91,7 @@ export function getDepartmentByFloor(floor: string): Department {
 
 /**
  * Determine final department for complaint
- * Priority: Location department > Issue type department > Floor department
+ * Priority: Issue type department > Floor department > Location department
  * @param issueType - Type of issue
  * @param locationDepartment - Department from QR code location (if any)
  * @param floor - Floor name (fallback)
@@ -60,20 +102,21 @@ export function determineDepartment(
     locationDepartment?: string,
     floor?: string
 ): Department {
-    // 1. If location has a department (from QR code), use it
-    if (locationDepartment && isValidDepartment(locationDepartment)) {
-        return locationDepartment as Department;
-    }
-
-    // 2. Otherwise, use issue type to determine department
+    // 1. ALWAYS use issue type to determine department FIRST
+    // Example: Computer -> IT Support, Electrical -> Infrastructure, etc.
     const issueDept = getDepartmentByIssueType(issueType);
     if (issueDept !== 'Administration') {
         return issueDept;
     }
 
-    // 3. Fallback to floor-based routing
+    // 2. If issue type doesn't have specific department, use floor
     if (floor) {
         return getDepartmentByFloor(floor);
+    }
+
+    // 3. Use location department as fallback
+    if (locationDepartment && isValidDepartment(locationDepartment)) {
+        return locationDepartment as Department;
     }
 
     // 4. Final fallback
@@ -81,14 +124,15 @@ export function determineDepartment(
 }
 
 /**
- * Check if a string is a valid department
+ * Check if a string is a valid department - MATCHING React Native App
  */
 function isValidDepartment(dept: string): boolean {
     const validDepartments: Department[] = [
-        'IT Support',
-        'Infrastructure',
-        'Academic',
-        'Library Services',
+        'Civil',
+        'Electrical',
+        'Mechanical',
+        'IT',
+        'Housekeeping',
         'Administration'
     ];
     return validDepartments.includes(dept as Department);

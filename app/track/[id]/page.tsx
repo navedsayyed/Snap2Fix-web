@@ -13,6 +13,7 @@ import { Timeline } from '@/components/ui/Timeline';
 import { subscribeToComplaint } from '@/lib/supabase';
 import { ComplaintWithDetails, ComplaintStatus } from '@/lib/types';
 import { shortId, formatDateTime } from '@/lib/utils';
+import { getDepartmentByIssueType } from '@/lib/departmentMapping';
 
 export default function TrackComplaintPage() {
     const params = useParams();
@@ -84,16 +85,16 @@ export default function TrackComplaintPage() {
     if (error || !complaint) {
         return (
             <div className="min-h-screen bg-[#121212] flex items-center justify-center p-4">
-                <div className="max-w-md w-full bg-[#1E1E1E] border border-[#404040] rounded-xl shadow-lg p-8 text-center">
-                    <div className="w-16 h-16 bg-[#2C2C2C] border border-[#F44336] rounded-full flex items-center justify-center mx-auto mb-4">
-                        <svg width="32" height="32" className="text-[#F44336]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="max-w-sm w-full bg-[#1E1E1E] border border-[#404040] rounded-xl shadow-lg p-6 text-center">
+                    <div className="w-12 h-12 bg-[#2C2C2C] border border-[#F44336] rounded-full flex items-center justify-center mx-auto mb-3">
+                        <svg width="24" height="24" className="text-[#F44336]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                         </svg>
                     </div>
-                    <h2 className="text-2xl font-bold text-white mb-2">Complaint Not Found</h2>
-                    <p className="text-[#B0B0B0] mb-6">{error || 'The complaint ID you entered could not be found.'}</p>
+                    <h2 className="text-xl font-bold text-white mb-2">Complaint Not Found</h2>
+                    <p className="text-[#B0B0B0] text-sm mb-5">Please check the ID and try again</p>
                     <Link href="/track">
-                        <button className="px-6 py-2.5 bg-[#00BFFF] text-white rounded-lg hover:bg-[#1E90FF] transition-colors">
+                        <button className="px-5 py-2 bg-[#00BFFF] text-white text-sm rounded-lg hover:bg-[#1E90FF] transition-colors">
                             Try Again
                         </button>
                     </Link>
@@ -105,21 +106,23 @@ export default function TrackComplaintPage() {
     return (
         <div className="min-h-screen bg-[#121212]">
             {/* Header */}
-            <header className="bg-[#0A0A0A]/80 backdrop-blur-xl border-b border-white/10 sticky top-0 z-50 shadow-2xl">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex items-center gap-4 h-16">
-                        <button
-                            onClick={() => router.back()}
-                            className="flex items-center gap-2 group hover:opacity-80 transition-opacity"
-                        >
-                            <div className="w-10 h-10 bg-white/5 rounded-lg flex items-center justify-center group-hover:bg-white/10 transition-colors">
-                                <svg width="20" height="20" className="text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                                </svg>
+            <header className="sticky top-0 z-50 pt-4 pb-4">
+                <div className="max-w-7xl mx-auto px-6 lg:px-8">
+                    <div className="bg-[#1A1A1A]/80 backdrop-blur-md border border-white/10 rounded-full px-6 py-3">
+                        <div className="flex items-center justify-between h-10">
+                            {/* Back Button and Title */}
+                            <div className="flex items-center gap-3">
+                                <button
+                                    onClick={() => router.back()}
+                                    className="p-2 hover:bg-[#2C2C2C] rounded-full transition-colors"
+                                >
+                                    <svg className="w-5 h-5 text-gray-300 hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                                    </svg>
+                                </button>
+                                <h1 className="text-xl font-bold text-white">Complaint Details</h1>
                             </div>
-                            <span className="text-xl font-bold text-white hidden sm:inline">Back</span>
-                        </button>
-                        <h1 className="text-xl font-bold text-white flex-1">Complaint Details</h1>
+                        </div>
                     </div>
                 </div>
             </header>
@@ -129,7 +132,7 @@ export default function TrackComplaintPage() {
                 {/* Title Card */}
                 <div className="bg-gradient-to-br from-[#1E1E1E] via-[#252525] to-[#1A1A1A] border border-[#333333] rounded-2xl shadow-2xl p-6 sm:p-8 mb-6 hover:border-[#00BFFF]/30 transition-all duration-500">
                     <div className="flex items-start justify-between gap-4 mb-4">
-                        <h2 className="text-2xl sm:text-3xl font-bold text-white flex-1">{complaint.title}</h2>
+                        <h2 className="text-2xl sm:text-3xl font-bold text-white flex-1 min-w-0 break-words">{complaint.title}</h2>
                         {complaint.status.toLowerCase() === 'completed' ? (
                             <div className="flex items-center gap-2 px-4 py-2 bg-[#4CAF50] rounded-full flex-shrink-0">
                                 <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -143,6 +146,19 @@ export default function TrackComplaintPage() {
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
                                 <span className="text-white text-sm font-bold">In Progress</span>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Department & Type Tags */}
+                    <div className="flex flex-wrap gap-2 mb-4">
+                        {complaint.type && (
+                            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-[#FF9800]/20 border border-[#FF9800]/30 rounded-full">
+                                <svg className="w-3.5 h-3.5 text-[#FF9800]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                                <span className="text-[#FF9800] text-xs font-bold">Handled by {getDepartmentByIssueType(complaint.type.toLowerCase())} Department</span>
                             </div>
                         )}
                     </div>

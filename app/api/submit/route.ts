@@ -107,8 +107,12 @@ export async function POST(request: NextRequest) {
         // Handle custom type
         const finalTitle = custom_type ? `${custom_type} - ${title}` : title;
 
-        // Determine department
-        let routingDepartment = department || determineDepartment(type, undefined, floor || undefined);
+        // Determine HANDLING department based on complaint type
+        // Computer → IT Support, Electrical → Infrastructure, etc.
+        const handlingDepartment = determineDepartment(type, undefined, floor || undefined);
+        
+        // Keep origin department from QR code/location
+        const originDepartment = department || 'Not Specified';
 
         // Upload photo
         let imageUrl: string | null = null;
@@ -150,8 +154,8 @@ export async function POST(request: NextRequest) {
             description,
             location,
             place,
-            department: routingDepartment,
-            complaint_type: routingDepartment,
+            department: originDepartment, // WHERE it came from (e.g., "Civil" from QR code)
+            complaint_type: handlingDepartment, // WHO handles it (e.g., "IT Support" for computer)
             floor: floor || null,
             class: classRoom || null,
             status: 'in-progress',

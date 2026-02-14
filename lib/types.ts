@@ -16,7 +16,9 @@ export interface Complaint {
   user_id: string | null;
   title: string;
   description: string;
+  type: string;
   department: string;
+  complaint_type: string | null;
   floor: string;
   room_number: string;
   status: ComplaintStatus;
@@ -154,13 +156,14 @@ export const FLOORS = [
 export type Floor = typeof FLOORS[number];
 
 /**
- * Department types
+ * Department types - MATCHING React Native App
  */
 export const DEPARTMENTS = [
-  'IT Support',
-  'Infrastructure',
-  'Academic',
-  'Library Services',
+  'Civil',
+  'Electrical',
+  'Mechanical',
+  'IT',
+  'Housekeeping',
   'Administration'
 ] as const;
 
