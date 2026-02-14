@@ -39,7 +39,7 @@ export default function LoginPage() {
                 {/* Logo and Title */}
                 <div className="text-center mb-6">
                     <img src="/snap2fix-logo.svg" alt="Snap2Fix" className="w-32 sm:w-40 h-auto object-contain mx-auto mb-1" />
-                    <p className="text-sm sm:text-base text-white font-semibold">Professional Issue Management</p>
+                    <p className="text-sm sm:text-base text-white font-semibold">Smart Complaint Management System</p>
                 </div>
 
                 {/* Login Card */}

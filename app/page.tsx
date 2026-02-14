@@ -180,9 +180,9 @@ export default function HomePage() {
         <div className="text-center mb-12 sm:mb-20 animate-fade-in px-2">
           <h2 className="text-4xl sm:text-6xl lg:text-7xl font-bold text-white mb-5 sm:mb-7 leading-tight tracking-tight flex flex-col items-center justify-center gap-2">
             <span className="flex items-baseline justify-center gap-3">
-              Manage <img src="/Complaints.svg" alt="Complaints" className="h-10 sm:h-14 lg:h-16 w-auto inline-block relative" style={{top: '0.2em'}} />
+              Manage <img src="/Complaints.svg" alt="Complaints" className="h-10 sm:h-14 lg:h-16 w-auto inline-block relative" style={{top: '0.3em'}} />
             </span>
-            <span className="text-3xl sm:text-5xl lg:text-6xl text-gray-300 mt-2">Effortlessly</span>
+            <span className="text-white mt-2">Effortlessly</span>
           </h2>
           <p className="text-base sm:text-xl text-[#B0B0B0] max-w-3xl mx-auto leading-relaxed font-light">
             Submit and track complaints about infrastructure, IT equipment, or facilities.
@@ -360,6 +360,12 @@ export default function HomePage() {
                                     </Link>
                                 </li>
                                 <li>
+                                    <Link href="/help-support" className="text-[#B0B0B0] hover:text-white text-sm transition-colors duration-200 flex items-center gap-2 group">
+                                        <span className="w-1 h-1 rounded-full bg-[#DC2626] opacity-0 group-hover:opacity-100 transition-opacity"></span>
+                                        Help & Support
+                                    </Link>
+                                </li>
+                                <li>
                                     <a href="#" className="text-[#B0B0B0] hover:text-white text-sm transition-colors duration-200 flex items-center gap-2 group">
                                         <span className="w-1 h-1 rounded-full bg-[#DC2626] opacity-0 group-hover:opacity-100 transition-opacity"></span>
                                         About Us
@@ -420,15 +426,15 @@ export default function HomePage() {
                                 © {new Date().getFullYear()} Snap2Fix. All rights reserved.
                             </p>
                             <div className="flex gap-6">
-                                <a href="#" className="text-[#808080] hover:text-white text-sm transition-colors duration-200">
+                                <Link href="/privacy-policy" className="text-[#808080] hover:text-white text-sm transition-colors duration-200">
                                     Privacy Policy
-                                </a>
-                                <a href="#" className="text-[#808080] hover:text-white text-sm transition-colors duration-200">
+                                </Link>
+                                <Link href="/terms-of-service" className="text-[#808080] hover:text-white text-sm transition-colors duration-200">
                                     Terms of Service
-                                </a>
-                                <a href="#" className="text-[#808080] hover:text-white text-sm transition-colors duration-200">
+                                </Link>
+                                <Link href="/cookie-policy" className="text-[#808080] hover:text-white text-sm transition-colors duration-200">
                                     Cookie Policy
-                                </a>
+                                </Link>
                             </div>
                         </div>
                     </div>

@@ -8,7 +8,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Snap2Fix - Report Issues Instantly",
+  title: "Snap2Fix – Smart Complaint Management System",
   description: "Submit and track complaints about infrastructure, IT equipment, and facilities. Quick, easy, and no app download required.",
   keywords: ["complaint system", "issue reporting", "facility management", "college complaints"],
   icons: {
