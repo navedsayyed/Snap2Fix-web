@@ -53,9 +53,9 @@ export default function HomePage() {
           <div className="bg-[#1A1A1A]/80 backdrop-blur-md border border-white/10 rounded-full px-6 py-3">
             <div className="flex items-center justify-between h-10">
               {/* Logo Section */}
-              <Link href="/" className="flex items-center gap-2 group">
+              <div className="flex items-center gap-2">
                 <img src="/snap2fix-logo.svg" alt="Snap2Fix" className="h-7 w-auto" />
-              </Link>
+              </div>
 
               {/* Desktop Navigation - Center */}
               <nav className="hidden lg:flex items-center gap-10 absolute left-1/2 -translate-x-1/2">
@@ -287,9 +287,9 @@ export default function HomePage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 mb-12">
                         {/* Company Info */}
                         <div className="space-y-4">
-                            <Link href="/" className="flex items-center gap-2 group">
+                            <div className="flex items-center gap-2">
                                 <img src="/snap2fix-logo.svg" alt="Snap2Fix" className="h-8 w-auto" />
-                            </Link>
+                            </div>
                             <p className="text-[#B0B0B0] text-sm leading-relaxed">
                                 Professional complaint management system for efficient facility maintenance and support.
                             </p>
