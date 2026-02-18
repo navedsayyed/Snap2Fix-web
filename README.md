@@ -1,282 +1,189 @@
-# College Complaint System - Web Application
+# Snap2Fix – Smart Complaint Management System (Web)
 
-A modern, production-ready web application for submitting and tracking facility complaints. Built with Next.js 16, TypeScript, Tailwind CSS, and Supabase.
+**Snap2Fix** is a centralized complaint management system designed for universities, companies, and organizations to handle all types of maintenance and service-related issues. It allows users to submit complaints such as electrical, mechanical, technical, cleanliness, and other operational problems through a single digital platform. With role-based access for Users, Technicians, Admins, and Super Admins, the system ensures efficient task assignment, real-time tracking, and faster resolution of reported issues.
 
-## 🌟 Features
+## 📊 Development Activity
 
-- **Easy Complaint Submission** - Simple form with validation
-- **QR Code Support** - Pre-fill location data by scanning QR codes
-- **Real-time Tracking** - Live status updates via Supabase subscriptions
-- **Email Notifications** - Automatic confirmation and status update emails
-- **Image Upload** - Attach photos of issues
-- **Responsive Design** - Works on all devices
-- **Professional UI** - Modern, clean interface with smooth animations
+### 📈 Commit Activity Graph
 
-## 🚀 Tech Stack
+[![Snap2Fix Commit History](https://github-readme-activity-graph.vercel.app/graph?username=navedsayyed&repo=Snap2Fix-web&theme=react-dark&bg_color=1a1b27&color=38bdae&line=70a5fd&point=bf91f3&area=true&hide_border=false&custom_title=Snap2Fix%20Web%20Commit%20Activity)](https://github.com/navedsayyed/Snap2Fix-web/commits)
 
-- **Framework**: Next.js 16 (App Router)
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS v4
-- **Database**: Supabase (PostgreSQL)
-- **Storage**: Supabase Storage
-- **Email**: Resend
-- **Form Handling**: React Hook Form + Zod
-- **Real-time**: Supabase Realtime
-
-## 📋 Prerequisites
-
-Before you begin, ensure you have:
-
-- Node.js 18+ installed
-- A Supabase account and project
-- A Resend account for email notifications (optional but recommended)
-
-## 🛠️ Installation
-
-1. **Clone or navigate to the project**:
-   ```bash
-   cd complaint-web
-   ```
-
-2. **Install dependencies**:
-   ```bash
-   npm install
-   ```
-
-3. **Set up environment variables**:
-   
-   Update `.env.local` with your credentials:
-   ```env
-   # Supabase
-   NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-   
-   # Resend (for emails)
-   RESEND_API_KEY=your_resend_api_key
-   
-   # Site Configuration
-   NEXT_PUBLIC_SITE_URL=http://localhost:3000
-   NEXT_PUBLIC_SITE_NAME=College Complaint System
-   ```
-
-4. **Run database migrations**:
-   
-   Execute the SQL commands in Supabase SQL Editor (see `Database Setup` section below)
-
-5. **Start the development server**:
-   ```bash
-   npm run dev
-   ```
-
-6. **Open your browser**:
-   Navigate to [http://localhost:3000](http://localhost:3000)
-
-## 🗄️ Database Setup
-
-Run these SQL commands in your Supabase SQL Editor:
-
-```sql
--- 1. Make user_id nullable (for web submissions without accounts)
-ALTER TABLE complaints 
-ALTER COLUMN user_id DROP NOT NULL;
-
--- 2. Add web-specific fields
-ALTER TABLE complaints 
-ADD COLUMN IF NOT EXISTS user_name TEXT,
-ADD COLUMN IF NOT EXISTS user_email TEXT,
-ADD COLUMN IF NOT EXISTS user_phone TEXT,
-ADD COLUMN IF NOT EXISTS created_via TEXT DEFAULT 'app',
-ADD COLUMN IF NOT EXISTS tracking_token UUID DEFAULT gen_random_uuid();
-
--- 3. Add timestamp fields for better tracking
-ALTER TABLE complaints 
-ADD COLUMN IF NOT EXISTS assigned_at TIMESTAMP,
-ADD COLUMN IF NOT EXISTS started_at TIMESTAMP;
-
--- 4. Create indexes for performance
-CREATE INDEX IF NOT EXISTS idx_complaints_tracking_token ON complaints(tracking_token);
-CREATE INDEX IF NOT EXISTS idx_complaints_created_via ON complaints(created_via);
-CREATE INDEX IF NOT EXISTS idx_complaints_user_email ON complaints(user_email);
-
--- 5. Update existing complaints to mark as 'app' source
-UPDATE complaints 
-SET created_via = 'app' 
-WHERE created_via IS NULL;
-```
-
-## 📧 Email Setup
-
-1. Sign up for [Resend](https://resend.com)
-2. Verify your domain or use their test domain
-3. Get your API key from the dashboard
-4. Add it to `.env.local` as `RESEND_API_KEY`
-
-## 🎯 Usage
-
-### Submitting a Complaint
-
-1. Navigate to `/submit` or click "File a Complaint" on homepage
-2. Fill out the form with:
-   - Personal information (name, email, phone)
-   - Location (floor, room number)
-   - Issue details (type, priority, description)
-   - Optional photo upload
-3. Submit and receive confirmation email
-
-### QR Code Integration
-
-Generate QR codes that link to: `https://yoursite.com/submit?loc=lab-101`
-
-The location will be auto-filled based on the `loc` parameter. Location mappings are defined in `lib/locations.ts`.
-
-### Tracking a Complaint
-
-1. Navigate to `/track` or click "Track Complaint"
-2. Enter your complaint ID (from confirmation email)
-3. View real-time status updates
-
-## 📁 Project Structure
-
-```
-complaint-web/
-├── app/
-│   ├── api/
-│   │   ├── submit/route.ts          # Complaint submission API
-│   │   └── complaint/[id]/route.ts  # Complaint retrieval API
-│   ├── submit/page.tsx               # Complaint form page
-│   ├── success/page.tsx              # Success confirmation page
-│   ├── track/
-│   │   ├── page.tsx                  # Track landing page
-│   │   └── [id]/page.tsx             # Individual complaint tracking
-│   ├── layout.tsx                    # Root layout
-│   ├── page.tsx                      # Homepage
-│   └── globals.css                   # Global styles
-├── components/
-│   └── ui/
-│       ├── Button.tsx                # Button component
-│       ├── Input.tsx                 # Input component
-│       ├── Select.tsx                # Select dropdown
-│       ├── Textarea.tsx              # Textarea component
-│       ├── StatusBadge.tsx           # Status badge
-│       ├── Timeline.tsx              # Timeline component
-│       └── FileUpload.tsx            # File upload component
-├── lib/
-│   ├── supabase.ts                   # Supabase client & helpers
-│   ├── types.ts                      # TypeScript interfaces
-│   ├── locations.ts                  # QR code location mapping
-│   ├── departmentMapping.ts          # Department assignment logic
-│   ├── email.ts                      # Email service
-│   ├── utils.ts                      # Utility functions
-│   └── validations.ts                # Zod schemas
-├── .env.local                        # Environment variables
-├── package.json                      # Dependencies
-└── README.md                         # This file
-```
-
-## 🎨 Customization
-
-### Colors
-
-Edit `app/globals.css` to change the color scheme:
-
-```css
-:root {
-  --primary: 122 39% 49%;      /* Green */
-  --secondary: 207 90% 54%;    /* Blue */
-  --success: 122 39% 49%;      /* Green */
-  --warning: 36 100% 50%;      /* Orange */
-  --error: 4 90% 58%;          /* Red */
-}
-```
-
-### Locations
-
-Add or modify locations in `lib/locations.ts`:
-
-```typescript
-export const LOCATIONS: Record<string, Location> = {
-  'lab-101': {
-    id: 'lab-101',
-    name: 'Lab 101',
-    floor: 'First Floor',
-    department: 'IT Support'
-  },
-  // Add more locations...
-};
-```
-
-### Issue Types
-
-Modify issue types in `lib/types.ts`:
-
-```typescript
-export const ISSUE_TYPES = [
-  'Computer',
-  'Projector',
-  'AC',
-  // Add more types...
-] as const;
-```
-
-## 🚀 Deployment
-
-### Vercel (Recommended)
-
-1. Push your code to GitHub
-2. Import project in [Vercel](https://vercel.com)
-3. Add environment variables
-4. Deploy!
-
-### Other Platforms
-
-The app can be deployed to any platform that supports Next.js:
-- Netlify
-- AWS Amplify
-- Railway
-- Render
-
-## 🔒 Security
-
-- All API routes include validation
-- File uploads are restricted to images only (max 5MB)
-- Email addresses are validated
-- SQL injection protection via Supabase
-- CORS headers configured for API routes
-
-## 📊 Monitoring
-
-- Check Supabase dashboard for database activity
-- Monitor Resend dashboard for email delivery
-- Use Vercel Analytics for web traffic (if deployed on Vercel)
-
-## 🐛 Troubleshooting
-
-### Emails not sending
-- Verify `RESEND_API_KEY` is correct
-- Check Resend dashboard for logs
-- Ensure domain is verified
-
-### Images not uploading
-- Check Supabase Storage bucket exists (`complaint-images`)
-- Verify storage permissions in Supabase
-- Ensure file size is under 5MB
-
-### Real-time updates not working
-- Check Supabase Realtime is enabled
-- Verify complaint ID is correct
-- Check browser console for errors
-
-## 📝 License
-
-This project is proprietary and confidential.
-
-## 🤝 Support
-
-For issues or questions:
-1. Check the troubleshooting section
-2. Review Supabase and Resend documentation
-3. Contact the development team
+**📊 Graph Details:**
+- **X-Axis**: Timeline showing days from project start to present
+- **Y-Axis**: Number of commits per day
+- **Visualization**: Line graph with connected dots showing daily commit activity
+- 📅 **Interactive**: Click graph to view detailed commit history
 
 ---
 
-Built with ❤️ using Next.js and Supabase
+<!-- ### Additional Statistics
+
+![GitHub Commit Activity](https://img.shields.io/github/commit-activity/m/navedsayyed/Snap2Fix-web?style=for-the-badge&logo=github&label=Monthly%20Commits)
+![Last Commit](https://img.shields.io/github/last-commit/navedsayyed/Snap2Fix-web?style=for-the-badge&logo=github&label=Last%20Commit)
+![GitHub Contributors](https://img.shields.io/github/contributors/navedsayyed/Snap2Fix-web?style=for-the-badge&logo=github&label=Contributors) -->
+
+### Contribution Streak
+
+![Commit Stats](https://github-readme-streak-stats.herokuapp.com/?user=navedsayyed&theme=react&hide_border=true&background=1a1b27&ring=70a5fd&fire=bf91f3&currStreakLabel=38bdae)
+
+## 🌐 Platform Overview
+
+**Snap2Fix** operates on a hybrid platform model:
+
+- **Web Application (Next.js)**: This repository - Users submit complaints through our Next.js web interface for easy access and streamlined complaint submission
+- **Mobile Application (React Native)**: Admins, Technicians, and Super Admins use the **Snap2Fix** mobile app for managing, tracking, and resolving complaints on the go
+
+This architecture ensures users have a convenient web-based complaint submission system while staff members have powerful mobile tools for efficient complaint management.
+
+## 📱 Web Application Features
+
+### User Features
+- **Complaint Submission**: Submit complaints via intuitive Next.js web interface
+- **QR Code Scanning**: Quick location identification using QR codes
+- **Photo Upload**: Attach photos to complaints for better documentation
+- **Real-time Tracking**: Track complaint status (Pending, In Progress, Completed)
+- **Complaint History**: View all submitted complaints
+- **Before/After Photos**: See completion photos for resolved issues
+- **User Authentication**: Secure login and signup with email verification
+- **Profile Management**: Update personal information and settings
+- **Password Management**: Reset and update password functionality
+
+### Additional Pages
+- **How to Use**: Step-by-step guide for users
+- **Help & Support**: Quick assistance and FAQs
+- **Privacy Policy**: Data protection and privacy information
+- **Terms of Service**: Usage terms and conditions
+- **Cookie Policy**: Cookie usage information
+- **Our Team**: Meet the development team
+- **Pricing**: Service pricing information
+
+## 🏗️ Project Structure (Web Application)
+
+This repository contains the **Snap2Fix** Next.js web application for user complaint submission and tracking. The React Native mobile application for staff management is maintained separately.
+
+```
+Snap2Fix-web/
+├── app/                         # Next.js App Router
+│   ├── layout.tsx              # Root layout
+│   ├── page.tsx                # Home page
+│   ├── globals.css             # Global styles
+│   │
+│   ├── auth/                    # Authentication Pages
+│   │   ├── login/
+│   │   │   └── page.tsx
+│   │   ├── signup/
+│   │   │   └── page.tsx
+│   │   ├── reset-password/
+│   │   │   └── page.tsx
+│   │   └── update-password/
+│   │       └── page.tsx
+│   │
+│   ├── submit/                  # Complaint Submission
+│   │   └── page.tsx
+│   ├── scan-qr/                 # QR Code Scanner
+│   │   └── page.tsx
+│   ├── success/                 # Success Confirmation
+│   │   └── page.tsx
+│   │
+│   ├── track/                   # Complaint Tracking
+│   │   ├── page.tsx
+│   │   └── [id]/               # Individual Complaint View
+│   │       └── page.tsx
+│   │
+│   ├── profile/                 # User Profile
+│   │   └── page.tsx
+│   ├── account-settings/        # Account Settings
+│   │   └── page.tsx
+│   │
+│   ├── api/                     # API Routes
+│   │   ├── submit/             # Submit Complaint API
+│   │   │   └── route.ts
+│   │   ├── complaint/          # Complaint Management
+│   │   │   └── [id]/
+│   │   │       ├── route.ts
+│   │   │       └── update-status/
+│   │   │           └── route.ts
+│   │   ├── profile/            # Profile API
+│   │   │   └── route.ts
+│   │   ├── set-password/       # Password Management
+│   │   │   └── route.ts
+│   │   └── webhooks/           # Webhook Handlers
+│   │       └── status-update/
+│   │           └── route.ts
+│   │
+│   └── (information)/           # Static Pages
+│       ├── how-to-use/
+│       ├── help-support/
+│       ├── privacy-policy/
+│       ├── terms-of-service/
+│       ├── cookie-policy/
+│       ├── our-team/
+│       └── pricing/
+│
+├── components/                  # React Components
+│   └── ui/                     # UI Components
+│       ├── Button.tsx
+│       ├── Input.tsx
+│       ├── Select.tsx
+│       ├── GroupedSelect.tsx
+│       ├── Textarea.tsx
+│       ├── FileUpload.tsx
+│       ├── StatusBadge.tsx
+│       └── Timeline.tsx
+│
+├── lib/                         # Utilities & Config
+│   ├── supabase.ts             # Supabase Client
+│   ├── auth.ts                 # Authentication Helpers
+│   ├── email.ts                # Email Service
+│   ├── types.ts                # TypeScript Types
+│   ├── utils.ts                # Utility Functions
+│   ├── validations.ts          # Form Validations
+│   ├── complaintTypes.ts       # Complaint Categories
+│   ├── departmentMapping.ts    # Department Config
+│   ├── locations.ts            # Location Data
+│   └── ThemeContext.tsx        # Theme Provider
+│
+├── database/                    # Database
+│   └── database_migration.sql  # DB Schema
+│
+├── public/                      # Static Assets
+│   └── animation/              # Animations
+│
+├── .env.example                # Environment Variables Template
+├── next.config.ts              # Next.js Configuration
+├── tailwind.config.ts          # Tailwind CSS Config
+├── tsconfig.json               # TypeScript Config
+└── vercel.json                 # Vercel Deployment Config
+```
+
+## 🚀 Tech Stack
+
+- **Framework**: Next.js 14+ (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **Backend**: Supabase (PostgreSQL)
+- **Authentication**: Supabase Auth
+- **Email**: SMTP (Gmail)
+- **AI Routing**: Google Gemini API (Free)
+- **Deployment**: Vercel
+- **QR Code**: QR Scanner Library
+
+
+
+## 📱 Related Repositories
+
+- **Mobile App**: [Snap2Fix Mobile](https://github.com/navedsayyed/Snap2Fix) - React Native app for staff
+
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 👥 Team
+
+Visit our [Our Team](https://snap2fix.vercel.app/our-team) page to meet the developers.
+
+## 📞 Support
+
+For support, email support@snap2fix.com or visit our [Help & Support](https://snap2fix.vercel.app/help-support) page.
+
