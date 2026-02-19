@@ -5,7 +5,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
-import { sendStatusUpdateEmail } from '@/lib/email';
+import { sendCompletionEmail } from '@/lib/email';
 
 export async function PATCH(
     request: NextRequest,
@@ -69,26 +69,30 @@ export async function PATCH(
             );
         }
 
-        // Send email notification if user email exists
-        if (complaint.users?.email) {
+        // Send email notification ONLY when complaint is completed
+        // Skip intermediate status updates (assigned, in-progress, etc.)
+        if (status === 'completed' && complaint.users?.email) {
             try {
-                console.log(`Sending status update email to: ${complaint.users.email}`);
-                const emailResult = await sendStatusUpdateEmail(
+                console.log(`Sending COMPLETION email to: ${complaint.users.email}`);
+                
+                const emailResult = await sendCompletionEmail(
                     complaint.users.email,
                     String(complaint.id),
-                    status,
-                    complaint.users.full_name || 'User'
+                    complaint.users.full_name || 'User',
+                    complaint.completed_notes || undefined
                 );
 
                 if (emailResult.success) {
-                    console.log('Status update email sent successfully');
+                    console.log('✅ Completion email sent successfully');
                 } else {
-                    console.error('Failed to send status update email');
+                    console.error('❌ Failed to send completion email');
                 }
             } catch (emailError) {
                 console.error('Email sending error:', emailError);
                 // Don't fail the status update if email fails
             }
+        } else {
+            console.log(`⏭️ Skipping email notification for status: ${status}`);
         }
 
         return NextResponse.json({

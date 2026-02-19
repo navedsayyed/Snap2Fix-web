@@ -4,7 +4,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
-import { sendStatusUpdateEmail } from '@/lib/email';
+import { sendCompletionEmail } from '@/lib/email';
 
 export async function POST(request: NextRequest) {
     try {
@@ -46,22 +46,28 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ success: true, message: 'No email to send' });
         }
 
-        // Send status update email
-        console.log(`Sending status update email to ${user.email} for complaint #${complaintId}`);
-        
-        const emailResult = await sendStatusUpdateEmail(
-            user.email,
-            complaintId,
-            newStatus,
-            user.full_name || 'User'
-        );
+        // Send email notification ONLY when complaint is completed
+        // Skip intermediate status updates (assigned, in-progress, etc.)
+        if (newStatus === 'completed') {
+            console.log(`Sending COMPLETION email to ${user.email}`);
+            
+            const emailResult = await sendCompletionEmail(
+                user.email,
+                complaintId,
+                user.full_name || 'User',
+                undefined // completion notes not available in webhook
+            );
 
-        if (emailResult.success) {
-            console.log('✅ Status update email sent successfully');
-            return NextResponse.json({ success: true, message: 'Email sent' });
+            if (emailResult.success) {
+                console.log('✅ Completion email sent successfully');
+                return NextResponse.json({ success: true, message: 'Completion email sent' });
+            } else {
+                console.error('❌ Failed to send completion email');
+                return NextResponse.json({ success: false, error: 'Failed to send email' });
+            }
         } else {
-            console.error('❌ Failed to send email');
-            return NextResponse.json({ success: false, error: 'Failed to send email' });
+            console.log(`⏭️ Skipping email for intermediate status: ${newStatus}`);
+            return NextResponse.json({ success: true, message: 'Status updated, no email sent' });
         }
 
     } catch (error) {

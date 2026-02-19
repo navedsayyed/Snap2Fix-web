@@ -292,6 +292,64 @@ export async function sendStatusUpdateEmail(
 }
 
 /* =====================================================
+   2B️⃣ COMPLAINT COMPLETED EMAIL
+===================================================== */
+
+export async function sendCompletionEmail(
+    email: string,
+    complaintId: string,
+    userName: string,
+    completionNotes?: string
+) {
+    try {
+        const { siteUrl, siteName } = getSiteConfig();
+
+        // Format completion notes if they exist
+        const extraContent = completionNotes ? `
+<div style="
+background:#e8f5e9;
+padding:20px;
+border-left:4px solid #4CAF50;
+border-radius:6px;
+margin:20px 0;
+">
+<p style="margin:0 0 8px;font-size:13px;color:#2e7d32;font-weight:600;">
+COMPLETION NOTES
+</p>
+<p style="margin:0;font-size:15px;color:#333;line-height:1.6;">
+${completionNotes}
+</p>
+</div>
+` : undefined;
+
+        const html = buildEmailTemplate({
+            heading: "✅ Complaint Completed",
+            userName,
+            message:
+                "Great news! Your complaint has been successfully resolved by our maintenance team.",
+            complaintId,
+            status: "completed",
+            buttonText: "View Completion Details",
+            buttonUrl: `${siteUrl}/track/${complaintId}`,
+            siteName,
+            extraContent,
+        });
+
+        await transporter.sendMail({
+            from: `"${siteName}" <${process.env.SMTP_USER}>`,
+            to: email,
+            subject: `✅ Complaint #${complaintId.substring(0, 8)} Completed`,
+            html,
+        });
+
+        return { success: true };
+    } catch (error) {
+        console.error(error);
+        return { success: false };
+    }
+}
+
+/* =====================================================
    3️⃣ WELCOME + SET PASSWORD EMAIL
 ===================================================== */
 
