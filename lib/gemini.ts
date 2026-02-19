@@ -27,11 +27,13 @@ export async function analyzeComplaintWithAI(
     const apiKey = process.env.GOOGLE_GEMINI_API_KEY;
     
     if (!apiKey) {
-        console.warn('⚠️ GOOGLE_GEMINI_API_KEY not configured - skipping AI routing');
+        console.error('❌ GOOGLE_GEMINI_API_KEY not configured!');
+        console.error('   Please add GOOGLE_GEMINI_API_KEY to Vercel environment variables');
+        console.error('   Get your free key at: https://makersuite.google.com/app/apikey');
         return {
             department: 'Administration',
             confidence: 0,
-            reasoning: 'AI not configured'
+            reasoning: 'AI API key not configured - please add GOOGLE_GEMINI_API_KEY to environment'
         };
     }
 

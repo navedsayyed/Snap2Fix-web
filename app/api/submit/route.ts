@@ -316,8 +316,10 @@ export async function POST(request: NextRequest) {
         // ⚡ TRIGGER AI ROUTING IN BACKGROUND (Fire and Forget - User Won't Wait!)
         if (handlingDepartment === 'AI_PENDING' && specified_problem) {
             console.log('🚀 Triggering AI routing in background...');
+            console.log(`   Complaint ID: ${complaint.id}`);
             console.log(`   PRIMARY: "${specified_problem}"`);
             console.log(`   SECONDARY: "${description?.substring(0, 40) || 'none'}..."`);
+            console.log(`   API URL: ${siteUrl}/api/ai-route`);
             
             // Call AI routing API without awaiting (fire and forget)
             // Sends BOTH:
@@ -333,9 +335,19 @@ export async function POST(request: NextRequest) {
                     specifiedProblem: specified_problem, // PRIMARY analysis source
                     mainDescription: description, // SECONDARY/fallback context
                 }),
-            }).catch(err => {
-                console.error('⚠️ Background AI routing failed:', err);
+            })
+            .then(response => {
+                console.log(`🔍 AI route response status: ${response.status}`);
+                return response.json();
+            })
+            .then(data => {
+                console.log('✅ AI routing response:', data);
+            })
+            .catch(err => {
+                console.error('❌ Background AI routing fetch failed:', err);
+                console.error('   Error details:', err.message || err);
                 // Don't throw - let it fail silently, complaint is already saved
+                // The ai-route endpoint will handle fallback to Administration
             });
 
             console.log('✅ AI routing triggered - processing in background');

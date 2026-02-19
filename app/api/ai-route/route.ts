@@ -14,10 +14,17 @@ import { analyzeComplaintWithAI, getConfidenceThreshold } from '@/lib/gemini';
 import { getDepartmentByIssueType } from '@/lib/departmentMapping';
 
 export async function POST(request: NextRequest) {
+    let complaintId: string | undefined;
+    
     try {
-        const { complaintId, specifiedProblem, mainDescription, imageUrl } = await request.json();
+        const body = await request.json();
+        const { complaintId: id, specifiedProblem, mainDescription, imageUrl } = body;
+        complaintId = id;
+
+        console.log('🤖 AI Route called with:', { complaintId, specifiedProblem: specifiedProblem?.substring(0, 50), mainDescription: mainDescription?.substring(0, 50) });
 
         if (!complaintId || !specifiedProblem) {
+            console.error('❌ Missing required fields:', { complaintId: !!complaintId, specifiedProblem: !!specifiedProblem });
             return NextResponse.json(
                 { success: false, error: 'Missing required fields' },
                 { status: 400 }
@@ -109,27 +116,36 @@ export async function POST(request: NextRequest) {
 
     } catch (error) {
         console.error('❌ AI routing error:', error);
+        console.error('Error details:', error instanceof Error ? error.stack : JSON.stringify(error));
         
-        // On error, set complaint to Administration
-        try {
-            const { complaintId } = await request.json();
-            const supabase = getAdminClient();
-            
-            await supabase
-                .from('complaints')
-                .update({
-                    complaint_type: 'Administration',
-                    ai_routed: false,
-                    ai_confidence: 0,
-                    ai_reasoning: `AI Error: ${error instanceof Error ? error.message : 'Unknown'}`,
-                    ai_analyzed_at: new Date().toISOString()
-                })
-                .eq('id', complaintId);
+        // On error, set complaint to Administration as fallback
+        if (complaintId) {
+            try {
+                const supabase = getAdminClient();
+                
+                console.log(`🔄 Falling back to Administration for complaint #${complaintId}`);
+                
+                const { error: updateError } = await supabase
+                    .from('complaints')
+                    .update({
+                        complaint_type: 'Administration',
+                        ai_routed: false,
+                        ai_confidence: 0,
+                        ai_reasoning: `AI Error: ${error instanceof Error ? error.message : 'Unknown error'}`,
+                        ai_analyzed_at: new Date().toISOString()
+                    })
+                    .eq('id', complaintId);
 
-            // Notify Administration
-            await notifyDepartmentAdmin(supabase, complaintId, 'Administration');
-        } catch (fallbackError) {
-            console.error('❌ Fallback update failed:', fallbackError);
+                if (updateError) {
+                    console.error('❌ Fallback database update failed:', updateError);
+                } else {
+                    console.log('✅ Complaint updated to Administration');
+                    // Notify Administration
+                    await notifyDepartmentAdmin(supabase, complaintId, 'Administration');
+                }
+            } catch (fallbackError) {
+                console.error('❌ Fallback update failed:', fallbackError);
+            }
         }
 
         return NextResponse.json(
