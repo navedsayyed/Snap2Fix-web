@@ -136,20 +136,37 @@ function buildEmailTemplate({
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>${heading}</title>
+<style>
+@media only screen and (max-width: 600px) {
+    .email-container {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+    .email-wrapper {
+        padding: 10px !important;
+    }
+    .email-body {
+        padding: 25px !important;
+    }
+    .email-header {
+        padding: 20px !important;
+    }
+}
+</style>
 </head>
 
 <body style="margin:0;padding:0;background:${EMAIL_THEME.colors.background};font-family:${EMAIL_THEME.fonts.family};">
 
-<table width="100%" cellpadding="0" cellspacing="0" style="padding:30px;">
+<table width="100%" cellpadding="0" cellspacing="0" class="email-wrapper" style="padding:30px;">
 <tr>
 <td align="center">
 
-<table width="600" cellpadding="0" cellspacing="0"
-style="background:${EMAIL_THEME.colors.cardBackground};border-radius:10px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,0.1);">
+<table width="100%" cellpadding="0" cellspacing="0" class="email-container"
+style="max-width:600px;background:${EMAIL_THEME.colors.cardBackground};border-radius:10px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,0.1);">
 
 <!-- Header -->
 <tr>
-<td style="background:${EMAIL_THEME.colors.primary};padding:${EMAIL_THEME.header.padding};text-align:center;">
+<td class="email-header" style="background:${EMAIL_THEME.colors.primary};padding:${EMAIL_THEME.header.padding};text-align:center;">
 <h1 style="margin:0;color:${EMAIL_THEME.header.textColor};font-size:${EMAIL_THEME.fonts.headingSize};font-weight:600;">
 ${heading}
 </h1>
@@ -158,7 +175,7 @@ ${heading}
 
 <!-- Body -->
 <tr>
-<td style="padding:40px;">
+<td class="email-body" style="padding:40px;">
 
 <p style="font-size:16px;margin-bottom:20px;">
 Hi <strong>${userName}</strong>,
