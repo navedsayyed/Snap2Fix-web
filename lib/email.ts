@@ -271,7 +271,7 @@ export async function sendConfirmationEmail({
 
         const extraContent = `
 <p><strong>Issue:</strong> ${complaintDetails.title}</p>
-<p><strong>Location:</strong> ${complaintDetails.floor}, ${complaintDetails.room_number}</p>
+<p><strong>Location:</strong> Floor ${complaintDetails.floor}, Room ${complaintDetails.room_number}</p>
 <p><strong>Priority:</strong> ${complaintDetails.priority}</p>
 <p style="margin-top:15px;">
 <strong>Description:</strong><br>
@@ -368,7 +368,7 @@ export async function sendCompletionEmail(
         // Build complaint details section (same as confirmation email)
         let extraContent = `
 <p><strong>Issue:</strong> ${complaintDetails.title}</p>
-<p><strong>Location:</strong> ${complaintDetails.floor}, ${complaintDetails.room_number}</p>
+<p><strong>Location:</strong> Floor ${complaintDetails.floor}, Room ${complaintDetails.room_number}</p>
 <p><strong>Priority:</strong> ${complaintDetails.priority}</p>
 <p style="margin-top:15px;">
 <strong>Description:</strong><br>
