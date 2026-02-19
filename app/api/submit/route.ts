@@ -313,46 +313,41 @@ export async function POST(request: NextRequest) {
         const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://snap2fix.vercel.app';
         const trackingUrl = `${siteUrl}/track/${complaint.id}`;
 
-        // ⚡ TRIGGER AI ROUTING IN BACKGROUND (Fire and Forget - User Won't Wait!)
+        // ⚡ TRIGGER AI ROUTING IN BACKGROUND
+        // Important: We MUST await this in serverless environment or it won't execute
         if (handlingDepartment === 'AI_PENDING' && specified_problem) {
-            console.log('🚀 Triggering AI routing in background...');
+            console.log('🚀 Triggering AI routing...');
             console.log(`   Complaint ID: ${complaint.id}`);
             console.log(`   PRIMARY: "${specified_problem}"`);
             console.log(`   SECONDARY: "${description?.substring(0, 40) || 'none'}..."`);
             console.log(`   API URL: ${siteUrl}/api/ai-route`);
             
-            // Call AI routing API without awaiting (fire and forget)
-            // Sends BOTH:
-            //   1. PRIMARY: "Specify Problem Type" (specifiedProblem) 
-            //   2. SECONDARY: "Description" (mainDescription) - used if PRIMARY is unclear
-            fetch(`${siteUrl}/api/ai-route`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    complaintId: complaint.id,
-                    specifiedProblem: specified_problem, // PRIMARY analysis source
-                    mainDescription: description, // SECONDARY/fallback context
-                }),
-            })
-            .then(response => {
-                console.log(`🔍 AI route response status: ${response.status}`);
-                return response.json();
-            })
-            .then(data => {
-                console.log('✅ AI routing response:', data);
-            })
-            .catch(err => {
-                console.error('❌ Background AI routing fetch failed:', err);
-                console.error('   Error details:', err.message || err);
-                // Don't throw - let it fail silently, complaint is already saved
-                // The ai-route endpoint will handle fallback to Administration
-            });
+            // Call AI routing API WITH await - serverless functions need this
+            // Otherwise the function terminates before the fetch completes
+            try {
+                const aiResponse = await fetch(`${siteUrl}/api/ai-route`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        complaintId: complaint.id,
+                        specifiedProblem: specified_problem, // PRIMARY analysis source
+                        mainDescription: description, // SECONDARY/fallback context
+                    }),
+                });
 
-            console.log('✅ AI routing triggered - processing in background');
-            console.log('📍 Floor admin sees complaint immediately');
-            console.log('⏳ Department admin will be notified after AI analysis');
+                const aiData = await aiResponse.json();
+                console.log(`🔍 AI route response status: ${aiResponse.status}`);
+                console.log('✅ AI routing response:', aiData);
+            } catch (err) {
+                console.error('❌ AI routing fetch failed:', err);
+                console.error('   Error details:', err instanceof Error ? err.message : err);
+                // Don't throw - complaint is already saved
+                // The ai-route endpoint will handle fallback to Administration
+            }
+
+            console.log('✅ AI routing completed');
         }
 
         return NextResponse.json({
