@@ -83,7 +83,7 @@ export async function PATCH(
                 if (emailResult.success) {
                     console.log('Status update email sent successfully');
                 } else {
-                    console.error('Failed to send status update email:', emailResult.error);
+                    console.error('Failed to send status update email');
                 }
             } catch (emailError) {
                 console.error('Email sending error:', emailError);

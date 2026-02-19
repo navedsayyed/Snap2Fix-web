@@ -262,9 +262,6 @@ export async function sendStatusUpdateEmail(
     newStatus: string,
     userName: string
 ) {
-    console.log("🔥🔥🔥 NEW STATUS EMAIL TEMPLATE RUNNING 🔥🔥🔥");
-    console.log("Status received:", newStatus);
-    
     try {
         const { siteUrl, siteName } = getSiteConfig();
 
@@ -283,7 +280,7 @@ export async function sendStatusUpdateEmail(
         await transporter.sendMail({
             from: `"${siteName}" <${process.env.SMTP_USER}>`,
             to: email,
-            subject: `🔥 NEW TEMPLATE 🔥 Complaint #${complaintId.substring(0, 8)} Status Updated`,
+            subject: `Complaint #${complaintId.substring(0, 8)} Status Updated`,
             html,
         });
 
