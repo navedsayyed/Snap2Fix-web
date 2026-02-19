@@ -245,7 +245,7 @@ export async function POST(request: NextRequest) {
                     if (welcomeEmailResult.success) {
                         console.log('✅ Welcome email sent to new user');
                     } else {
-                        console.error('❌ Failed to send welcome email:', welcomeEmailResult.error);
+                        console.error('❌ Failed to send welcome email');
                     }
                 } else {
                     // For existing users: Send normal tracking email
@@ -267,7 +267,7 @@ export async function POST(request: NextRequest) {
                     if (emailResult.success) {
                         console.log('✅ Tracking email sent successfully');
                     } else {
-                        console.error('❌ Failed to send tracking email:', emailResult.error);
+                        console.error('❌ Failed to send tracking email');
                     }
                 }
             } catch (emailError) {

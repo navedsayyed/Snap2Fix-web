@@ -60,8 +60,8 @@ export async function POST(request: NextRequest) {
             console.log('✅ Status update email sent successfully');
             return NextResponse.json({ success: true, message: 'Email sent' });
         } else {
-            console.error('❌ Failed to send email:', emailResult.error);
-            return NextResponse.json({ success: false, error: emailResult.error });
+            console.error('❌ Failed to send email');
+            return NextResponse.json({ success: false, error: 'Failed to send email' });
         }
 
     } catch (error) {
