@@ -51,11 +51,30 @@ export async function POST(request: NextRequest) {
         if (newStatus === 'completed') {
             console.log(`Sending COMPLETION email to ${user.email}`);
             
+            // Fetch full complaint details for email
+            const { data: complaint, error: complaintError } = await supabase
+                .from('complaints')
+                .select('title, floor, class, priority, description, completed_notes')
+                .eq('id', complaintId)
+                .single();
+
+            if (complaintError || !complaint) {
+                console.error('Failed to fetch complaint details:', complaintError);
+                return NextResponse.json({ success: false, error: 'Complaint not found' });
+            }
+            
             const emailResult = await sendCompletionEmail(
                 user.email,
                 complaintId,
                 user.full_name || 'User',
-                undefined // completion notes not available in webhook
+                {
+                    title: complaint.title,
+                    floor: complaint.floor || 'N/A',
+                    room_number: complaint.class || 'N/A',
+                    priority: complaint.priority || 'Medium',
+                    description: complaint.description || '',
+                },
+                complaint.completed_notes || undefined
             );
 
             if (emailResult.success) {

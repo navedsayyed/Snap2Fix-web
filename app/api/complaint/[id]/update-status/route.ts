@@ -79,6 +79,13 @@ export async function PATCH(
                     complaint.users.email,
                     String(complaint.id),
                     complaint.users.full_name || 'User',
+                    {
+                        title: complaint.title,
+                        floor: complaint.floor || 'N/A',
+                        room_number: complaint.class || 'N/A',
+                        priority: complaint.priority || 'Medium',
+                        description: complaint.description || '',
+                    },
                     complaint.completed_notes || undefined
                 );
 

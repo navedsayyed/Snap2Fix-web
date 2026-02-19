@@ -9,6 +9,60 @@
 import nodemailer from 'nodemailer';
 
 /* =====================================================
+   📧 EMAIL THEME CONFIGURATION
+   ⚠️ EDIT HERE TO CHANGE ALL EMAILS AT ONCE
+   
+   HOW TO USE:
+   1. Change primary color → Updates header, buttons, borders
+   2. Edit footer text → Updates both emails
+   3. Change fonts → Updates all text in emails
+   4. All changes apply to BOTH emails automatically!
+   
+===================================================== */
+
+const EMAIL_THEME = {
+    // Colors - Change these to match your brand
+    colors: {
+        primary: '#4CAF50',        // Main green color (header, buttons) - TRY: '#FF5722', '#2196F3', '#9C27B0'
+        primaryDark: '#388E3C',    // Darker green (button hover)
+        background: '#f5f5f5',     // Email background (gray)
+        cardBackground: '#ffffff', // Email card background (white)
+        textPrimary: '#333333',    // Main text color (dark gray)
+        textSecondary: '#777777',  // Secondary text color (light gray)
+        border: '#e0e0e0',         // Border color
+    },
+    
+    // Typography - Change font sizes and family
+    fonts: {
+        family: 'Arial, Helvetica, sans-serif',  // Font family - TRY: 'Georgia, serif'
+        headingSize: '26px',                      // Header text size
+        bodySize: '15px',                         // Body text size
+        smallSize: '13px',                        // Small text size
+    },
+    
+    // Footer - Customize footer text
+    footer: {
+        companyName: 'Snap2Fix Team',                           // Company name
+        tagline: 'Thank you,',                                  // Footer tagline
+        disclaimer: 'This is an automated email from Snap2Fix.', // Disclaimer text
+        noteToUser: 'Please do not reply to this email.',       // Note to user
+    },
+    
+    // Header - Customize header styling
+    header: {
+        padding: '30px',          // Header padding
+        textColor: 'white',       // Header text color
+    },
+    
+    // Button - Customize button styling
+    button: {
+        padding: '12px 35px',     // Button padding
+        borderRadius: '6px',      // Button rounded corners
+        fontWeight: '600',        // Button text weight (bold)
+    },
+};
+
+/* =====================================================
    SMTP CONFIG
 ===================================================== */
 
@@ -84,19 +138,19 @@ function buildEmailTemplate({
 <title>${heading}</title>
 </head>
 
-<body style="margin:0;padding:0;background:#f5f5f5;font-family:Arial,Helvetica,sans-serif;">
+<body style="margin:0;padding:0;background:${EMAIL_THEME.colors.background};font-family:${EMAIL_THEME.fonts.family};">
 
 <table width="100%" cellpadding="0" cellspacing="0" style="padding:30px;">
 <tr>
 <td align="center">
 
 <table width="600" cellpadding="0" cellspacing="0"
-style="background:#ffffff;border-radius:10px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,0.1);">
+style="background:${EMAIL_THEME.colors.cardBackground};border-radius:10px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,0.1);">
 
 <!-- Header -->
 <tr>
-<td style="background:#4CAF50;padding:30px;text-align:center;">
-<h1 style="margin:0;color:white;font-size:26px;font-weight:600;">
+<td style="background:${EMAIL_THEME.colors.primary};padding:${EMAIL_THEME.header.padding};text-align:center;">
+<h1 style="margin:0;color:${EMAIL_THEME.header.textColor};font-size:${EMAIL_THEME.fonts.headingSize};font-weight:600;">
 ${heading}
 </h1>
 </td>
@@ -110,7 +164,7 @@ ${heading}
 Hi <strong>${userName}</strong>,
 </p>
 
-<p style="font-size:15px;color:#444;line-height:1.6;">
+<p style="font-size:${EMAIL_THEME.fonts.bodySize};color:${EMAIL_THEME.colors.textPrimary};line-height:1.6;">
 ${message}
 </p>
 
@@ -120,14 +174,14 @@ ${
 <div style="
 background:#f8f9fa;
 padding:20px;
-border-left:4px solid #4CAF50;
+border-left:4px solid ${EMAIL_THEME.colors.primary};
 border-radius:6px;
 margin:30px 0;
 ">
-<p style="margin:0 0 8px;font-size:13px;color:#777;">
+<p style="margin:0 0 8px;font-size:${EMAIL_THEME.fonts.smallSize};color:${EMAIL_THEME.colors.textSecondary};">
 COMPLAINT ID
 </p>
-<h2 style="margin:0;font-size:22px;color:#333;">
+<h2 style="margin:0;font-size:22px;color:${EMAIL_THEME.colors.textPrimary};">
 #${shortId}
 </h2>
 
@@ -139,7 +193,7 @@ margin-top:12px;
 display:inline-block;
 padding:6px 16px;
 border-radius:20px;
-font-size:13px;
+font-size:${EMAIL_THEME.fonts.smallSize};
 font-weight:600;
 background:${statusColor?.bg};
 color:${statusColor?.text};
@@ -159,20 +213,20 @@ ${extraContent ? extraContent : ''}
 <div style="text-align:center;margin:30px 0;">
 <a href="${buttonUrl}"
 style="
-background:#4CAF50;
+background:${EMAIL_THEME.colors.primary};
 color:white;
-padding:12px 35px;
+padding:${EMAIL_THEME.button.padding};
 text-decoration:none;
-border-radius:6px;
-font-weight:600;
+border-radius:${EMAIL_THEME.button.borderRadius};
+font-weight:${EMAIL_THEME.button.fontWeight};
 display:inline-block;
 ">
 ${buttonText}
 </a>
 </div>
 
-<p style="font-size:13px;color:#777;text-align:center;">
-This is an automated email from ${siteName}.
+<p style="font-size:${EMAIL_THEME.fonts.smallSize};color:${EMAIL_THEME.colors.textSecondary};text-align:center;">
+${EMAIL_THEME.footer.disclaimer}
 </p>
 
 </td>
@@ -180,13 +234,13 @@ This is an automated email from ${siteName}.
 
 <!-- Footer -->
 <tr>
-<td style="background:#f8f9fa;padding:20px;text-align:center;border-top:1px solid #e0e0e0;">
-<p style="margin:0;font-size:13px;color:#666;">
-Thank you,<br>
-<strong>${siteName} Team</strong>
+<td style="background:#f8f9fa;padding:20px;text-align:center;border-top:1px solid ${EMAIL_THEME.colors.border};">
+<p style="margin:0;font-size:${EMAIL_THEME.fonts.smallSize};color:#666;">
+${EMAIL_THEME.footer.tagline}<br>
+<strong>${EMAIL_THEME.footer.companyName}</strong>
 </p>
 <p style="margin-top:5px;font-size:12px;color:#999;">
-Please do not reply to this email.
+${EMAIL_THEME.footer.noteToUser}
 </p>
 </td>
 </tr>
@@ -299,28 +353,48 @@ export async function sendCompletionEmail(
     email: string,
     complaintId: string,
     userName: string,
+    complaintDetails: {
+        title: string;
+        floor: string;
+        room_number: string;
+        priority: string;
+        description: string;
+    },
     completionNotes?: string
 ) {
     try {
         const { siteUrl, siteName } = getSiteConfig();
 
-        // Format completion notes if they exist
-        const extraContent = completionNotes ? `
+        // Build complaint details section (same as confirmation email)
+        let extraContent = `
+<p><strong>Issue:</strong> ${complaintDetails.title}</p>
+<p><strong>Location:</strong> ${complaintDetails.floor}, ${complaintDetails.room_number}</p>
+<p><strong>Priority:</strong> ${complaintDetails.priority}</p>
+<p style="margin-top:15px;">
+<strong>Description:</strong><br>
+${complaintDetails.description}
+</p>
+`;
+
+        // Add completion notes if they exist
+        if (completionNotes) {
+            extraContent += `
 <div style="
 background:#e8f5e9;
 padding:20px;
-border-left:4px solid #4CAF50;
+border-left:4px solid ${EMAIL_THEME.colors.primary};
 border-radius:6px;
 margin:20px 0;
 ">
-<p style="margin:0 0 8px;font-size:13px;color:#2e7d32;font-weight:600;">
+<p style="margin:0 0 8px;font-size:${EMAIL_THEME.fonts.smallSize};color:#2e7d32;font-weight:600;">
 COMPLETION NOTES
 </p>
-<p style="margin:0;font-size:15px;color:#333;line-height:1.6;">
+<p style="margin:0;font-size:${EMAIL_THEME.fonts.bodySize};color:${EMAIL_THEME.colors.textPrimary};line-height:1.6;">
 ${completionNotes}
 </p>
 </div>
-` : undefined;
+`;
+        }
 
         const html = buildEmailTemplate({
             heading: "✅ Complaint Completed",
