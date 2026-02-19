@@ -397,7 +397,7 @@ ${completionNotes}
         }
 
         const html = buildEmailTemplate({
-            heading: "✅ Complaint Completed",
+            heading: "Complaint Completed",
             userName,
             message:
                 "Great news! Your complaint has been successfully resolved by our maintenance team.",
@@ -412,7 +412,7 @@ ${completionNotes}
         await transporter.sendMail({
             from: `"${siteName}" <${process.env.SMTP_USER}>`,
             to: email,
-            subject: `✅ Complaint #${complaintId.substring(0, 8)} Completed`,
+            subject: `Complaint #${complaintId.substring(0, 8)} Completed`,
             html,
         });
 
