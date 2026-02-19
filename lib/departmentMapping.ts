@@ -9,57 +9,38 @@ import { IssueType, Department } from './types';
  * Map issue types to departments - MATCHING React Native App
  */
 const ISSUE_TO_DEPARTMENT: Record<string, Department> = {
-    // ===== CIVIL DEPARTMENT =====
+    // ===== CIVIL DEPARTMENT (Infrastructure) =====
     'wall': 'Civil',
-    'ceiling': 'Civil',
-    'floor': 'Civil',
-    'window': 'Civil',
-    'door': 'Civil',
-    'furniture': 'Civil',
-    'structure': 'Civil',
+    'floor-ceiling': 'Civil',
+    'furniture-door': 'Civil',
     'civil-other': 'Civil',
     
     // ===== ELECTRICAL DEPARTMENT =====
-    'electrical': 'Electrical',
     'lighting': 'Electrical',
-    'power': 'Electrical',
-    'switch': 'Electrical',
     'fan': 'Electrical',
-    'electrical-safety': 'Electrical',
+    'switch': 'Electrical',
     'electrical-other': 'Electrical',
     
     // ===== MECHANICAL DEPARTMENT =====
     'ac': 'Mechanical',
-    'heating': 'Mechanical',
     'plumbing': 'Mechanical',
     'drainage': 'Mechanical',
-    'ventilation': 'Mechanical',
-    'elevator': 'Mechanical',
     'mechanical-other': 'Mechanical',
     
     // ===== IT DEPARTMENT =====
     'computer': 'IT',
     'projector': 'IT',
     'network': 'IT',
-    'lab': 'IT',
-    'software': 'IT',
-    'printer': 'IT',
-    'teaching': 'IT',
     'it-other': 'IT',
     
     // ===== HOUSEKEEPING DEPARTMENT =====
     'cleanliness': 'Housekeeping',
     'washroom': 'Housekeeping',
     'garbage': 'Housekeeping',
-    'pest': 'Housekeeping',
-    'garden': 'Housekeeping',
-    'maintenance': 'Housekeeping',
     'housekeeping-other': 'Housekeeping',
     
-    // ===== GENERAL OTHER =====
-    'security': 'Housekeeping',
-    'fire': 'Civil',
-    'other': 'Civil',
+    // ===== GENERAL OTHER (AI Routing) =====
+    'other': 'Administration', // AI determines actual department
 };
 
 /**
@@ -80,7 +61,7 @@ export function getDepartmentByIssueType(issueType: string): Department {
 export function getDepartmentByFloor(floor: string): Department {
     const floorMapping: Record<string, Department> = {
         '1': 'Civil',
-        '2': 'Civil', // First Year
+        '2': 'First Year',
         '3': 'IT',
         '4': 'Electrical',
         '5': 'Mechanical',

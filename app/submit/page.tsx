@@ -28,7 +28,7 @@ function SubmitForm() {
         phone: '',
         title: '',
         type: '',
-        customType: '',
+        customType: '', // Maps to specified_problem in database
         location: '',
         place: '',
         description: '',
@@ -141,7 +141,7 @@ function SubmitForm() {
             if (formData.phone) submitData.append('phone', formData.phone);
             submitData.append('title', formData.title);
             submitData.append('type', formData.type);
-            if (formData.customType) submitData.append('custom_type', formData.customType);
+            if (formData.customType) submitData.append('specified_problem', formData.customType); // Map to database column
             submitData.append('location', formData.location);
             submitData.append('place', formData.place);
             submitData.append('description', formData.description);

@@ -1,389 +1,343 @@
 /**
- * Email Service using SMTP (Nodemailer)
- * Handles sending confirmation emails to users
+ * FINAL UNIFIED EMAIL SERVICE
+ * Supports:
+ * - Complaint Submitted
+ * - Complaint Status Updated
+ * - Welcome + Set Password (Auto Account Creation)
  */
 
 import nodemailer from 'nodemailer';
 
-// Create SMTP transporter
+/* =====================================================
+   SMTP CONFIG
+===================================================== */
+
 const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST || 'smtp.gmail.com',
     port: parseInt(process.env.SMTP_PORT || '587'),
-    secure: false, // true for 465, false for other ports
+    secure: false,
     auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS,
     },
 });
 
-interface SendConfirmationEmailParams {
-    email: string;
-    complaintId: string;
-    userName: string;
-    complaintDetails: {
-        title: string;
-        floor: string;
-        room_number: string;
-        priority: string;
-        description: string;
+/* =====================================================
+   SITE CONFIG
+===================================================== */
+
+const getSiteConfig = () => ({
+    siteUrl: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
+    siteName: process.env.NEXT_PUBLIC_SITE_NAME || 'Snap2Fix',
+});
+
+/* =====================================================
+   STATUS COLOR HELPER
+===================================================== */
+
+const getStatusColor = (status: string) => {
+    const map: Record<string, { bg: string; text: string }> = {
+        pending: { bg: '#FFF3CD', text: '#856404' },
+        assigned: { bg: '#E3F2FD', text: '#1565C0' },
+        'in-progress': { bg: '#FFF3E0', text: '#E65100' },
+        completed: { bg: '#E8F5E9', text: '#2E7D32' },
+        rejected: { bg: '#FFEBEE', text: '#C62828' },
     };
+
+    return map[status.toLowerCase()] || { bg: '#F5F5F5', text: '#333' };
+};
+
+/* =====================================================
+   MASTER EMAIL TEMPLATE
+===================================================== */
+
+function buildEmailTemplate({
+    heading,
+    userName,
+    message,
+    complaintId,
+    status,
+    buttonText,
+    buttonUrl,
+    extraContent,
+    siteName,
+}: {
+    heading: string;
+    userName: string;
+    message: string;
+    complaintId?: string;
+    status?: string;
+    buttonText: string;
+    buttonUrl: string;
+    extraContent?: string;
+    siteName: string;
+}) {
+    const statusColor = status ? getStatusColor(status) : null;
+    const shortId = complaintId ? complaintId.substring(0, 8).toUpperCase() : null;
+
+    return `
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>${heading}</title>
+</head>
+
+<body style="margin:0;padding:0;background:#f5f5f5;font-family:Arial,Helvetica,sans-serif;">
+
+<table width="100%" cellpadding="0" cellspacing="0" style="padding:30px;">
+<tr>
+<td align="center">
+
+<table width="600" cellpadding="0" cellspacing="0"
+style="background:#ffffff;border-radius:10px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,0.1);">
+
+<!-- Header -->
+<tr>
+<td style="background:#4CAF50;padding:30px;text-align:center;">
+<h1 style="margin:0;color:white;font-size:26px;font-weight:600;">
+${heading}
+</h1>
+</td>
+</tr>
+
+<!-- Body -->
+<tr>
+<td style="padding:40px;">
+
+<p style="font-size:16px;margin-bottom:20px;">
+Hi <strong>${userName}</strong>,
+</p>
+
+<p style="font-size:15px;color:#444;line-height:1.6;">
+${message}
+</p>
+
+${
+    shortId
+        ? `
+<div style="
+background:#f8f9fa;
+padding:20px;
+border-left:4px solid #4CAF50;
+border-radius:6px;
+margin:30px 0;
+">
+<p style="margin:0 0 8px;font-size:13px;color:#777;">
+COMPLAINT ID
+</p>
+<h2 style="margin:0;font-size:22px;color:#333;">
+#${shortId}
+</h2>
+
+${
+    status
+        ? `
+<div style="
+margin-top:12px;
+display:inline-block;
+padding:6px 16px;
+border-radius:20px;
+font-size:13px;
+font-weight:600;
+background:${statusColor?.bg};
+color:${statusColor?.text};
+">
+${status.toUpperCase()}
+</div>
+`
+        : ''
+}
+</div>
+`
+        : ''
 }
 
-/**
- * Send confirmation email to user after complaint submission
- */
+${extraContent ? extraContent : ''}
+
+<div style="text-align:center;margin:30px 0;">
+<a href="${buttonUrl}"
+style="
+background:#4CAF50;
+color:white;
+padding:12px 35px;
+text-decoration:none;
+border-radius:6px;
+font-weight:600;
+display:inline-block;
+">
+${buttonText}
+</a>
+</div>
+
+<p style="font-size:13px;color:#777;text-align:center;">
+This is an automated email from ${siteName}.
+</p>
+
+</td>
+</tr>
+
+<!-- Footer -->
+<tr>
+<td style="background:#f8f9fa;padding:20px;text-align:center;border-top:1px solid #e0e0e0;">
+<p style="margin:0;font-size:13px;color:#666;">
+Thank you,<br>
+<strong>${siteName} Team</strong>
+</p>
+<p style="margin-top:5px;font-size:12px;color:#999;">
+Please do not reply to this email.
+</p>
+</td>
+</tr>
+
+</table>
+
+</td>
+</tr>
+</table>
+
+</body>
+</html>
+`;
+}
+
+/* =====================================================
+   1️⃣ COMPLAINT SUBMITTED EMAIL
+===================================================== */
+
 export async function sendConfirmationEmail({
     email,
     complaintId,
     userName,
     complaintDetails,
-}: SendConfirmationEmailParams): Promise<{ success: boolean; error?: string }> {
+}: any) {
     try {
-        const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
-        const siteName = process.env.NEXT_PUBLIC_SITE_NAME || 'Snap2Fix';
-        const trackingUrl = `${siteUrl}/track/${complaintId}`;
-        const shortId = complaintId.substring(0, 8).toUpperCase();
+        const { siteUrl, siteName } = getSiteConfig();
 
-        const htmlContent = `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Complaint Confirmation</title>
-</head>
-<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f5f5f5; padding: 20px;">
-    <tr>
-      <td align="center">
-        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-          
-          <!-- Header -->
-          <tr>
-            <td style="background-color: #4CAF50; padding: 30px 20px; text-align: center;">
-              <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 600;">
-                ✅ Complaint Received
-              </h1>
-            </td>
-          </tr>
-          
-          <!-- Content -->
-          <tr>
-            <td style="padding: 40px 30px;">
-              <p style="margin: 0 0 20px; font-size: 16px; color: #333333; line-height: 1.6;">
-                Dear <strong>${userName}</strong>,
-              </p>
-              
-              <p style="margin: 0 0 30px; font-size: 16px; color: #333333; line-height: 1.6;">
-                Your complaint has been successfully submitted and is now pending review by our maintenance team.
-              </p>
-              
-              <!-- Complaint ID Box -->
-              <div style="background-color: #f8f9fa; border-left: 4px solid #4CAF50; padding: 20px; margin-bottom: 30px; border-radius: 4px;">
-                <p style="margin: 0 0 8px; font-size: 14px; color: #666666; text-transform: uppercase; letter-spacing: 0.5px;">
-                  Complaint ID
-                </p>
-                <p style="margin: 0; font-size: 24px; color: #333333; font-weight: 700; font-family: 'Courier New', monospace;">
-                  #${shortId}
-                </p>
-              </div>
-              
-              <!-- Complaint Details -->
-              <h3 style="margin: 0 0 15px; font-size: 18px; color: #333333; font-weight: 600;">
-                Complaint Details
-              </h3>
-              
-              <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 30px;">
-                <tr>
-                  <td style="padding: 12px 0; border-bottom: 1px solid #e0e0e0;">
-                    <strong style="color: #666666; font-size: 14px;">Issue:</strong>
-                  </td>
-                  <td style="padding: 12px 0; border-bottom: 1px solid #e0e0e0; text-align: right;">
-                    <span style="color: #333333; font-size: 14px;">${complaintDetails.title}</span>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="padding: 12px 0; border-bottom: 1px solid #e0e0e0;">
-                    <strong style="color: #666666; font-size: 14px;">Location:</strong>
-                  </td>
-                  <td style="padding: 12px 0; border-bottom: 1px solid #e0e0e0; text-align: right;">
-                    <span style="color: #333333; font-size: 14px;">${complaintDetails.floor}, ${complaintDetails.room_number}</span>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="padding: 12px 0; border-bottom: 1px solid #e0e0e0;">
-                    <strong style="color: #666666; font-size: 14px;">Priority:</strong>
-                  </td>
-                  <td style="padding: 12px 0; border-bottom: 1px solid #e0e0e0; text-align: right;">
-                    <span style="color: #333333; font-size: 14px; font-weight: 600;">${complaintDetails.priority}</span>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="padding: 12px 0;">
-                    <strong style="color: #666666; font-size: 14px;">Status:</strong>
-                  </td>
-                  <td style="padding: 12px 0; text-align: right;">
-                    <span style="display: inline-block; background-color: #FFF3CD; color: #856404; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 600;">
-                      Pending
-                    </span>
-                  </td>
-                </tr>
-              </table>
-              
-              <div style="background-color: #f8f9fa; padding: 15px; border-radius: 4px; margin-bottom: 30px;">
-                <p style="margin: 0; font-size: 14px; color: #666666; line-height: 1.6;">
-                  <strong>Description:</strong><br>
-                  ${complaintDetails.description}
-                </p>
-              </div>
-              
-              <!-- Track Button -->
-              <div style="text-align: center; margin: 40px 0;">
-                <a href="${trackingUrl}" style="display: inline-block; background-color: #4CAF50; color: #ffffff; text-decoration: none; padding: 14px 40px; border-radius: 6px; font-size: 16px; font-weight: 600; box-shadow: 0 2px 4px rgba(76, 175, 80, 0.3);">
-                  Track Your Complaint
-                </a>
-              </div>
-              
-              <!-- Info Box -->
-              <div style="background-color: #E3F2FD; border-left: 4px solid #2196F3; padding: 15px; border-radius: 4px; margin-bottom: 20px;">
-                <p style="margin: 0; font-size: 14px; color: #1565C0; line-height: 1.6;">
-                  <strong>📧 Email Updates:</strong> You will receive email notifications when the status of your complaint changes.
-                </p>
-              </div>
-              
-              <p style="margin: 0 0 10px; font-size: 14px; color: #666666; line-height: 1.6;">
-                <strong>Expected Response Time:</strong> 24-48 hours
-              </p>
-              
-              <p style="margin: 0; font-size: 14px; color: #666666; line-height: 1.6;">
-                If you have any urgent concerns, please contact the administration office directly.
-              </p>
-            </td>
-          </tr>
-          
-          <!-- Footer -->
-          <tr>
-            <td style="background-color: #f8f9fa; padding: 20px 30px; text-align: center; border-top: 1px solid #e0e0e0;">
-              <p style="margin: 0 0 10px; font-size: 14px; color: #666666;">
-                Thank you,<br>
-                <strong>${siteName} Team</strong>
-              </p>
-              <p style="margin: 0; font-size: 12px; color: #999999;">
-                This is an automated email. Please do not reply to this message.
-              </p>
-            </td>
-          </tr>
-          
-        </table>
-      </td>
-    </tr>
-  </table>
-</body>
-</html>
-    `;
+        const extraContent = `
+<p><strong>Issue:</strong> ${complaintDetails.title}</p>
+<p><strong>Location:</strong> ${complaintDetails.floor}, ${complaintDetails.room_number}</p>
+<p><strong>Priority:</strong> ${complaintDetails.priority}</p>
+<p style="margin-top:15px;">
+<strong>Description:</strong><br>
+${complaintDetails.description}
+</p>
+`;
 
-        // Send email using SMTP
-        const info = await transporter.sendMail({
-            from: `"${siteName}" <${process.env.SMTP_USER}>`,
-            to: email,
-            subject: `✅ Complaint #${shortId} Received`,
-            html: htmlContent,
-            text: `✅ COMPLAINT RECEIVED\n\nDear ${userName},\n\nYour complaint has been successfully submitted and is now pending review by our maintenance team.\n\nComplaint ID: #${shortId}\n\nIssue: ${complaintDetails.title}\nLocation: ${complaintDetails.floor}, ${complaintDetails.room_number}\nPriority: ${complaintDetails.priority}\nStatus: Pending\n\nDescription:\n${complaintDetails.description}\n\nTrack Your Complaint: ${trackingUrl}\n\nExpected Response Time: 24-48 hours\n\nThank you,\n${siteName} Team`,
+        const html = buildEmailTemplate({
+            heading: "Complaint Received",
+            userName,
+            message:
+                "Your complaint has been successfully submitted and is now pending review by our maintenance team.",
+            complaintId,
+            status: "pending",
+            buttonText: "Track Complaint",
+            buttonUrl: `${siteUrl}/track/${complaintId}`,
+            extraContent,
+            siteName,
         });
 
-        console.log('Email sent successfully:', info.messageId);
+        await transporter.sendMail({
+            from: `"${siteName}" <${process.env.SMTP_USER}>`,
+            to: email,
+            subject: `Complaint #${complaintId.substring(0, 8)} Received`,
+            html,
+        });
+
         return { success: true };
     } catch (error) {
-        console.error('Email send exception:', error);
-        return { success: false, error: 'Failed to send email' };
+        console.error(error);
+        return { success: false };
     }
 }
 
-/**
- * Send status update email to user
- */
+/* =====================================================
+   2️⃣ STATUS UPDATE EMAIL
+===================================================== */
+
 export async function sendStatusUpdateEmail(
     email: string,
     complaintId: string,
     newStatus: string,
     userName: string
-): Promise<{ success: boolean; error?: string }> {
+) {
+    console.log("🔥🔥🔥 NEW STATUS EMAIL TEMPLATE RUNNING 🔥🔥🔥");
+    console.log("Status received:", newStatus);
+    
     try {
-        const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
-        const siteName = process.env.NEXT_PUBLIC_SITE_NAME || 'College Complaint System';
-        const trackingUrl = `${siteUrl}/track/${complaintId}`;
-        const shortId = complaintId.substring(0, 8).toUpperCase();
+        const { siteUrl, siteName } = getSiteConfig();
 
-        const statusColors: Record<string, { bg: string; text: string }> = {
-            'Assigned': { bg: '#E3F2FD', text: '#1565C0' },
-            'In Progress': { bg: '#FFF3E0', text: '#E65100' },
-            'Completed': { bg: '#E8F5E9', text: '#2E7D32' },
-            'Rejected': { bg: '#FFEBEE', text: '#C62828' },
-        };
-
-        const statusColor = statusColors[newStatus] || { bg: '#F5F5F5', text: '#333333' };
-
-        const info = await transporter.sendMail({
-            from: `"${siteName}" <${process.env.SMTP_USER}>`,
-            to: email,
-            subject: `🔔 Complaint #${shortId} Status Updated: ${newStatus}`,
-            html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <div style="background: #4CAF50; color: white; padding: 20px; text-align: center;">
-            <h1>Status Update</h1>
-          </div>
-          <div style="padding: 20px; background: #f5f5f5;">
-            <p>Dear ${userName},</p>
-            <p>Your complaint <strong>#${shortId}</strong> status has been updated to:</p>
-            <div style="background: ${statusColor.bg}; color: ${statusColor.text}; padding: 15px; border-radius: 8px; text-align: center; margin: 20px 0;">
-              <h2 style="margin: 0;">${newStatus}</h2>
-            </div>
-            <div style="text-align: center; margin: 30px 0;">
-              <a href="${trackingUrl}" style="background: #4CAF50; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">
-                View Details
-              </a>
-            </div>
-            <p>Thank you,<br>${siteName} Team</p>
-          </div>
-        </div>
-      `,
+        const html = buildEmailTemplate({
+            heading: "Complaint Status Updated",
+            userName,
+            message:
+                "The status of your complaint has been updated. Please check the latest details below.",
+            complaintId,
+            status: newStatus,
+            buttonText: "View Details",
+            buttonUrl: `${siteUrl}/track/${complaintId}`,
+            siteName,
         });
 
-        console.log('Status update email sent:', info.messageId);
+        await transporter.sendMail({
+            from: `"${siteName}" <${process.env.SMTP_USER}>`,
+            to: email,
+            subject: `🔥 NEW TEMPLATE 🔥 Complaint #${complaintId.substring(0, 8)} Status Updated`,
+            html,
+        });
+
         return { success: true };
     } catch (error) {
-        console.error('Status update email exception:', error);
-        return { success: false, error: 'Failed to send status update email' };
+        console.error(error);
+        return { success: false };
     }
 }
 
-/**
- * Send welcome email to new users with password setup link
- */
+/* =====================================================
+   3️⃣ WELCOME + SET PASSWORD EMAIL
+===================================================== */
+
 export async function sendWelcomeEmail({
     email,
     userName,
     setPasswordUrl,
     complaintId,
-    trackingUrl,
-}: {
-    email: string;
-    userName: string;
-    setPasswordUrl: string;
-    complaintId: string;
-    trackingUrl: string;
-}): Promise<{ success: boolean; error?: string }> {
+}: any) {
     try {
-        const siteName = process.env.NEXT_PUBLIC_SITE_NAME || 'Snap2Fix';
-        const shortId = complaintId.substring(0, 8).toUpperCase();
+        const { siteUrl, siteName } = getSiteConfig();
 
-        const htmlContent = `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Welcome to ${siteName}</title>
-</head>
-<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f5f5f5; padding: 20px;">
-    <tr>
-      <td align="center">
-        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-          
-          <!-- Header -->
-          <tr>
-            <td style="background-color: #4CAF50; padding: 30px 20px; text-align: center;">
-              <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 600;">
-                🎉 Welcome to ${siteName}!
-              </h1>
-            </td>
-          </tr>
-          
-          <!-- Content -->
-          <tr>
-            <td style="padding: 40px 30px;">
-              <p style="margin: 0 0 20px; font-size: 16px; color: #333333; line-height: 1.6;">
-                Hi <strong>${userName}</strong>,
-              </p>
-              
-              <p style="margin: 0 0 30px; font-size: 16px; color: #333333; line-height: 1.6;">
-                Thank you for submitting your complaint <strong>#${shortId}</strong>! We've created an account for you to track your complaints and manage your profile.
-              </p>
-              
-              <!-- Set Password Button -->
-              <div style="text-align: center; margin: 40px 0;">
-                <a href="${setPasswordUrl}" style="display: inline-block; background-color: #4CAF50; color: #ffffff; text-decoration: none; padding: 14px 40px; border-radius: 6px; font-size: 16px; font-weight: 600; box-shadow: 0 2px 4px rgba(76, 175, 80, 0.3);">
-                  🔐 Set Your Password
-                </a>
-              </div>
-              
-              <p style="margin: 0 0 20px; font-size: 14px; color: #666666; line-height: 1.6;">
-                Click the button above to set your password and access your account. Once done, you can:
-              </p>
-              
-              <ul style="margin: 0 0 30px; padding-left: 20px; color: #666666; font-size: 14px; line-height: 1.8;">
-                <li>Track all your complaints in one place</li>
-                <li>View real-time status updates</li>
-                <li>Access your complaint history</li>
-                <li>Update your profile information</li>
-              </ul>
-              
-              <!-- Complaint Info Box -->
-              <div style="background-color: #f8f9fa; border-left: 4px solid #4CAF50; padding: 20px; margin-bottom: 30px; border-radius: 4px;">
-                <p style="margin: 0 0 8px; font-size: 14px; color: #666666; text-transform: uppercase; letter-spacing: 0.5px;">
-                  Your Current Complaint
-                </p>
-                <p style="margin: 0; font-size: 24px; color: #333333; font-weight: 700; font-family: 'Courier New', monospace;">
-                  #${shortId}
-                </p>
-                <div style="margin-top: 15px;">
-                  <a href="${trackingUrl}" style="color: #4CAF50; text-decoration: none; font-size: 14px; font-weight: 600;">
-                    → Track this complaint
-                  </a>
-                </div>
-              </div>
-              
-              <p style="margin: 0; font-size: 14px; color: #999999; line-height: 1.6;">
-                If you didn't submit a complaint, please ignore this email.
-              </p>
-            </td>
-          </tr>
-          
-          <!-- Footer -->
-          <tr>
-            <td style="background-color: #f8f9fa; padding: 20px 30px; text-align: center; border-top: 1px solid #e0e0e0;">
-              <p style="margin: 0 0 10px; font-size: 14px; color: #666666;">
-                Thank you,<br>
-                <strong>${siteName} Team</strong>
-              </p>
-              <p style="margin: 0; font-size: 12px; color: #999999;">
-                This is an automated email. Please do not reply to this message.
-              </p>
-            </td>
-          </tr>
-          
-        </table>
-      </td>
-    </tr>
-  </table>
-</body>
-</html>
-        `;
-
-        // Send email using SMTP
-        const info = await transporter.sendMail({
-            from: `"${siteName}" <${process.env.SMTP_USER}>`,
-            to: email,
-            subject: `🎉 Welcome to ${siteName} - Set Your Password`,
-            html: htmlContent,
-            text: `Welcome to ${siteName}!\n\nHi ${userName},\n\nThank you for submitting your complaint #${shortId}! We've created an account for you.\n\nSet your password: ${setPasswordUrl}\n\nTrack your complaint: ${trackingUrl}\n\nThank you,\n${siteName} Team`,
+        const html = buildEmailTemplate({
+            heading: "Welcome to " + siteName,
+            userName,
+            message:
+                "An account has been created for you after submitting your complaint. Please set your password to access your dashboard and manage your complaints.",
+            complaintId,
+            buttonText: "Set Your Password",
+            buttonUrl: setPasswordUrl,
+            extraContent: `
+<p style="margin-top:15px;">
+You can also track your complaint instantly using the link below:
+</p>
+<p>
+<a href="${siteUrl}/track/${complaintId}">
+${siteUrl}/track/${complaintId}
+</a>
+</p>
+`,
+            siteName,
         });
 
-        console.log('Welcome email sent successfully:', info.messageId);
+        await transporter.sendMail({
+            from: `"${siteName}" <${process.env.SMTP_USER}>`,
+            to: email,
+            subject: `Welcome to ${siteName} - Set Your Password`,
+            html,
+        });
+
         return { success: true };
     } catch (error) {
-        console.error('Welcome email send exception:', error);
-        return { success: false, error: 'Failed to send welcome email' };
+        console.error(error);
+        return { success: false };
     }
 }

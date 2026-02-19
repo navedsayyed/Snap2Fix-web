@@ -40,6 +40,15 @@ export interface Complaint {
   // Additional timestamp fields
   assigned_at: string | null;
   started_at: string | null;
+  
+  // Specify Problem Type field (separate from title)
+  specified_problem?: string | null;
+  
+  // AI Routing fields
+  ai_routed?: boolean;
+  ai_confidence?: number;
+  ai_reasoning?: string;
+  ai_analyzed_at?: string | null;
 }
 
 /**
@@ -164,6 +173,7 @@ export const DEPARTMENTS = [
   'Mechanical',
   'IT',
   'Housekeeping',
+  'First Year',
   'Administration'
 ] as const;
 
