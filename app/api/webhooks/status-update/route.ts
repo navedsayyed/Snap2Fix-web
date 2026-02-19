@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
             // Fetch full complaint details for email
             const { data: complaint, error: complaintError } = await supabase
                 .from('complaints')
-                .select('title, floor, class, priority, description, completed_notes')
+                .select('title, floor, class, priority, description, completion_notes')
                 .eq('id', complaintId)
                 .single();
 
@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
                     priority: complaint.priority || 'Medium',
                     description: complaint.description || '',
                 },
-                complaint.completed_notes || undefined
+                complaint.completion_notes || undefined
             );
 
             if (emailResult.success) {
