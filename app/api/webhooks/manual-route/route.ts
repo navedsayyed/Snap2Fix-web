@@ -11,6 +11,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { getAdminClient } from '@/lib/supabase';
+import { getDepartmentByFloor } from '@/lib/departmentMapping';
 
 export async function POST(request: NextRequest) {
     try {
@@ -127,13 +128,17 @@ async function notifyTeamAfterManualRouting(
         // Step 1: Notify floor admin (if floor exists)
         let floorAdminCount = 0;
         if (complaint.floor) {
+            // Map floor number to department name (e.g., "1" -> "Civil")
+            const floorDepartment = getDepartmentByFloor(complaint.floor);
+            
             console.log(`\n🏢 Notifying floor ${complaint.floor} admin (monitoring)...`);
+            console.log(`   Floor ${complaint.floor} → ${floorDepartment} department`);
             
             const { data: floorAdmins, error: floorError } = await supabase
                 .from('users')
-                .select('id, email, full_name, role, floor, fcm_token')
+                .select('id, email, full_name, role, department, fcm_token')
                 .eq('role', 'admin')
-                .eq('floor', complaint.floor);
+                .eq('department', floorDepartment);
 
             if (!floorError && floorAdmins && floorAdmins.length > 0) {
                 console.log(`   Found ${floorAdmins.length} floor admin(s)`);
