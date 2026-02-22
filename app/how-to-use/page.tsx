@@ -86,7 +86,6 @@ export default function HowToUsePage() {
                     <p className="text-lg text-[#B0B0B0] max-w-2xl mx-auto">
                         A simple step-by-step process to manage your complaints efficiently
                     </p>
-                    
                 </div>
 
                 {/* Timeline container — the vertical line lives here, NOT full-width */}
@@ -113,7 +112,7 @@ export default function HowToUsePage() {
                             width: '3px',
                             height: '0px',
                             transform: 'translateX(-50%)',
-                            backgroundColor: '#DC2626',
+                            background: 'linear-gradient(to bottom, transparent 0%, rgba(220,38,38,0.3) 8%, rgba(220,38,38,0.7) 20%, #DC2626 40%)',
                             zIndex: 2,
                             pointerEvents: 'none',
                         }}
