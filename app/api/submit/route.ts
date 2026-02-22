@@ -285,28 +285,35 @@ export async function POST(request: NextRequest) {
         // 1. FLOOR ADMIN (monitoring only) - admin sees complaint from their floor
         // 2. DEPARTMENT ADMIN (solving) - admin + technicians handle the complaint
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        try {
-            const notificationResults = await sendComplaintNotifications({
-                supabase,
-                complaintId: complaint.id,
-                complaintDetails: {
-                    type,
-                    title: finalTitle,
-                    description,
-                    location,
-                },
-                handlingDepartment: handlingDepartment,
-                floor: floor,
-            });
+        
+        // ⚡ SKIP NOTIFICATIONS FOR AI_PENDING
+        // AI will send notifications AFTER determining department
+        if (handlingDepartment !== 'AI_PENDING') {
+            try {
+                const notificationResults = await sendComplaintNotifications({
+                    supabase,
+                    complaintId: complaint.id,
+                    complaintDetails: {
+                        type,
+                        title: finalTitle,
+                        description,
+                        location,
+                    },
+                    handlingDepartment: handlingDepartment,
+                    floor: floor,
+                });
 
-            console.log('📱 Notification Summary:');
-            console.log(`   Floor admins notified: ${notificationResults.floorAdminsCount}`);
-            console.log(`   Department admins notified: ${notificationResults.departmentAdminsCount}`);
-            console.log(`   Technicians notified: ${notificationResults.techniciansCount}`);
-            console.log(`   Total notifications sent: ${notificationResults.totalCount}`);
-        } catch (notificationError) {
-            console.error('❌ Notification error:', notificationError);
-            // Don't fail the complaint submission if notifications fail
+                console.log('📱 Notification Summary:');
+                console.log(`   Floor admins notified: ${notificationResults.floorAdminsCount}`);
+                console.log(`   Department admins notified: ${notificationResults.departmentAdminsCount}`);
+                console.log(`   Technicians notified: ${notificationResults.techniciansCount}`);
+                console.log(`   Total notifications sent: ${notificationResults.totalCount}`);
+            } catch (notificationError) {
+                console.error('❌ Notification error:', notificationError);
+                // Don't fail the complaint submission if notifications fail
+            }
+        } else {
+            console.log('⏳ AI_PENDING - Notifications will be sent after AI determines department');
         }
 
         // Generate tracking URL
@@ -427,24 +434,12 @@ async function sendComplaintNotifications(
     console.log(`   🏢 Handling Department: ${handlingDepartment}`);
     console.log(`   🔧 Complaint Type: ${complaintDetails.type}`);
     console.log('   ═══════════════════════════════════════════════════════\n');
-    
     const results: NotificationResults = {
         floorAdminsCount: 0,
         departmentAdminsCount: 0,
         techniciansCount: 0,
         totalCount: 0,
     };
-
-    // For AI_PENDING complaints, only notify floor admin (no department yet)
-    if (handlingDepartment === 'AI_PENDING') {
-        console.log('⚡ AI_PENDING status - notifying floor admin only (department will be determined by AI)');
-        if (floor) {
-            await notifyFloorAdmins(supabase, complaintId, complaintDetails, floor, results);
-        } else {
-            console.log('⚠️  No floor specified - skipping floor admin notification');
-        }
-        return results;
-    }
 
     // Step 1: Get Floor Admins (monitoring only)
     const floorAdmins = floor ? await getFloorAdmins(supabase, floor) : [];

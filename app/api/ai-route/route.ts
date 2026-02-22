@@ -170,13 +170,13 @@ async function notifyDepartmentAdmin(
 ) {
     try {
         console.log(`\n📢 ═══════════════════════════════════════════════════════`);
-        console.log(`   AI ROUTING - NOTIFYING DEPARTMENT TEAM`);
+        console.log(`   AI ROUTING - NOTIFYING TEAM`);
         console.log(`   ═══════════════════════════════════════════════════════`);
         console.log(`   🏢 Department: ${department}`);
         console.log(`   📋 Complaint ID: ${complaintId}`);
         console.log(`   ═══════════════════════════════════════════════════════\n`);
 
-        // Step 1: Get complaint details
+        // Step 1: Get complaint details including floor
         const { data: complaint } = await supabase
             .from('complaints')
             .select('title, description, type, location, floor')
@@ -188,8 +188,130 @@ async function notifyDepartmentAdmin(
             return;
         }
 
-        // Step 2: Find ENTIRE department team (admins + technicians)
-        console.log(`🔍 Fetching ${department} department team (admins + technicians)...`);
+        let totalNotified = 0;
+
+        // Step 2: If Administration (low confidence) → Notify only super_admin
+        if (department === 'Administration') {
+            console.log('⚠️  Low confidence - AI could not determine department');
+            console.log('🔍 Fetching super_admin users for manual review...');
+            
+            const { data: superAdmins, error: adminError } = await supabase
+                .from('users')
+                .select('id, email, full_name, role, fcm_token')
+                .eq('role', 'super_admin');
+
+            if (adminError || !superAdmins || superAdmins.length === 0) {
+                console.log('⚠️  No super_admin users found');
+                return;
+            }
+
+            console.log(`   Found ${superAdmins.length} super_admin(s)`);
+            console.log(`\n📊 Notification Recipients (Manual Review Required):`);
+            
+            superAdmins.forEach((admin: any) => {
+                console.log(`   ✅ ${admin.full_name || admin.email} (Super Admin)`);
+            });
+
+            // Send notifications to super admins
+            const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+            const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+            for (const admin of superAdmins) {
+                const notificationTitle = '⚠️ AI Needs Help - Manual Review Required';
+                const notificationBody = `${complaint.type}: ${complaint.description.substring(0, 50)}${complaint.description.length > 50 ? '...' : ''}`;
+                
+                const pushResponse = await fetch(`${supabaseUrl}/functions/v1/send-push-notification`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${supabaseKey}`,
+                    },
+                    body: JSON.stringify({
+                        userIds: [admin.id],
+                        title: notificationTitle,
+                        body: notificationBody,
+                        data: {
+                            type: 'ai_low_confidence',
+                            complaintId: String(complaintId),
+                            department: 'Administration',
+                            status: 'in-progress',
+                            title: complaint.title,
+                            description: complaint.description,
+                            location: complaint.location,
+                        },
+                    }),
+                });
+
+                const result = await pushResponse.json();
+                if (result.success) {
+                    totalNotified++;
+                }
+            }
+
+            console.log(`\n✅ Successfully notified ${totalNotified} super_admin(s) for manual review`);
+            console.log(`   📊 No floor admin or department team notified (requires manual assignment)`);
+            console.log(`\n📢 ═══════════════════════════════════════════════════════\n`);
+            return;
+        }
+
+        // Step 3: High confidence → Notify floor admin + department team
+        console.log('✅ High confidence - AI determined department successfully');
+        
+        // 3a. Notify floor admin (if floor exists)
+        let floorAdminCount = 0;
+        if (complaint.floor) {
+            console.log(`\n🏢 Notifying floor ${complaint.floor} admin (monitoring)...`);
+            
+            const { data: floorAdmins, error: floorError } = await supabase
+                .from('users')
+                .select('id, email, full_name, role, floor, fcm_token')
+                .eq('role', 'admin')
+                .eq('floor', complaint.floor);
+
+            if (!floorError && floorAdmins && floorAdmins.length > 0) {
+                console.log(`   Found ${floorAdmins.length} floor admin(s)`);
+                
+                const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+                const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+                for (const admin of floorAdmins) {
+                    const notificationTitle = '👁️ New Complaint on Your Floor';
+                    const notificationBody = `Floor ${complaint.floor}: ${complaint.description.substring(0, 50)}${complaint.description.length > 50 ? '...' : ''}`;
+                    
+                    const pushResponse = await fetch(`${supabaseUrl}/functions/v1/send-push-notification`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${supabaseKey}`,
+                        },
+                        body: JSON.stringify({
+                            userIds: [admin.id],
+                            title: notificationTitle,
+                            body: notificationBody,
+                            data: {
+                                type: 'floor_monitoring',
+                                complaintId: String(complaintId),
+                                floor: complaint.floor,
+                                status: 'in-progress',
+                                title: complaint.title,
+                                description: complaint.description,
+                                location: complaint.location,
+                            },
+                        }),
+                    });
+
+                    const result = await pushResponse.json();
+                    if (result.success) {
+                        floorAdminCount++;
+                    }
+                }
+                
+                console.log(`   ✅ Notified ${floorAdminCount} floor admin(s)`);
+            }
+        }
+
+        // 3b. Notify department team (admins + technicians)
+        console.log(`\n🔍 Fetching ${department} department team (admins + technicians)...`);
         
         const { data: departmentTeam, error: teamError } = await supabase
             .from('users')
@@ -199,6 +321,7 @@ async function notifyDepartmentAdmin(
 
         if (teamError || !departmentTeam || departmentTeam.length === 0) {
             console.log(`⚠️  No users found in ${department} department`);
+            console.log(`\n📢 ═══════════════════════════════════════════════════════\n`);
             return;
         }
 
@@ -213,11 +336,11 @@ async function notifyDepartmentAdmin(
             console.log(`   ✅ ${user.full_name || user.email} (${department} ${roleLabel})`);
         });
 
-        // Step 3: Send personalized push notifications
+        // Send personalized push notifications to department team
         const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
         const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
         
-        let notificationsSent = 0;
+        let departmentNotified = 0;
 
         for (const user of departmentTeam) {
             const isAdmin = user.role === 'admin';
@@ -230,11 +353,9 @@ async function notifyDepartmentAdmin(
             if (isTechnician) {
                 notificationTitle = '🔧 New Complaint Assigned';
                 notificationBody = `${complaint.type}: ${complaint.description.substring(0, 50)}${complaint.description.length > 50 ? '...' : ''}`;
-                console.log(`   📲 Technician notification: "${notificationTitle}"`);
             } else if (isAdmin) {
                 notificationTitle = '🤖 AI-Routed Complaint for Your Department';
                 notificationBody = `${complaint.type}: ${complaint.description.substring(0, 50)}${complaint.description.length > 50 ? '...' : ''}`;
-                console.log(`   📲 Admin notification: "${notificationTitle}"`);
             }
             
             // Send notification to this user
@@ -263,22 +384,23 @@ async function notifyDepartmentAdmin(
             const result = await pushResponse.json();
             
             if (result.success) {
-                notificationsSent++;
-            } else {
-                console.error(`   ❌ Failed to notify ${user.email}:`, result);
+                departmentNotified++;
             }
         }
 
-        console.log(`\n✅ Successfully notified ${notificationsSent}/${departmentTeam.length} users`);
+        totalNotified = floorAdminCount + departmentNotified;
+
+        console.log(`\n✅ Successfully notified ${totalNotified} users total`);
         console.log(`   📊 Breakdown:`);
-        console.log(`      • ${admins.length} admin(s)`);
-        console.log(`      • ${technicians.length} technician(s)`);
+        console.log(`      • ${floorAdminCount} floor admin(s) (monitoring)`);
+        console.log(`      • ${admins.length} department admin(s) (solving)`);
+        console.log(`      • ${technicians.length} technician(s) (working)`);
         console.log(`\n📢 ═══════════════════════════════════════════════════════`);
         console.log(`   AI ROUTING - NOTIFICATION COMPLETE`);
         console.log(`   ═══════════════════════════════════════════════════════\n`);
 
     } catch (error) {
-        console.error('❌ Failed to notify department team:', error);
+        console.error('❌ Failed to notify team:', error);
         // Don't throw - notification failure shouldn't fail the routing
     }
 }
