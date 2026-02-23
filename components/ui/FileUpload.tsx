@@ -32,6 +32,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
     const [fileSize, setFileSize] = useState<number | null>(null);
     const [isDragging, setIsDragging] = useState(false);
     const [isCompressing, setIsCompressing] = useState(false);
+    const [showFullImage, setShowFullImage] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
     const cameraRef = useRef<HTMLInputElement>(null);
 
@@ -54,10 +55,12 @@ export const FileUpload: React.FC<FileUploadProps> = ({
                         return;
                     }
                     
-                    // Calculate new dimensions (max 1920x1920 for quality)
+                    // Calculate new dimensions
+                    // For very large images (>10MB), use 1280px max for better compression
+                    // For normal images, use 1920px max
                     let width = img.width;
                     let height = img.height;
-                    const maxDimension = 1920;
+                    const maxDimension = file.size > 10 * 1024 * 1024 ? 1280 : 1920;
                     
                     if (width > maxDimension || height > maxDimension) {
                         if (width > height) {
@@ -77,7 +80,16 @@ export const FileUpload: React.FC<FileUploadProps> = ({
                     ctx.imageSmoothingQuality = 'high';
                     ctx.drawImage(img, 0, 0, width, height);
                     
-                    // Convert to blob with compression (0.85 quality is professional standard)
+                    // Determine quality based on original file size
+                    // Larger files get more aggressive compression
+                    let quality = 0.85; // Default
+                    if (file.size > 10 * 1024 * 1024) {
+                        quality = 0.75; // Very large files
+                    } else if (file.size > 5 * 1024 * 1024) {
+                        quality = 0.80; // Large files
+                    }
+                    
+                    // Convert to blob with compression
                     canvas.toBlob(
                         (blob) => {
                             if (!blob) {
@@ -92,14 +104,19 @@ export const FileUpload: React.FC<FileUploadProps> = ({
                                 { type: 'image/jpeg', lastModified: Date.now() }
                             );
                             
-                            console.log('Original size:', (file.size / 1024 / 1024).toFixed(2), 'MB');
-                            console.log('Compressed size:', (compressedFile.size / 1024 / 1024).toFixed(2), 'MB');
-                            console.log('Compression ratio:', ((1 - compressedFile.size / file.size) * 100).toFixed(0) + '%');
+                            const originalMB = (file.size / 1024 / 1024).toFixed(2);
+                            const compressedMB = (compressedFile.size / 1024 / 1024).toFixed(2);
+                            const ratio = ((1 - compressedFile.size / file.size) * 100).toFixed(0);
+                            
+                            console.log('📸 Image Compression:');
+                            console.log(`   Original: ${originalMB} MB`);
+                            console.log(`   Compressed: ${compressedMB} MB`);
+                            console.log(`   Saved: ${ratio}% smaller`);
                             
                             resolve(compressedFile);
                         },
                         'image/jpeg',
-                        0.85 // Professional quality setting
+                        quality
                     );
                 };
                 
@@ -119,15 +136,16 @@ export const FileUpload: React.FC<FileUploadProps> = ({
             return;
         }
 
-        // Validate file size (before compression)
-        if (file.size > maxSize * 1024 * 1024) {
-            alert(`File size must be less than ${maxSize}MB`);
-            return;
-        }
-
         // Validate file type
         if (!accept.split(',').includes(file.type)) {
             alert('Only JPEG and PNG images are allowed');
+            return;
+        }
+
+        // Allow large files (up to 50MB) since we'll compress them
+        // This handles modern phone cameras that take 5-20MB photos
+        if (file.size > 50 * 1024 * 1024) {
+            alert('File is too large. Please choose a smaller image.');
             return;
         }
 
@@ -136,6 +154,13 @@ export const FileUpload: React.FC<FileUploadProps> = ({
             
             // Compress image automatically
             const compressedFile = await compressImage(file);
+            
+            // Validate compressed size (should be much smaller now)
+            if (compressedFile.size > maxSize * 1024 * 1024) {
+                alert(`Compressed image is still too large (${(compressedFile.size / 1024 / 1024).toFixed(1)}MB). Maximum allowed is ${maxSize}MB.`);
+                setIsCompressing(false);
+                return;
+            }
             
             // Create preview
             const reader = new FileReader();
@@ -236,13 +261,13 @@ export const FileUpload: React.FC<FileUploadProps> = ({
                             <span className="font-semibold text-[#00BFFF]">Click to upload</span> or drag and drop
                         </p>
                         <p className="mt-1 text-xs text-[#B0B0B0]">
-                            PNG or JPEG (max {maxSize}MB)
+                            PNG or JPEG • Large photos auto-compressed
                         </p>
                         <p className="mt-2 text-xs text-[#00BFFF]/80 flex items-center justify-center gap-1">
                             <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                                 <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
                             </svg>
-                            Auto-compressed for faster upload
+                            Optimized automatically for faster upload
                         </p>
                     </div>
                     
@@ -254,7 +279,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
                                 e.preventDefault();
                                 cameraRef.current?.click();
                             }}
-                            className="w-full py-3 px-4 bg-gradient-to-r from-[#00BFFF] to-[#0099CC] text-white font-semibold rounded-lg hover:shadow-lg hover:shadow-[#00BFFF]/20 transition-all duration-200 flex items-center justify-center gap-2"
+                            className="w-full py-3 px-4 bg-gradient-to-r from-[#00BFFF] to-[#0099CC] text-white font-semibold rounded-lg transition-all duration-200 flex items-center justify-center gap-2"
                         >
                             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                                 <path fillRule="evenodd" d="M4 5a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V7a2 2 0 00-2-2h-1.586a1 1 0 01-.707-.293l-1.121-1.121A2 2 0 0011.172 3H8.828a2 2 0 00-1.414.586L6.293 4.707A1 1 0 015.586 5H4zm6 9a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd" />
@@ -265,11 +290,26 @@ export const FileUpload: React.FC<FileUploadProps> = ({
                 </>
             ) : (
                 <div className="relative">
-                    <img
-                        src={preview}
-                        alt="Preview"
-                        className="w-full h-64 object-cover rounded-lg border-2 border-[#404040]"
-                    />
+                    <div 
+                        onClick={() => setShowFullImage(true)}
+                        className="relative group cursor-pointer"
+                    >
+                        <img
+                            src={preview}
+                            alt="Preview"
+                            className="w-full h-64 object-cover rounded-lg border-2 border-[#404040] transition-all duration-200 group-hover:border-[#00BFFF]"
+                        />
+                        {/* View Full Image Overlay */}
+                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-all duration-200 rounded-lg flex items-center justify-center">
+                            <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center gap-2 text-white">
+                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                </svg>
+                                <span className="font-semibold">View Full Image</span>
+                            </div>
+                        </div>
+                    </div>
                     <div className="mt-2 flex items-center justify-between bg-[#2C2C2C] p-3 rounded-lg border border-[#404040]">
                         <div className="flex items-center gap-2 flex-1 min-w-0">
                             <svg width="20" height="20" className="text-[#B0B0B0] flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
@@ -328,6 +368,61 @@ export const FileUpload: React.FC<FileUploadProps> = ({
             )}
             {helperText && !error && (
                 <p className="mt-1.5 text-sm text-[#B0B0B0]">{helperText}</p>
+            )}
+
+            {/* Full Image Viewer Modal */}
+            {showFullImage && preview && (
+                <div 
+                    className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm animate-fadeIn"
+                    onClick={() => setShowFullImage(false)}
+                >
+                    <div className="relative max-w-7xl max-h-[90vh] w-full">
+                        {/* Close Button */}
+                        <button
+                            onClick={() => setShowFullImage(false)}
+                            className="absolute -top-12 right-0 p-2 text-white hover:text-[#00BFFF] transition-colors z-10"
+                            aria-label="Close"
+                        >
+                            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+
+                        {/* Full Image */}
+                        <img
+                            src={preview}
+                            alt="Full size preview"
+                            className="w-full h-full max-h-[90vh] object-contain rounded-lg"
+                            onClick={(e) => e.stopPropagation()}
+                        />
+
+                        {/* Image Info Bar */}
+                        <div 
+                            className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4 rounded-b-lg"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <div className="flex items-center justify-between text-white">
+                                <div className="flex items-center gap-3">
+                                    <svg className="w-5 h-5 text-[#00BFFF]" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
+                                    </svg>
+                                    <div>
+                                        <p className="text-sm font-semibold">{fileName}</p>
+                                        <p className="text-xs text-gray-300">{fileSize && formatFileSize(fileSize)}</p>
+                                    </div>
+                                </div>
+                                <span className="px-3 py-1 bg-[#00BFFF]/20 border border-[#00BFFF]/50 rounded-full text-xs font-semibold text-[#00BFFF]">
+                                    Optimized
+                                </span>
+                            </div>
+                        </div>
+
+                        {/* Tap to close hint */}
+                        <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-black/60 px-4 py-2 rounded-full">
+                            <p className="text-white text-sm">Tap anywhere to close</p>
+                        </div>
+                    </div>
+                </div>
             )}
         </div>
     );
