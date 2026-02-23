@@ -49,8 +49,8 @@ export const Timeline: React.FC<TimelineProps> = ({ events }) => {
 
                             {/* Content */}
                             <div className="flex-1 pb-6">
-                                <div className="flex items-start justify-between gap-4">
-                                    <div>
+                                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-4">
+                                    <div className="flex-1">
                                         <h4 className="font-semibold text-white">{event.status}</h4>
                                         {event.description && (
                                             <p className="text-sm text-[#B0B0B0] mt-0.5">{event.description}</p>

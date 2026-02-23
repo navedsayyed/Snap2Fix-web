@@ -405,33 +405,33 @@ export default function ProfilePage() {
             {/* Main Content */}
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
                 {/* Complaints List with Enhanced Design */}
-                <div id="my-complaints" className="bg-gradient-to-br from-[#1E1E1E] via-[#252525] to-[#1A1A1A] border border-[#333333] rounded-3xl p-6 sm:p-10 hover:border-[#00BFFF]/40 transition-all duration-500">
+                <div id="my-complaints" className="bg-gradient-to-br from-[#1E1E1E] via-[#252525] to-[#1A1A1A] border border-[#333333] rounded-3xl p-4 sm:p-6 lg:p-10 hover:border-[#00BFFF]/40 transition-all duration-500">
 
                     {/* Tab System - In Progress / Completed */}
-                    <div className="flex gap-2 mb-6 bg-[#1A1A1A] p-1.5 rounded-2xl border border-[#2A2A2A]">
+                    <div className="flex gap-2 mb-6 bg-[#1A1A1A] p-1.5 rounded-2xl border border-[#2A2A2A] max-w-md mx-auto">
                         <button
                             onClick={() => setActiveTab('in-progress')}
-                            className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-bold text-sm transition-all duration-300 whitespace-nowrap ${activeTab === 'in-progress'
+                            className={`flex-1 flex items-center justify-center gap-1.5 px-2 sm:px-4 py-3 rounded-xl font-bold text-xs sm:text-sm transition-all duration-300 whitespace-nowrap ${activeTab === 'in-progress'
                                 ? 'bg-gradient-to-r from-[#00BFFF] to-[#0099CC] text-white'
                                 : 'text-[#777777] hover:text-[#CCCCCC] hover:bg-[#252525]'
                                 }`}
                         >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
-                            <span className="text-sm">In Progress</span>
+                            <span>In Progress</span>
                         </button>
                         <button
                             onClick={() => setActiveTab('completed')}
-                            className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-bold text-sm transition-all duration-300 whitespace-nowrap ${activeTab === 'completed'
+                            className={`flex-1 flex items-center justify-center gap-1.5 px-2 sm:px-4 py-3 rounded-xl font-bold text-xs sm:text-sm transition-all duration-300 whitespace-nowrap ${activeTab === 'completed'
                                 ? 'bg-gradient-to-r from-[#00BFFF] to-[#0099CC] text-white'
                                 : 'text-[#777777] hover:text-[#CCCCCC] hover:bg-[#252525]'
                                 }`}
                         >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
-                            <span className="text-sm">Completed</span>
+                            <span>Completed</span>
                         </button>
                     </div>
 
@@ -443,7 +443,7 @@ export default function ProfilePage() {
                                 </svg>
                             </div>
                             <p className="text-[#B0B0B0] text-lg mb-6">No {activeTab === 'in-progress' ? 'in-progress' : 'completed'} complaints yet</p>
-                            {activeTab === 'in-progress' && (
+                            {/* {activeTab === 'in-progress' && (
                                 <Link href="/scan-qr">
                                     <button className="px-8 py-3 bg-gradient-to-r from-[#00BFFF] to-[#0099CC] hover:from-[#00BFFF]/90 hover:to-[#0099CC]/90 text-white rounded-xl hover:scale-105 transition-all duration-300 font-semibold inline-flex items-center gap-2">
                                         Submit Your First Complaint
@@ -452,7 +452,7 @@ export default function ProfilePage() {
                                         </svg>
                                     </button>
                                 </Link>
-                            )}
+                            )} */}
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
