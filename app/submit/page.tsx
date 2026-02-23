@@ -20,6 +20,7 @@ function SubmitForm() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [showImagePreview, setShowImagePreview] = useState(false);
+    const [userRole, setUserRole] = useState<string | null>(null);
 
     // Form state - MATCHING React Native app exactly
     const [formData, setFormData] = useState({
@@ -58,6 +59,7 @@ function SubmitForm() {
     }, [searchParams]);
 
     // Check if user is logged in and auto-fill ONLY their personal info
+    // BUT: Only for regular users, not admins/technicians
     useEffect(() => {
         const loadUserData = async () => {
             try {
@@ -78,15 +80,23 @@ function SubmitForm() {
                         if (response.ok) {
                             const profileData = await response.json();
                             
-                            // Only update personal info, preserve location data from QR
-                            setFormData(prev => ({
-                                ...prev,
-                                email: profileData.email || user.email || '',
-                                name: profileData.full_name || '',
-                                phone: profileData.phone || ''
-                            }));
+                            // Store user role
+                            setUserRole(profileData.role || 'user');
+                            
+                            // Only auto-fill for regular users (not admin/technician/super_admin)
+                            // Admins should manually enter details if they want to test
+                            if (profileData.role === 'user') {
+                                // Only update personal info, preserve location data from QR
+                                setFormData(prev => ({
+                                    ...prev,
+                                    email: profileData.email || user.email || '',
+                                    name: profileData.full_name || '',
+                                    phone: profileData.phone || ''
+                                }));
+                            }
+                            // If admin/technician, don't auto-fill - leave fields empty
                         } else {
-                            // Fallback to just email
+                            // Fallback: only auto-fill email if we can't determine role
                             setFormData(prev => ({
                                 ...prev,
                                 email: user.email || ''
@@ -95,6 +105,7 @@ function SubmitForm() {
                     }
                 }
             } catch (error) {
+                // Silently fail - user can fill form manually
             }
         };
         loadUserData();
@@ -209,6 +220,24 @@ function SubmitForm() {
             </header>
 
             <main className="max-w-4xl mx-auto px-4 py-8">
+                {/* Warning for Admin/Technician accounts */}
+                {userRole && userRole !== 'user' && (
+                    <div className="mb-6 p-4 bg-gradient-to-r from-[#FF9800]/10 to-[#F57C00]/10 border border-[#FF9800]/40 rounded-xl">
+                        <div className="flex items-start gap-3">
+                            <svg className="w-6 h-6 text-[#FF9800] flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                            </svg>
+                            <div className="flex-1">
+                                <h3 className="text-[#FF9800] font-bold text-sm mb-1">Administrative Account Detected</h3>
+                                <p className="text-[#FFB74D] text-sm leading-relaxed">
+                                    You're logged in with a privileged account ({userRole}). This web form is designed for end-users. 
+                                    Please use the mobile application for administrative tasks. Form data will NOT be auto-filled for security.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                )}
+                
                 <p className="text-gray-400 mb-6">Fill out the form below to report an issue</p>
 
                 {/* Location Display Box (Read-Only) */}
