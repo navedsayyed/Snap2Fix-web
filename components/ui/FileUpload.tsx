@@ -31,10 +31,86 @@ export const FileUpload: React.FC<FileUploadProps> = ({
     const [fileName, setFileName] = useState<string | null>(null);
     const [fileSize, setFileSize] = useState<number | null>(null);
     const [isDragging, setIsDragging] = useState(false);
+    const [isCompressing, setIsCompressing] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
     const cameraRef = useRef<HTMLInputElement>(null);
 
-    const handleFileChange = (file: File | null) => {
+    // Professional image compression function
+    const compressImage = async (file: File): Promise<File> => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            
+            reader.onload = (event) => {
+                const img = new Image();
+                img.src = event.target?.result as string;
+                
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    
+                    if (!ctx) {
+                        reject(new Error('Could not get canvas context'));
+                        return;
+                    }
+                    
+                    // Calculate new dimensions (max 1920x1920 for quality)
+                    let width = img.width;
+                    let height = img.height;
+                    const maxDimension = 1920;
+                    
+                    if (width > maxDimension || height > maxDimension) {
+                        if (width > height) {
+                            height = (height / width) * maxDimension;
+                            width = maxDimension;
+                        } else {
+                            width = (width / height) * maxDimension;
+                            height = maxDimension;
+                        }
+                    }
+                    
+                    canvas.width = width;
+                    canvas.height = height;
+                    
+                    // Draw image with high quality
+                    ctx.imageSmoothingEnabled = true;
+                    ctx.imageSmoothingQuality = 'high';
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    // Convert to blob with compression (0.85 quality is professional standard)
+                    canvas.toBlob(
+                        (blob) => {
+                            if (!blob) {
+                                reject(new Error('Could not compress image'));
+                                return;
+                            }
+                            
+                            // Create new file from compressed blob
+                            const compressedFile = new File(
+                                [blob],
+                                file.name.replace(/\.[^/.]+$/, '.jpg'),
+                                { type: 'image/jpeg', lastModified: Date.now() }
+                            );
+                            
+                            console.log('Original size:', (file.size / 1024 / 1024).toFixed(2), 'MB');
+                            console.log('Compressed size:', (compressedFile.size / 1024 / 1024).toFixed(2), 'MB');
+                            console.log('Compression ratio:', ((1 - compressedFile.size / file.size) * 100).toFixed(0) + '%');
+                            
+                            resolve(compressedFile);
+                        },
+                        'image/jpeg',
+                        0.85 // Professional quality setting
+                    );
+                };
+                
+                img.onerror = () => reject(new Error('Could not load image'));
+            };
+            
+            reader.onerror = () => reject(new Error('Could not read file'));
+        });
+    };
+
+    const handleFileChange = async (file: File | null) => {
         if (!file) {
             setPreview(null);
             setFileName(null);
@@ -43,7 +119,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
             return;
         }
 
-        // Validate file size
+        // Validate file size (before compression)
         if (file.size > maxSize * 1024 * 1024) {
             alert(`File size must be less than ${maxSize}MB`);
             return;
@@ -55,16 +131,28 @@ export const FileUpload: React.FC<FileUploadProps> = ({
             return;
         }
 
-        // Create preview
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            setPreview(reader.result as string);
-        };
-        reader.readAsDataURL(file);
+        try {
+            setIsCompressing(true);
+            
+            // Compress image automatically
+            const compressedFile = await compressImage(file);
+            
+            // Create preview
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setPreview(reader.result as string);
+            };
+            reader.readAsDataURL(compressedFile);
 
-        setFileName(file.name);
-        setFileSize(file.size);
-        onChange(file);
+            setFileName(compressedFile.name);
+            setFileSize(compressedFile.size);
+            onChange(compressedFile);
+        } catch (error) {
+            console.error('Image compression failed:', error);
+            alert('Failed to compress image. Please try again.');
+        } finally {
+            setIsCompressing(false);
+        }
     };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -104,6 +192,17 @@ export const FileUpload: React.FC<FileUploadProps> = ({
                 </label>
             )}
 
+            {/* Image Compression Loading Overlay */}
+            {isCompressing && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
+                    <div className="bg-gradient-to-br from-[#1E1E1E] to-[#252525] border-2 border-[#333333] rounded-2xl p-6 max-w-sm w-full mx-4 text-center">
+                        <div className="w-16 h-16 border-4 border-[#00BFFF]/30 border-t-[#00BFFF] rounded-full animate-spin mx-auto mb-4"></div>
+                        <h3 className="text-lg font-bold text-white mb-2">Compressing Image...</h3>
+                        <p className="text-sm text-[#B0B0B0]">Optimizing photo for faster upload</p>
+                    </div>
+                </div>
+            )}
+
             {!preview ? (
                 <>
                     <div
@@ -139,6 +238,12 @@ export const FileUpload: React.FC<FileUploadProps> = ({
                         <p className="mt-1 text-xs text-[#B0B0B0]">
                             PNG or JPEG (max {maxSize}MB)
                         </p>
+                        <p className="mt-2 text-xs text-[#00BFFF]/80 flex items-center justify-center gap-1">
+                            <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
+                            </svg>
+                            Auto-compressed for faster upload
+                        </p>
                     </div>
                     
                     {/* Camera Button */}
@@ -172,7 +277,15 @@ export const FileUpload: React.FC<FileUploadProps> = ({
                             </svg>
                             <div className="flex-1 min-w-0">
                                 <p className="text-sm font-medium text-white truncate">{fileName}</p>
-                                <p className="text-xs text-[#B0B0B0]">{fileSize && formatFileSize(fileSize)}</p>
+                                <div className="flex items-center gap-2">
+                                    <p className="text-xs text-[#B0B0B0]">{fileSize && formatFileSize(fileSize)}</p>
+                                    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-[#00BFFF]/10 border border-[#00BFFF]/30 rounded text-[10px] font-semibold text-[#00BFFF]">
+                                        <svg className="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                        </svg>
+                                        Optimized
+                                    </span>
+                                </div>
                             </div>
                         </div>
                         <button
