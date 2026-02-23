@@ -219,11 +219,11 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 
             {/* Image Compression Loading Overlay */}
             {isCompressing && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
-                    <div className="bg-gradient-to-br from-[#1E1E1E] to-[#252525] border-2 border-[#333333] rounded-2xl p-6 max-w-sm w-full mx-4 text-center">
-                        <div className="w-16 h-16 border-4 border-[#00BFFF]/30 border-t-[#00BFFF] rounded-full animate-spin mx-auto mb-4"></div>
-                        <h3 className="text-lg font-bold text-white mb-2">Compressing Image...</h3>
-                        <p className="text-sm text-[#B0B0B0]">Optimizing photo for faster upload</p>
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm px-4">
+                    <div className="bg-gradient-to-br from-[#1E1E1E] to-[#252525] border-2 border-[#333333] rounded-2xl p-5 sm:p-6 max-w-sm w-full text-center">
+                        <div className="w-12 h-12 sm:w-16 sm:h-16 border-4 border-[#00BFFF]/30 border-t-[#00BFFF] rounded-full animate-spin mx-auto mb-3 sm:mb-4"></div>
+                        <h3 className="text-base sm:text-lg font-bold text-white mb-1.5 sm:mb-2">Compressing Image...</h3>
+                        <p className="text-xs sm:text-sm text-[#B0B0B0]">Optimizing photo for faster upload</p>
                     </div>
                 </div>
             )}
@@ -236,7 +236,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
                         onDragLeave={handleDragLeave}
                         onClick={() => inputRef.current?.click()}
                         className={cn(
-                            'border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-all duration-200',
+                            'border-2 border-dashed rounded-lg p-4 sm:p-6 md:p-8 text-center cursor-pointer transition-all duration-200',
                             isDragging
                                 ? 'border-[#00BFFF] bg-[#2C2C2C]'
                                 : error
@@ -245,7 +245,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
                         )}
                     >
                         <svg
-                            className="mx-auto h-12 w-12 text-[#B0B0B0]"
+                            className="mx-auto h-10 w-10 sm:h-12 sm:w-12 text-[#B0B0B0]"
                             stroke="currentColor"
                             fill="none"
                             viewBox="0 0 48 48"
@@ -257,31 +257,32 @@ export const FileUpload: React.FC<FileUploadProps> = ({
                                 strokeLinejoin="round"
                             />
                         </svg>
-                        <p className="mt-2 text-sm text-[#B0B0B0]">
-                            <span className="font-semibold text-[#00BFFF]">Click to upload</span> or drag and drop
+                        <p className="mt-2 text-xs sm:text-sm text-[#B0B0B0] px-2">
+                            <span className="font-semibold text-[#00BFFF]">Click to upload</span>
+                            <span className="hidden sm:inline"> or drag and drop</span>
                         </p>
-                        <p className="mt-1 text-xs text-[#B0B0B0]">
+                        <p className="mt-1 text-[10px] sm:text-xs text-[#B0B0B0]">
                             PNG or JPEG • Large photos auto-compressed
                         </p>
-                        <p className="mt-2 text-xs text-[#00BFFF]/80 flex items-center justify-center gap-1">
-                            <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                        <p className="mt-2 text-[10px] sm:text-xs text-[#00BFFF]/80 flex items-center justify-center gap-1 px-2">
+                            <svg className="w-3 h-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                 <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
                             </svg>
-                            Optimized automatically for faster upload
+                            <span className="text-center leading-tight">Optimized automatically for faster upload</span>
                         </p>
                     </div>
                     
                     {/* Camera Button */}
-                    <div className="mt-4">
+                    <div className="mt-3 sm:mt-4">
                         <button
                             type="button"
                             onClick={(e) => {
                                 e.preventDefault();
                                 cameraRef.current?.click();
                             }}
-                            className="w-full py-3 px-4 bg-gradient-to-r from-[#00BFFF] to-[#0099CC] text-white font-semibold rounded-lg transition-all duration-200 flex items-center justify-center gap-2"
+                            className="w-full py-2.5 sm:py-3 px-4 bg-gradient-to-r from-[#00BFFF] to-[#0099CC] text-white text-sm sm:text-base font-semibold rounded-lg transition-all duration-200 flex items-center justify-center gap-2"
                         >
-                            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="currentColor" viewBox="0 0 20 20">
                                 <path fillRule="evenodd" d="M4 5a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V7a2 2 0 00-2-2h-1.586a1 1 0 01-.707-.293l-1.121-1.121A2 2 0 0011.172 3H8.828a2 2 0 00-1.414.586L6.293 4.707A1 1 0 015.586 5H4zm6 9a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd" />
                             </svg>
                             Take Photo
@@ -297,30 +298,30 @@ export const FileUpload: React.FC<FileUploadProps> = ({
                         <img
                             src={preview}
                             alt="Preview"
-                            className="w-full h-64 object-cover rounded-lg border-2 border-[#404040] transition-all duration-200 group-hover:border-[#00BFFF]"
+                            className="w-full h-48 sm:h-56 md:h-64 object-cover rounded-lg border-2 border-[#404040] transition-all duration-200 group-hover:border-[#00BFFF]"
                         />
                         {/* View Full Image Overlay */}
                         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-all duration-200 rounded-lg flex items-center justify-center">
                             <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center gap-2 text-white">
-                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                 </svg>
-                                <span className="font-semibold">View Full Image</span>
+                                <span className="text-sm sm:text-base font-semibold">View Full Image</span>
                             </div>
                         </div>
                     </div>
-                    <div className="mt-2 flex items-center justify-between bg-[#2C2C2C] p-3 rounded-lg border border-[#404040]">
+                    <div className="mt-2 flex items-center justify-between bg-[#2C2C2C] p-2 sm:p-3 rounded-lg border border-[#404040]">
                         <div className="flex items-center gap-2 flex-1 min-w-0">
-                            <svg width="20" height="20" className="text-[#B0B0B0] flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <svg width="18" height="18" className="sm:w-5 sm:h-5 text-[#B0B0B0] flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                 <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
                             </svg>
                             <div className="flex-1 min-w-0">
-                                <p className="text-sm font-medium text-white truncate">{fileName}</p>
-                                <div className="flex items-center gap-2">
-                                    <p className="text-xs text-[#B0B0B0]">{fileSize && formatFileSize(fileSize)}</p>
-                                    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-[#00BFFF]/10 border border-[#00BFFF]/30 rounded text-[10px] font-semibold text-[#00BFFF]">
-                                        <svg className="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 20 20">
+                                <p className="text-xs sm:text-sm font-medium text-white truncate">{fileName}</p>
+                                <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+                                    <p className="text-[10px] sm:text-xs text-[#B0B0B0]">{fileSize && formatFileSize(fileSize)}</p>
+                                    <span className="inline-flex items-center gap-0.5 sm:gap-1 px-1 sm:px-1.5 py-0.5 bg-[#00BFFF]/10 border border-[#00BFFF]/30 rounded text-[9px] sm:text-[10px] font-semibold text-[#00BFFF]">
+                                        <svg className="w-2 h-2 sm:w-2.5 sm:h-2.5" fill="currentColor" viewBox="0 0 20 20">
                                             <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                         </svg>
                                         Optimized
@@ -331,9 +332,9 @@ export const FileUpload: React.FC<FileUploadProps> = ({
                         <button
                             type="button"
                             onClick={handleRemove}
-                            className="ml-2 p-1.5 rounded-full hover:bg-[#404040] transition-colors"
+                            className="ml-1 sm:ml-2 p-1 sm:p-1.5 rounded-full hover:bg-[#404040] transition-colors flex-shrink-0"
                         >
-                            <svg width="20" height="20" className="text-[#B0B0B0] hover:text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <svg width="18" height="18" className="sm:w-5 sm:h-5 text-[#B0B0B0] hover:text-white" fill="currentColor" viewBox="0 0 20 20">
                                 <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
                             </svg>
                         </button>
@@ -373,17 +374,17 @@ export const FileUpload: React.FC<FileUploadProps> = ({
             {/* Full Image Viewer Modal */}
             {showFullImage && preview && (
                 <div 
-                    className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm animate-fadeIn"
+                    className="fixed inset-0 z-[200] flex items-center justify-center p-2 sm:p-4 bg-black/90 backdrop-blur-sm animate-fadeIn"
                     onClick={() => setShowFullImage(false)}
                 >
                     <div className="relative max-w-7xl max-h-[90vh] w-full">
                         {/* Close Button */}
                         <button
                             onClick={() => setShowFullImage(false)}
-                            className="absolute -top-12 right-0 p-2 text-white hover:text-[#00BFFF] transition-colors z-10"
+                            className="absolute -top-10 sm:-top-12 right-0 p-1.5 sm:p-2 text-white hover:text-[#00BFFF] transition-colors z-10"
                             aria-label="Close"
                         >
-                            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-6 h-6 sm:w-8 sm:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                             </svg>
                         </button>
@@ -398,28 +399,28 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 
                         {/* Image Info Bar */}
                         <div 
-                            className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4 rounded-b-lg"
+                            className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3 sm:p-4 rounded-b-lg"
                             onClick={(e) => e.stopPropagation()}
                         >
                             <div className="flex items-center justify-between text-white">
-                                <div className="flex items-center gap-3">
-                                    <svg className="w-5 h-5 text-[#00BFFF]" fill="currentColor" viewBox="0 0 20 20">
+                                <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
+                                    <svg className="w-4 h-4 sm:w-5 sm:h-5 text-[#00BFFF] flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                         <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
                                     </svg>
-                                    <div>
-                                        <p className="text-sm font-semibold">{fileName}</p>
-                                        <p className="text-xs text-gray-300">{fileSize && formatFileSize(fileSize)}</p>
+                                    <div className="flex-1 min-w-0">
+                                        <p className="text-xs sm:text-sm font-semibold truncate">{fileName}</p>
+                                        <p className="text-[10px] sm:text-xs text-gray-300">{fileSize && formatFileSize(fileSize)}</p>
                                     </div>
                                 </div>
-                                <span className="px-3 py-1 bg-[#00BFFF]/20 border border-[#00BFFF]/50 rounded-full text-xs font-semibold text-[#00BFFF]">
+                                <span className="px-2 sm:px-3 py-0.5 sm:py-1 bg-[#00BFFF]/20 border border-[#00BFFF]/50 rounded-full text-[10px] sm:text-xs font-semibold text-[#00BFFF] flex-shrink-0">
                                     Optimized
                                 </span>
                             </div>
                         </div>
 
                         {/* Tap to close hint */}
-                        <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-black/60 px-4 py-2 rounded-full">
-                            <p className="text-white text-sm">Tap anywhere to close</p>
+                        <div className="absolute top-2 sm:top-4 left-1/2 transform -translate-x-1/2 bg-black/60 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full">
+                            <p className="text-white text-xs sm:text-sm">Tap anywhere to close</p>
                         </div>
                     </div>
                 </div>
