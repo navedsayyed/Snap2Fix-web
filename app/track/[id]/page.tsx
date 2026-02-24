@@ -83,20 +83,111 @@ export default function TrackComplaintPage() {
 
     if (error || !complaint) {
         return (
-            <div className="min-h-screen bg-[#121212] flex items-center justify-center p-4">
-                <div className="max-w-sm w-full bg-[#1E1E1E] border border-[#404040] rounded-xl shadow-lg p-6 text-center">
-                    <div className="w-12 h-12 bg-[#2C2C2C] border border-[#F44336] rounded-full flex items-center justify-center mx-auto mb-3">
-                        <svg width="24" height="24" className="text-[#F44336]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                        </svg>
+            <div className="min-h-screen bg-[#121212] dotted-background">
+                {/* Header */}
+                <header className="sticky top-0 z-50 pt-4 pb-4">
+                    <div className="max-w-7xl mx-auto px-6 lg:px-8">
+                        <div className="bg-[#1A1A1A]/80 backdrop-blur-md border border-white/10 rounded-full px-6 py-3">
+                            <div className="flex items-center justify-between h-10">
+                                <div className="flex items-center gap-3">
+                                    <Link href="/track" className="p-2 hover:bg-[#2C2C2C] rounded-full transition-colors">
+                                        <svg className="w-5 h-5 text-gray-300 hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                                        </svg>
+                                    </Link>
+                                    <h1 className="text-xl font-bold text-white">Track Complaint</h1>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <h2 className="text-xl font-bold text-white mb-2">Complaint Not Found</h2>
-                    <p className="text-[#B0B0B0] text-sm mb-5">Please check the ID and try again</p>
-                    <Link href="/track">
-                        <button className="px-5 py-2 bg-[#00BFFF] text-white text-sm rounded-lg hover:bg-[#1E90FF] transition-colors">
-                            Try Again
-                        </button>
-                    </Link>
+                </header>
+
+                {/* Error Content */}
+                <div className="flex items-center justify-center px-4 py-8 sm:py-12">
+                    <div className="max-w-md w-full animate-fade-in">
+                        {/* Error Card */}
+                        <div className="bg-gradient-to-br from-[#1E1E1E] via-[#1A1A1A] to-[#1E1E1E] border border-[#333333] rounded-3xl shadow-2xl p-6 sm:p-8 text-center">
+                            {/* Animated Error Icon */}
+                            <div className="relative mb-6">
+                                <div className="absolute inset-0 bg-gradient-to-br from-[#F44336]/20 to-[#D32F2F]/10 rounded-full blur-xl opacity-60 animate-pulse"></div>
+                                <div className="relative w-16 h-16 bg-gradient-to-br from-[#1A1A1A] to-[#252525] border-2 border-[#F44336]/50 rounded-full flex items-center justify-center mx-auto shadow-lg">
+                                    <svg width="32" height="32" className="text-[#F44336]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                    </svg>
+                                </div>
+                            </div>
+
+                            {/* Error Title */}
+                            <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">
+                                Complaint Not Found
+                            </h2>
+
+                            {/* Error Message */}
+                            <p className="text-[#B0B0B0] text-sm mb-1">
+                                We couldn't find a complaint with ID: <span className="text-white font-mono font-semibold">#{complaintId}</span>
+                            </p>
+                            <p className="text-[#808080] text-xs mb-6">
+                                Please check the ID and try again
+                            </p>
+
+                            {/* Suggestions */}
+                            <div className="bg-[#2C2C2C]/50 border border-[#404040] rounded-2xl p-4 mb-6 text-left">
+                                <h3 className="text-white font-semibold text-sm mb-3">
+                                    Possible reasons:
+                                </h3>
+                                <ul className="space-y-2 text-xs text-[#B0B0B0]">
+                                    <li className="flex items-start gap-2">
+                                        <span className="w-1 h-1 bg-[#00BFFF] rounded-full mt-1.5 flex-shrink-0"></span>
+                                        <span>The complaint ID might be incorrect or misspelled</span>
+                                    </li>
+                                    <li className="flex items-start gap-2">
+                                        <span className="w-1 h-1 bg-[#00BFFF] rounded-full mt-1.5 flex-shrink-0"></span>
+                                        <span>Check your confirmation email for the exact ID</span>
+                                    </li>
+                                    <li className="flex items-start gap-2">
+                                        <span className="w-1 h-1 bg-[#00BFFF] rounded-full mt-1.5 flex-shrink-0"></span>
+                                        <span>The complaint may have been removed or archived</span>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            {/* Action Buttons */}
+                            <div className="flex flex-col sm:flex-row gap-3">
+                                <Link href="/track" className="flex-1">
+                                    <button className="w-full px-6 py-3 bg-gradient-to-r from-[#00BFFF] to-[#0099CC] hover:from-[#00D4FF] hover:to-[#00AADD] text-white font-semibold rounded-xl transition-all duration-300 hover:scale-[1.02] shadow-lg hover:shadow-xl flex items-center justify-center gap-2">
+                                        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                        </svg>
+                                        <span>Try Another ID</span>
+                                    </button>
+                                </Link>
+                                <Link href="/" className="flex-1">
+                                    <button className="w-full px-6 py-3 bg-[#2C2C2C] hover:bg-[#353535] text-white font-semibold rounded-xl transition-all duration-300 border border-[#404040] hover:border-[#505050]">
+                                        Go to Home
+                                    </button>
+                                </Link>
+                            </div>
+
+                            {/* Help Text */}
+                            <div className="mt-5 pt-5 border-t border-[#333333]">
+                                <p className="text-xs text-[#808080]">
+                                    Need help? Contact support at{' '}
+                                    <a href="mailto:snap2fix.official@gmail.com" className="text-[#00BFFF] hover:underline">
+                                        snap2fix.official@gmail.com
+                                    </a>
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* Quick Action */}
+                        <div className="mt-4 text-center">
+                            <Link href="/scan-qr">
+                                <button className="px-4 py-2 text-xs font-medium text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200 border border-white/10 hover:border-white/20">
+                                    Submit New Complaint Instead
+                                </button>
+                            </Link>
+                        </div>
+                    </div>
                 </div>
             </div>
         );
