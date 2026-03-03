@@ -83,7 +83,7 @@ export const submitComplaintApiSchema = z.object({
     issue_type: z.string().min(1),
     priority: z.enum(['Low', 'Medium', 'High']),
     description: z.string().min(10).max(1000),
-    image_url: z.string().url().optional(),
+    image_url: z.string().optional(), // Can be either a file path or full URL for backward compatibility
     department: z.string().optional(),
 });
 

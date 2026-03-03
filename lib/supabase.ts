@@ -1,6 +1,12 @@
 /**
  * Supabase Client Configuration
  * Provides a singleton instance of the Supabase client
+ * 
+ * IMAGE STORAGE PATTERN:
+ * - Store only file paths in database (e.g., "complaints/1234_image.jpg")
+ * - NOT full URLs (e.g., "https://...supabase.co/storage/...")
+ * - Use getImagePublicUrl() to construct full URLs when displaying images
+ * - This pattern enables easy migration and storage provider switching
  */
 
 import { createClient } from '@supabase/supabase-js';
@@ -37,11 +43,27 @@ export const getAdminClient = () => {
 };
 
 /**
+ * Get the public URL for a stored file path
+ * @param filePath - The relative file path stored in the database (e.g., "complaints/1234_image.jpg")
+ * @param bucket - The storage bucket name
+ * @returns The full public URL
+ */
+export function getImagePublicUrl(
+    filePath: string,
+    bucket: string = 'complaint-images'
+): string {
+    const { data: { publicUrl } } = supabase.storage
+        .from(bucket)
+        .getPublicUrl(filePath);
+    
+    return publicUrl;
+}
+
+/**
  * Upload an image to Supabase Storage
  * @param file - The file to upload
  * @param bucket - The storage bucket name
- * @param path - The path within the bucket
- * @returns The public URL of the uploaded file
+ * @returns The file path (NOT the full URL) for database storage
  */
 export async function uploadImage(
     file: File,
@@ -73,14 +95,11 @@ export async function uploadImage(
             return { url: null, error: new Error('Upload failed: no data returned') };
         }
 
-        // Get public URL
-        const { data: { publicUrl } } = supabase.storage
-            .from(bucket)
-            .getPublicUrl(data.path);
+        // Return ONLY the file path, not the full URL
+        // This allows easy migration and storage provider switching
+        console.log('Upload successful, file path:', data.path);
 
-        console.log('Upload successful, public URL:', publicUrl);
-
-        return { url: publicUrl, error: null };
+        return { url: data.path, error: null };
     } catch (error) {
         console.error('Upload exception:', error);
         return { url: null, error: error as Error };

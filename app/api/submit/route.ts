@@ -176,7 +176,7 @@ export async function POST(request: NextRequest) {
             class: classRoom || null,
             status: 'in-progress',
             assigned_to: null,
-            image_url: imageUrl, // Add image URL to complaint
+            image_url: imageUrl, // File path (e.g., "complaints/1234_image.jpg"), not full URL
         };
 
         // Insert complaint
@@ -206,12 +206,12 @@ export async function POST(request: NextRequest) {
 
         console.log('Complaint created successfully:', complaint.id);
 
-        // Save image
+        // Save image reference (imageUrl is now a file path, not full URL)
         if (imageUrl && complaint?.id) {
-            console.log('Saving image reference for complaint:', complaint.id);
+            console.log('Saving image file path for complaint:', complaint.id);
             const { error: imageError } = await supabase.from('complaint_images').insert({
                 complaint_id: complaint.id,
-                url: imageUrl,
+                url: imageUrl, // Storing file path (e.g., "complaints/1234_image.jpg")
                 storage_path: imageUrl,
             });
             

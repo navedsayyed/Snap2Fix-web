@@ -23,8 +23,8 @@ export interface Complaint {
   room_number: string;
   status: ComplaintStatus;
   priority: ComplaintPriority;
-  image_url: string | null;
-  proof_image: string | null;
+  image_url: string | null; // File path (e.g., "complaints/1234_image.jpg"), not full URL
+  proof_image: string | null; // File path (e.g., "complaints/1234_proof.jpg"), not full URL
   technician_id: string | null;
   created_at: string;
   updated_at: string;

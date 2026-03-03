@@ -10,7 +10,7 @@ import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { Timeline } from '@/components/ui/Timeline';
-import { subscribeToComplaint } from '@/lib/supabase';
+import { subscribeToComplaint, getImagePublicUrl } from '@/lib/supabase';
 import { ComplaintWithDetails, ComplaintStatus } from '@/lib/types';
 import { shortId, formatDateTime } from '@/lib/utils';
 
@@ -24,6 +24,17 @@ export default function TrackComplaintPage() {
     const [error, setError] = useState<string | null>(null);
     const [showImageViewer, setShowImageViewer] = useState(false);
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+    // Helper to get full image URL from file path
+    const getImageUrl = (filePath: string | null): string | null => {
+        if (!filePath) return null;
+        // If it's already a full URL (for backward compatibility), return as-is
+        if (filePath.startsWith('http://') || filePath.startsWith('https://')) {
+            return filePath;
+        }
+        // Otherwise, construct the public URL from the file path
+        return getImagePublicUrl(filePath);
+    };
 
     useEffect(() => {
         fetchComplaint();
@@ -331,11 +342,11 @@ export default function TrackComplaintPage() {
                                         <h4 className="text-sm font-bold text-white">Before (Your Photo)</h4>
                                     </div>
                                     <button
-                                        onClick={() => openImageViewer(complaint.image_url!)}
+                                        onClick={() => openImageViewer(getImageUrl(complaint.image_url)!)}
                                         className="w-full group relative overflow-hidden rounded-xl"
                                     >
                                         <img
-                                            src={complaint.image_url || ''}
+                                            src={getImageUrl(complaint.image_url) || ''}
                                             alt="Original complaint"
                                             className="w-full h-64 object-cover rounded-xl border border-[#404040] transition-transform duration-300 group-hover:scale-105"
                                         />
@@ -357,11 +368,11 @@ export default function TrackComplaintPage() {
                                         <h4 className="text-sm font-bold text-white">After (Completed Work)</h4>
                                     </div>
                                     <button
-                                        onClick={() => openImageViewer(complaint.proof_image!)}
+                                        onClick={() => openImageViewer(getImageUrl(complaint.proof_image)!)}
                                         className="w-full group relative overflow-hidden rounded-xl"
                                     >
                                         <img
-                                            src={complaint.proof_image || ''}
+                                            src={getImageUrl(complaint.proof_image) || ''}
                                             alt="Completed work"
                                             className="w-full h-64 object-cover rounded-xl border border-[#404040] transition-transform duration-300 group-hover:scale-105"
                                         />
@@ -380,11 +391,11 @@ export default function TrackComplaintPage() {
                     <div className="bg-gradient-to-br from-[#1E1E1E] via-[#252525] to-[#1A1A1A] border border-[#333333] rounded-2xl shadow-2xl p-5 sm:p-6 mb-5 hover:border-[#00BFFF]/30 transition-all duration-500">
                         <h3 className="text-lg font-bold text-white mb-3">Complaint Photo</h3>
                         <button
-                            onClick={() => openImageViewer(complaint.image_url!)}
+                            onClick={() => openImageViewer(getImageUrl(complaint.image_url)!)}
                             className="w-full group relative overflow-hidden rounded-xl"
                         >
                             <img
-                                src={complaint.image_url || ''}
+                                src={getImageUrl(complaint.image_url) || ''}
                                 alt="Complaint"
                                 className="w-full h-72 object-cover rounded-xl border border-[#404040] transition-transform duration-300 group-hover:scale-105"
                             />
