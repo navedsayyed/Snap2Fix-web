@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { supabase } from '@/lib/supabase';
 
 export default function ResetPasswordPage() {
     const router = useRouter();
@@ -19,16 +18,17 @@ export default function ResetPasswordPage() {
         setLoading(true);
 
         try {
-            // Automatically use the correct redirect URL
-            const redirectUrl = typeof window !== 'undefined'
-                ? `${window.location.origin}/update-password`
-                : 'https://snap2fix.vercel.app/update-password';
-
-            const { error } = await supabase.auth.resetPasswordForEmail(email, {
-                redirectTo: redirectUrl,
+            const response = await fetch('/api/reset-password', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: email.trim() }),
             });
 
-            if (error) throw error;
+            const data = await response.json();
+
+            if (!response.ok || !data.success) {
+                throw new Error(data.error || 'Failed to send reset link');
+            }
 
             setMessage('Password reset link has been sent to your email!');
             setTimeout(() => {

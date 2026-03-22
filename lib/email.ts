@@ -441,7 +441,101 @@ ${completionNotes}
 }
 
 /* =====================================================
-   3️⃣ WELCOME + SET PASSWORD EMAIL
+   3️⃣ OTP VERIFICATION EMAIL
+===================================================== */
+
+export async function sendOtpEmail({
+    email,
+    otp,
+}: {
+    email: string;
+    otp: string;
+}) {
+    try {
+        const { siteName } = getSiteConfig();
+
+        const subject = `Your ${siteName} Verification Code`;
+
+        const html = `
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Your Verification Code</title>
+</head>
+<body style="margin:0;padding:0;background:${EMAIL_THEME.colors.background};font-family:${EMAIL_THEME.fonts.family};">
+<table width="100%" cellpadding="0" cellspacing="0" style="padding:30px;">
+<tr><td align="center">
+<table width="100%" cellpadding="0" cellspacing="0"
+  style="max-width:520px;background:${EMAIL_THEME.colors.cardBackground};border-radius:10px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,0.1);">
+<!-- Header -->
+<tr>
+  <td style="background:${EMAIL_THEME.colors.primary};padding:30px;text-align:center;">
+    <h1 style="margin:0;color:white;font-size:24px;font-weight:600;">Email Verification</h1>
+  </td>
+</tr>
+<!-- Body -->
+<tr>
+  <td style="padding:40px;">
+    <p style="font-size:15px;color:${EMAIL_THEME.colors.textPrimary};margin-bottom:10px;">
+      Use the code below to verify your email address for <strong>${siteName}</strong>.
+    </p>
+    <div style="text-align:center;margin:30px 0;">
+      <div style="
+        display:inline-block;
+        background:#f0f9ff;
+        border:2px dashed ${EMAIL_THEME.colors.primary};
+        border-radius:12px;
+        padding:18px 40px;
+      ">
+        <span style="font-size:38px;font-weight:700;letter-spacing:10px;color:${EMAIL_THEME.colors.primary};">
+          ${otp}
+        </span>
+      </div>
+    </div>
+    <p style="font-size:13px;color:${EMAIL_THEME.colors.textSecondary};text-align:center;margin-top:0;">
+      This code expires in <strong>5 minutes</strong>.
+    </p>
+    <p style="font-size:12px;color:#aaa;text-align:center;margin-top:20px;">
+      If you didn't request this, please ignore this email.
+    </p>
+  </td>
+</tr>
+<!-- Footer -->
+<tr>
+  <td style="background:#f8f9fa;padding:20px;text-align:center;border-top:1px solid ${EMAIL_THEME.colors.border};">
+    <p style="margin:0;font-size:13px;color:#666;">
+      ${EMAIL_THEME.footer.tagline}<br>
+      <strong>${EMAIL_THEME.footer.companyName}</strong>
+    </p>
+    <p style="margin-top:5px;font-size:12px;color:#999;">
+      ${EMAIL_THEME.footer.noteToUser}
+    </p>
+  </td>
+</tr>
+</table>
+</td></tr>
+</table>
+</body>
+</html>`;
+
+        await transporter.sendMail({
+            from: `"${siteName}" <${process.env.SMTP_USER}>`,
+            to: email,
+            subject,
+            html,
+        });
+
+        return { success: true };
+    } catch (error) {
+        console.error('sendOtpEmail error:', error);
+        return { success: false };
+    }
+}
+
+/* =====================================================
+   4️⃣ WELCOME + SET PASSWORD EMAIL
 ===================================================== */
 
 export async function sendWelcomeEmail({
