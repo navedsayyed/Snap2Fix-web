@@ -177,8 +177,8 @@ export default function HomePage() {
       </header>
 
       {/* Hero Section */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
-        <div className="text-center mb-8 sm:mb-12 animate-fade-in px-2">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
+        <div className="text-center mb-0 animate-fade-in px-2">
           <h2 className="text-4xl sm:text-6xl lg:text-7xl font-bold text-white mb-5 sm:mb-7 leading-tight tracking-tight flex flex-col items-center justify-center gap-2">
             <span className="flex items-baseline justify-center gap-3">
               Manage <img src="/Complaints.svg" alt="Complaints" className="h-10 sm:h-14 lg:h-16 w-auto inline-block relative" style={{top: '0.3em'}} />
