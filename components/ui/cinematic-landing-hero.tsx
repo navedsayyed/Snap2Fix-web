@@ -61,12 +61,12 @@ const INJECTED_STYLES = `
 
 /* Deep Physical Card with Dynamic Mouse Lighting */
 .premium-depth-card {
-  background: linear-gradient(145deg, #162C6D 0%, #0A101D 100%);
-  box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.9),
-              0 20px 40px -20px rgba(0, 0, 0, 0.8),
+  background: linear-gradient(145deg, #00BFFF 0%, #0099CC 50%, #006B8F 100%);
+  box-shadow: 0 40px 100px -20px rgba(0, 191, 255, 0.4),
+              0 20px 40px -20px rgba(0, 153, 204, 0.3),
               inset 0 1px 2px rgba(255, 255, 255, 0.2),
-              inset 0 -2px 4px rgba(0, 0, 0, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.04);
+              inset 0 -2px 4px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   position: relative;
 }
 
