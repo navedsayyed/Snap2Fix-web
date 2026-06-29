@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
@@ -103,11 +103,74 @@ const steps = [
 ];
 
 const stats = [
-  { value: '1,200+', label: 'Issues Resolved' },
-  { value: '10', label: 'Workflow Steps' },
-  { value: '< 24h', label: 'Avg. Response' },
-  { value: '100%', label: 'Free to Use' },
+  { value: 1200, suffix: '+', label: 'Issues Resolved', duration: 2000 },
+  { value: 10, suffix: '', label: 'Workflow Steps', duration: 1500 },
+  { value: 24, suffix: 'h', label: 'Avg. Response', prefix: '< ', duration: 1800 },
+  { value: 100, suffix: '%', label: 'Free to Use', duration: 2000 },
 ];
+
+// Animated counter component
+function AnimatedCounter({ 
+  value, 
+  duration = 2000, 
+  prefix = '', 
+  suffix = '' 
+}: { 
+  value: number; 
+  duration?: number; 
+  prefix?: string; 
+  suffix?: string;
+}) {
+  const [count, setCount] = useState(0);
+  const [hasAnimated, setHasAnimated] = useState(false);
+  const counterRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !hasAnimated) {
+            setHasAnimated(true);
+            const startTime = Date.now();
+            const endValue = value;
+
+            const animate = () => {
+              const now = Date.now();
+              const progress = Math.min((now - startTime) / duration, 1);
+              
+              // Easing function for smooth animation
+              const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+              const currentCount = Math.floor(easeOutQuart * endValue);
+              
+              setCount(currentCount);
+
+              if (progress < 1) {
+                requestAnimationFrame(animate);
+              } else {
+                setCount(endValue);
+              }
+            };
+
+            animate();
+          }
+        });
+      },
+      { threshold: 0.3 }
+    );
+
+    if (counterRef.current) {
+      observer.observe(counterRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [value, duration, hasAnimated]);
+
+  return (
+    <div ref={counterRef} className="text-2xl sm:text-3xl font-bold text-white mb-1.5 tabular-nums">
+      {prefix}{count.toLocaleString()}{suffix}
+    </div>
+  );
+}
 
 export function HomeLanding() {
   const revealRef = useReveal();
@@ -250,15 +313,43 @@ export function HomeLanding() {
       </section>
 
       {/* Stats */}
-      <section className="border-y border-[#2A2A2A] bg-[#1A1A1A]/50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
-            {stats.map((stat) => (
-              <div key={stat.label} data-reveal className="reveal-up text-center">
-                <p className="text-3xl sm:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#00BFFF] to-[#0099CC] mb-1">
-                  {stat.value}
-                </p>
-                <p className="text-sm text-[#808080] uppercase tracking-wider">{stat.label}</p>
+      <section className="border-y border-[#2A2A2A]/50 bg-gradient-to-b from-[#0A0A0A] to-[#121212] relative overflow-hidden">
+        {/* Subtle background pattern */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute inset-0" style={{
+            backgroundImage: `radial-gradient(circle at 2px 2px, rgba(255,255,255,0.15) 1px, transparent 0)`,
+            backgroundSize: '32px 32px'
+          }} />
+        </div>
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 relative z-10">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+            {stats.map((stat, index) => (
+              <div 
+                key={stat.label} 
+                data-reveal 
+                className="reveal-up text-center group"
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
+                <div className="relative inline-block">
+                  {/* Animated gradient border effect */}
+                  <div className="absolute -inset-1 bg-gradient-to-r from-white/10 via-white/5 to-white/10 rounded-xl opacity-0 group-hover:opacity-100 blur transition-opacity duration-500" />
+                  
+                  <div className="relative bg-[#1A1A1A]/50 backdrop-blur-sm border border-white/5 rounded-xl px-5 py-5 group-hover:border-white/10 transition-all duration-300">
+                    <AnimatedCounter 
+                      value={stat.value} 
+                      duration={stat.duration}
+                      prefix={stat.prefix}
+                      suffix={stat.suffix}
+                    />
+                    <p className="text-[10px] sm:text-xs text-[#808080] group-hover:text-[#A0A0A0] uppercase tracking-widest font-medium transition-colors duration-300">
+                      {stat.label}
+                    </p>
+                    
+                    {/* Bottom accent line */}
+                    <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 group-hover:w-3/4 h-[2px] bg-gradient-to-r from-transparent via-white/30 to-transparent transition-all duration-500" />
+                  </div>
+                </div>
               </div>
             ))}
           </div>
