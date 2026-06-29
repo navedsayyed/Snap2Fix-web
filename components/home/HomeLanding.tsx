@@ -10,6 +10,7 @@ import {
   Activity,
   ArrowRight,
   CheckCircle2,
+  Check,
   Smartphone,
   Globe,
   Zap,
@@ -201,10 +202,10 @@ export function HomeLanding() {
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 <Link
-                  href="/scan-qr"
+                  href="/contact"
                   className="inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-gradient-to-r from-[#8B0000] to-[#6B0000] hover:from-[#A00000] hover:to-[#7B0000] text-white text-sm font-semibold rounded-full transition-all duration-300 uppercase tracking-wide border border-[#A00000]/30 shadow-lg shadow-[#8B0000]/20"
                 >
-                  Submit Complaint
+                  Reach Us
                   <ArrowRight className="w-4 h-4" />
                 </Link>
                 <Link
@@ -254,17 +255,18 @@ export function HomeLanding() {
                     ].map((item) => (
                       <div key={item.label} className="flex items-center gap-3">
                         <div
-                          className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${
+                          className={`w-5 h-5 rounded-md flex items-center justify-center flex-shrink-0 border transition-colors ${
                             item.done
                               ? item.active
-                                ? 'bg-[#FF9800]/20 border border-[#FF9800]'
-                                : 'bg-[#4CAF50]/20 border border-[#4CAF50]'
-                              : 'bg-[#2A2A2A] border border-[#404040]'
+                                ? 'bg-[#FF9800]/10 border-[#FF9800]'
+                                : 'bg-[#4CAF50]/10 border-[#4CAF50]'
+                              : 'bg-transparent border-[#404040]'
                           }`}
                         >
                           {item.done && (
-                            <CheckCircle2
+                            <Check
                               className={`w-3.5 h-3.5 ${item.active ? 'text-[#FF9800]' : 'text-[#4CAF50]'}`}
+                              strokeWidth={3}
                             />
                           )}
                         </div>
