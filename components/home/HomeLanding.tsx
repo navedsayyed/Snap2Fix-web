@@ -185,7 +185,7 @@ export function HomeLanding() {
           <div className="absolute bottom-10 right-1/4 w-96 h-96 bg-[#DC2626]/8 rounded-full blur-[120px]" />
         </div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-4 lg:pt-4 pb-16 lg:pb-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 sm:pt-12 lg:pt-16 pb-16 lg:pb-24">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             <div data-reveal className="reveal-up text-center lg:text-left">
               <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-white leading-[1.1] tracking-tight mb-6">
