@@ -5,12 +5,11 @@
 
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Button } from '@/components/ui/Button';
 import { getCurrentUser } from '@/lib/auth';
-import { CinematicHero } from '@/components/ui/cinematic-landing-hero';
+import { HomeLanding } from '@/components/home/HomeLanding';
 
 export default function HomePage() {
   const router = useRouter();
@@ -176,29 +175,10 @@ export default function HomePage() {
         )}
       </header>
 
-      {/* Cinematic Hero Section */}
-      <div className="overflow-x-hidden w-full">
-        <CinematicHero
-          brandName="Snap2Fix"
-          tagline1="Report the issue,"
-          tagline2="track the solution."
-          cardHeading="Public Works, Simplified."
-          cardDescription={
-            <>
-              <span className="text-white font-semibold">Snap2Fix</span> empowers 
-              citizens to report infrastructure issues with AI-powered routing, 
-              real-time tracking, and seamless communication with municipal departments.
-            </>
-          }
-          metricValue={1247}
-          metricLabel="Issues Resolved"
-          ctaHeading="Start reporting today."
-          ctaDescription="Join thousands making our communities better, one report at a time."
-        />
-      </div>
+      <HomeLanding />
 
       {/* Professional Footer */}
-      <footer className="bg-gradient-to-t from-[#0A0A0A] to-[#1A1A1A] border-t border-[#2A2A2A] mt-24">
+      <footer className="bg-gradient-to-t from-[#0A0A0A] to-[#1A1A1A] border-t border-[#2A2A2A]">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
                     {/* Main Footer Content */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 mb-12">
