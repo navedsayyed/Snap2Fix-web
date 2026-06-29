@@ -51,16 +51,13 @@ export default function ContactPage() {
       <header className="sticky top-0 z-50 pt-4 pb-4">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="bg-[#1A1A1A]/80 backdrop-blur-md border border-white/10 rounded-full px-6 py-3">
-            <div className="flex items-center justify-between h-10">
-              <Link href="/" className="flex items-center gap-2">
-                <img src="/snap2fix-logo.svg" alt="Snap2Fix" className="h-7 w-auto" />
-              </Link>
+            <div className="flex items-center h-10">
               <Link
                 href="/"
-                className="inline-flex items-center gap-2 text-sm text-gray-300 hover:text-white transition-colors"
+                className="inline-flex items-center gap-3 text-white hover:text-gray-300 transition-colors"
               >
-                <ArrowLeft className="w-4 h-4" />
-                Back to Home
+                <ArrowLeft className="w-5 h-5" />
+                <span className="text-lg font-bold">Reach Us</span>
               </Link>
             </div>
           </div>
