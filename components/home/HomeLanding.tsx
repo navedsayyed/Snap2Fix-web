@@ -200,17 +200,17 @@ export function HomeLanding() {
                 and follow your issue from submission to resolution in real time.
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start items-center lg:items-start">
                 <Link
                   href="/contact"
-                  className="inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-gradient-to-r from-[#8B0000] to-[#6B0000] hover:from-[#A00000] hover:to-[#7B0000] text-white text-sm font-semibold rounded-full transition-all duration-300 uppercase tracking-wide border border-[#A00000]/30 shadow-lg shadow-[#8B0000]/20"
+                  className="inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3.5 bg-gradient-to-r from-[#8B0000] to-[#6B0000] hover:from-[#A00000] hover:to-[#7B0000] text-white text-sm font-semibold rounded-full transition-all duration-300 uppercase tracking-wide border border-[#A00000]/30 shadow-lg shadow-[#8B0000]/20 w-full max-w-xs sm:w-auto"
                 >
                   Reach Us
                   <ArrowRight className="w-4 h-4" />
                 </Link>
                 <Link
                   href="/track"
-                  className="inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-[#1E1E1E] hover:bg-[#2A2A2A] text-white text-sm font-semibold rounded-full transition-all duration-300 uppercase tracking-wide border border-[#333333]"
+                  className="inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3.5 bg-[#1E1E1E] hover:bg-[#2A2A2A] text-white text-sm font-semibold rounded-full transition-all duration-300 uppercase tracking-wide border border-[#333333] w-full max-w-xs sm:w-auto"
                 >
                   Track Complaint
                 </Link>

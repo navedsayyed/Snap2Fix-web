@@ -82,8 +82,8 @@ export default function ContactPage() {
         </div>
 
         <div className="grid lg:grid-cols-3 gap-8 lg:gap-12">
-          {/* Contact Information */}
-          <div className="space-y-6">
+          {/* Contact Information - Hidden on mobile */}
+          <div className="hidden lg:block space-y-6">
             <div className="bg-gradient-to-br from-[#1E1E1E] to-[#1A1A1A] rounded-3xl border border-[#333333] p-6">
               <div className="w-12 h-12 rounded-xl bg-[#00BFFF]/10 border border-[#00BFFF]/20 flex items-center justify-center mb-4">
                 <Mail className="w-6 h-6 text-[#00BFFF]" />
@@ -123,7 +123,7 @@ export default function ContactPage() {
           </div>
 
           {/* Contact Form */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2 w-full">
             <div className="bg-gradient-to-br from-[#1E1E1E] to-[#1A1A1A] rounded-3xl border border-[#333333] p-8">
               <h2 className="text-2xl font-bold text-white mb-6">Send us a Message</h2>
               
