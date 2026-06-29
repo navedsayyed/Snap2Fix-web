@@ -201,14 +201,6 @@ function LaneRow({ lane, isLast }: { lane: FlowLane; isLast: boolean }) {
   );
 }
 
-/** Compact status legend */
-const statusFlow = [
-  { status: 'Submitted', color: '#FFC107' },
-  { status: 'Assigned', color: '#2196F3' },
-  { status: 'In Progress', color: '#FF9800' },
-  { status: 'Completed', color: '#4CAF50' },
-];
-
 export function WorkflowDiagram() {
   return (
     <section className="py-16 sm:py-24 border-t border-[#2A2A2A]">
@@ -247,55 +239,6 @@ export function WorkflowDiagram() {
               <LaneRow key={lane.id} lane={lane} isLast={i === lanes.length - 1} />
             ))}
           </div>
-        </div>
-
-        {/* Status flow bar */}
-        <div data-reveal className="reveal-up mt-8">
-          <p className="text-center text-xs text-[#606060] uppercase tracking-widest mb-4">
-            Complaint Status Progression
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-0">
-            {statusFlow.map((item, i) => (
-              <div key={item.status} className="flex items-center">
-                <div
-                  className="px-4 py-2 rounded-full text-xs font-semibold border"
-                  style={{
-                    color: item.color,
-                    borderColor: `${item.color}40`,
-                    backgroundColor: `${item.color}15`,
-                  }}
-                >
-                  {item.status}
-                </div>
-                {i < statusFlow.length - 1 && (
-                  <ArrowRight className="w-4 h-4 text-[#404040] mx-2 hidden sm:block" aria-hidden="true" />
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Legend */}
-        <div
-          data-reveal
-          className="reveal-up mt-8 flex flex-wrap justify-center gap-4 sm:gap-8"
-        >
-          {[
-            { label: 'Web Portal', color: '#00BFFF', icon: Globe },
-            { label: 'System / AI', color: '#A855F7', icon: Server },
-            { label: 'Mobile App', color: '#DC2626', icon: Smartphone },
-            { label: 'Resolved', color: '#4CAF50', icon: CheckCircle2 },
-          ].map(({ label, color, icon: Icon }) => (
-            <div key={label} className="flex items-center gap-2">
-              <div
-                className="w-3 h-3 rounded-full"
-                style={{ backgroundColor: color }}
-                aria-hidden="true"
-              />
-              <Icon className="w-4 h-4" style={{ color }} />
-              <span className="text-xs text-[#808080]">{label}</span>
-            </div>
-          ))}
         </div>
       </div>
     </section>
