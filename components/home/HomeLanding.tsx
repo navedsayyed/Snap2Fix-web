@@ -438,8 +438,10 @@ export function HomeLanding() {
         </div>
       </section>
 
-      {/* Complete workflow diagram */}
-      <WorkflowDiagram />
+      {/* Complete workflow diagram - Hidden on mobile */}
+      <div className="hidden md:block">
+        <WorkflowDiagram />
+      </div>
 
       {/* Web + App */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
