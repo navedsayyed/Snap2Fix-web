@@ -229,15 +229,15 @@ export function WorkflowDiagram() {
         {/* Diagram container */}
         <div
           data-reveal
-          className="reveal-up relative bg-gradient-to-br from-[#1E1E1E] to-[#141414] rounded-3xl border border-[#333333] p-6 sm:p-10 overflow-x-auto"
+          className="reveal-up relative bg-gradient-to-br from-[#0A0A0A] to-[#000000] rounded-3xl border border-[#333333] p-6 sm:p-10 overflow-x-auto"
         >
-          {/* Background grid */}
+          {/* Dark Grid Lines Background */}
           <div
-            className="absolute inset-0 opacity-30 pointer-events-none rounded-3xl"
+            className="absolute inset-0 opacity-40 pointer-events-none rounded-3xl"
             style={{
-              backgroundImage:
-                'linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px)',
-              backgroundSize: '40px 40px',
+              backgroundImage: `linear-gradient(to right, #262626 1px, transparent 1px),
+                linear-gradient(to bottom, #262626 1px, transparent 1px)`,
+              backgroundSize: "20px 20px",
             }}
             aria-hidden="true"
           />
