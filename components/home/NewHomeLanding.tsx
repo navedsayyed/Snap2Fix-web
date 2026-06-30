@@ -283,7 +283,7 @@ export function NewHomeLanding() {
       </section>
 
       {/* Stats Section */}
-      <section className="border-y border-[#2A2A2A]/50 bg-gradient-to-b from-[#0A0A0A] to-[#121212] relative overflow-hidden">
+      <section className="relative overflow-hidden">
         <div className="absolute inset-0 opacity-5">
           <div className="absolute inset-0" style={{
             backgroundImage: `radial-gradient(circle at 2px 2px, rgba(255,255,255,0.15) 1px, transparent 0)`,
@@ -357,7 +357,7 @@ export function NewHomeLanding() {
       </section>
 
       {/* How It Works */}
-      <section className="py-16 sm:py-24 bg-[#0A0A0A]">
+      <section className="py-16 sm:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div data-reveal className="reveal-up text-center mb-12">
             <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
