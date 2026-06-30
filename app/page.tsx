@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { getCurrentUser } from '@/lib/auth';
 import { HomeLanding } from '@/components/home/HomeLanding';
+import { NewHomeLanding } from '@/components/home/NewHomeLanding';
 
 export default function HomePage() {
   const router = useRouter();
@@ -175,7 +176,7 @@ export default function HomePage() {
         )}
       </header>
 
-      <HomeLanding />
+      <NewHomeLanding />
 
       {/* Professional Footer */}
       <footer className="bg-gradient-to-t from-[#0A0A0A] to-[#1A1A1A] border-t border-[#2A2A2A]">
