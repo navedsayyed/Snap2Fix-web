@@ -19,6 +19,7 @@ export default function ContactPage() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState('');
+  const [submitStatus, setSubmitStatus] = useState<'success' | 'error' | ''>('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData({
@@ -30,19 +31,38 @@ export default function ContactPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
-    // Simulate form submission
-    setTimeout(() => {
-      setSubmitMessage('Thank you for contacting us! We will get back to you soon.');
-      setIsSubmitting(false);
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        subject: '',
-        message: '',
+    setSubmitMessage('');
+    setSubmitStatus('');
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
       });
-    }, 1500);
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        setSubmitStatus('success');
+        setSubmitMessage('Thank you for contacting us! A confirmation email has been sent to your inbox. We will get back to you soon.');
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          subject: '',
+          message: '',
+        });
+      } else {
+        setSubmitStatus('error');
+        setSubmitMessage(data.error || 'Something went wrong. Please try again.');
+      }
+    } catch {
+      setSubmitStatus('error');
+      setSubmitMessage('Network error. Please check your connection and try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -125,7 +145,11 @@ export default function ContactPage() {
               <h2 className="text-2xl font-bold text-white mb-6">Send us a Message</h2>
               
               {submitMessage && (
-                <div className="mb-6 p-4 bg-[#4CAF50]/10 border border-[#4CAF50]/30 rounded-xl text-[#4CAF50] text-sm">
+                <div className={`mb-6 p-4 rounded-xl text-sm ${
+                  submitStatus === 'success'
+                    ? 'bg-[#4CAF50]/10 border border-[#4CAF50]/30 text-[#4CAF50]'
+                    : 'bg-[#DC2626]/10 border border-[#DC2626]/30 text-[#DC2626]'
+                }`}>
                   {submitMessage}
                 </div>
               )}

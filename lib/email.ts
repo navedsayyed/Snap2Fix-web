@@ -581,3 +581,79 @@ ${siteUrl}/track/${complaintId}
         return { success: false };
     }
 }
+
+/* =====================================================
+   5️⃣ CONTACT FORM CONFIRMATION EMAIL
+===================================================== */
+
+export async function sendContactConfirmationEmail({
+    email,
+    userName,
+    subject,
+    message,
+    messageId,
+}: {
+    email: string;
+    userName: string;
+    subject: string;
+    message: string;
+    messageId: string;
+}) {
+    try {
+        const { siteUrl, siteName } = getSiteConfig();
+
+        const shortId = messageId.substring(0, 8).toUpperCase();
+
+        const extraContent = `
+<div style="
+background:#f8f9fa;
+padding:20px;
+border-left:4px solid ${EMAIL_THEME.colors.primary};
+border-radius:6px;
+margin:20px 0;
+">
+<p style="margin:0 0 12px;font-size:${EMAIL_THEME.fonts.smallSize};color:${EMAIL_THEME.colors.textSecondary};font-weight:600;">
+YOUR MESSAGE DETAILS
+</p>
+<p style="margin:0 0 8px;font-size:${EMAIL_THEME.fonts.bodySize};color:${EMAIL_THEME.colors.textPrimary};">
+<strong>Reference ID:</strong> #${shortId}
+</p>
+<p style="margin:0 0 8px;font-size:${EMAIL_THEME.fonts.bodySize};color:${EMAIL_THEME.colors.textPrimary};">
+<strong>Subject:</strong> ${subject}
+</p>
+<p style="margin:0 0 8px;font-size:${EMAIL_THEME.fonts.bodySize};color:${EMAIL_THEME.colors.textPrimary};">
+<strong>Message:</strong>
+</p>
+<p style="margin:0;font-size:${EMAIL_THEME.fonts.bodySize};color:${EMAIL_THEME.colors.textSecondary};line-height:1.6;font-style:italic;">
+"${message}"
+</p>
+</div>
+<p style="font-size:${EMAIL_THEME.fonts.bodySize};color:${EMAIL_THEME.colors.textPrimary};line-height:1.6;margin-top:20px;">
+Our team will review your message and get back to you as soon as possible. If your inquiry is urgent, feel free to reach out to us directly at <a href="mailto:snap2fix.official@gmail.com" style="color:${EMAIL_THEME.colors.primary};text-decoration:none;font-weight:600;">snap2fix.official@gmail.com</a>.
+</p>
+`;
+
+        const html = buildEmailTemplate({
+            heading: "Message Received!",
+            userName,
+            message:
+                "Thank you for reaching out to us! We have received your message and wanted to confirm that it has been successfully submitted.",
+            buttonText: "Visit Snap2Fix",
+            buttonUrl: siteUrl,
+            extraContent,
+            siteName,
+        });
+
+        await transporter.sendMail({
+            from: `"${siteName}" <${process.env.SMTP_USER}>`,
+            to: email,
+            subject: `We received your message - ${subject} | ${siteName}`,
+            html,
+        });
+
+        return { success: true };
+    } catch (error) {
+        console.error('sendContactConfirmationEmail error:', error);
+        return { success: false };
+    }
+}
