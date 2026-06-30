@@ -198,17 +198,17 @@ export function NewHomeLanding() {
           </div>
 
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
+          <div className="flex flex-row gap-3 sm:gap-4 justify-center items-center mb-16 px-4">
             <Link
               href="/contact"
-              className="inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3.5 bg-gradient-to-r from-[#8B0000] to-[#6B0000] hover:from-[#A00000] hover:to-[#7B0000] text-white text-sm font-semibold rounded-full transition-all duration-300 uppercase tracking-wide border border-[#A00000]/30 shadow-lg shadow-[#8B0000]/20 w-full max-w-xs sm:w-auto"
+              className="inline-flex items-center justify-center gap-2 px-5 sm:px-8 py-3 sm:py-3.5 bg-gradient-to-r from-[#8B0000] to-[#6B0000] hover:from-[#A00000] hover:to-[#7B0000] text-white text-xs sm:text-sm font-semibold rounded-full transition-all duration-300 uppercase tracking-wide border border-[#A00000]/30 shadow-lg shadow-[#8B0000]/20 whitespace-nowrap"
             >
               Reach Us
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </Link>
             <Link
               href="/track"
-              className="inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3.5 bg-[#1E1E1E] hover:bg-[#2A2A2A] text-white text-sm font-semibold rounded-full transition-all duration-300 uppercase tracking-wide border border-[#333333] w-full max-w-xs sm:w-auto"
+              className="inline-flex items-center justify-center gap-2 px-5 sm:px-8 py-3 sm:py-3.5 bg-[#1E1E1E] hover:bg-[#2A2A2A] text-white text-xs sm:text-sm font-semibold rounded-full transition-all duration-300 uppercase tracking-wide border border-[#333333] whitespace-nowrap"
             >
               Track Complaint
             </Link>
@@ -217,7 +217,7 @@ export function NewHomeLanding() {
       </section>
 
       {/* Workflow Diagram Section */}
-      <section className="pb-16 lg:pb-24">
+      <section className="hidden sm:block pb-16 lg:pb-24">
         <div className="max-w-[95%] 2xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8">
           <div data-reveal className="reveal-up text-center mb-10">
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4 tracking-tight">
@@ -276,7 +276,7 @@ export function NewHomeLanding() {
               </h3>
 
               <p className="text-base sm:text-lg text-[#B0B0B0] max-w-xl mx-auto lg:mx-0 leading-relaxed mb-8">
-                Snap2Fix makes facility complaints effortless — scan a QR code, upload a photo,
+                Snap2Fix makes facility complaints effortless scan a QR code, upload a photo,
                 and follow your issue from submission to resolution in real time.
               </p>
             </div>
