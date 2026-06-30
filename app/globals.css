@@ -5,32 +5,46 @@
 @layer base {
   :root {
     /* Primary Colors */
-    --primary: #00BFFF;
-    --secondary: #0099CC;
-    --accent: #FF9800;
+    --primary: 199 89% 48%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 199 89% 40%;
+    --secondary-foreground: 0 0% 100%;
+    --accent: 36 100% 50%;
+    --accent-foreground: 0 0% 100%;
     --primary-transparent: rgba(0, 191, 255, 0.1);
     
     /* Background Colors */
-    --background: #121212;
+    --background: 0 0% 7%;
+    --foreground: 0 0% 100%;
     --surface: #1A1A1A;
-    --card: #1E1E1E;
+    --card: 0 0% 12%;
+    --card-foreground: 0 0% 100%;
     
     /* Text Colors */
     --text: #FFFFFF;
     --text-secondary: #A0A0A0;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 63%;
+    --popover: 0 0% 12%;
+    --popover-foreground: 0 0% 100%;
     
     /* Status Colors */
     --success: #4CAF50;
     --error: #F44336;
     --warning: #FFC107;
     --info: #2196F3;
+    --destructive: 0 63% 55%;
+    --destructive-foreground: 0 0% 100%;
     
     /* Other Colors */
-    --border: #2A2A2A;
+    --border: 0 0% 16%;
+    --input: 0 0% 16%;
+    --ring: 199 89% 48%;
+    --radius: 0.5rem;
   }
   
   body {
-    @apply bg-[#121212] text-white;
+    @apply bg-background text-foreground;
     font-smooth: antialiased;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
