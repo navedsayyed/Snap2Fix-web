@@ -180,12 +180,12 @@ export function NewHomeLanding() {
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-20">
           <div className="text-center mb-12 sm:mb-20 animate-fade-in px-2">
             <h2 className="text-4xl sm:text-6xl lg:text-7xl font-bold text-white mb-5 sm:mb-7 leading-tight tracking-tight flex flex-col items-center justify-center gap-2">
-              <span className="flex items-center sm:items-baseline justify-center gap-5 sm:gap-6">
+              <span className="flex items-center sm:items-baseline justify-center gap-3 sm:gap-6">
                 Manage 
                 <img 
                   src="/Complaints.svg" 
                   alt="Complaints" 
-                  className="h-12 sm:h-16 lg:h-20 w-auto inline-block relative translate-y-[0.05em] sm:translate-y-[0.25em] lg:translate-y-[0.35em]" 
+                  className="h-12 sm:h-16 lg:h-20 w-auto inline-block relative -translate-y-[0.05em] sm:translate-y-[0.25em] lg:translate-y-[0.35em]" 
                 />
               </span>
               <span className="text-white mt-2">Effortlessly</span>
