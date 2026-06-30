@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { Check } from 'lucide-react';
+import Link from 'next/link';
 
 const Pricing = () => {
   const [isAnnual, setIsAnnual] = useState(false);
@@ -148,15 +149,17 @@ const Pricing = () => {
                 ))}
               </div>
 
-              <button
-                className={`w-full py-2.5 px-4 rounded-xl text-sm font-medium transition-colors ${
-                  plan.highlighted
-                    ? 'bg-gradient-to-r from-[#00BFFF] to-[#0099CC] text-white hover:from-[#0099CC] hover:to-[#0088BB]'
-                    : 'border border-white/10 text-white hover:bg-white/5'
-                }`}
-              >
-                {plan.cta}
-              </button>
+              <Link href="/contact" className="block">
+                <button
+                  className={`w-full py-2.5 px-4 rounded-xl text-sm font-medium transition-colors ${
+                    plan.highlighted
+                      ? 'bg-gradient-to-r from-[#00BFFF] to-[#0099CC] text-white hover:from-[#0099CC] hover:to-[#0088BB]'
+                      : 'border border-white/10 text-white hover:bg-white/5'
+                  }`}
+                >
+                  {plan.cta}
+                </button>
+              </Link>
             </div>
           ))}
         </div>
