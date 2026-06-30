@@ -238,8 +238,8 @@ export function NewHomeLanding() {
               {/* Decorative glow effects */}
               <div className="absolute -inset-4 bg-gradient-to-br from-[#00BFFF]/10 via-transparent to-[#DC2626]/5 rounded-[2rem] blur-3xl pointer-events-none" />
               
-              {/* Workflow block with fixed height for visibility */}
-              <div className="relative w-full" style={{ height: '700px' }}>
+              {/* Workflow block with increased height for better visibility */}
+              <div className="relative w-full" style={{ height: '750px' }}>
                 <N8nWorkflowBlock />
               </div>
 
