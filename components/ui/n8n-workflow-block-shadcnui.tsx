@@ -159,7 +159,7 @@ const snap2fixNodes: WorkflowNode[] = [
     description: "Student / Staff / Guest submits complaint via Web Portal",
     icon: User,
     color: "cyan",
-    position: { x: 55, y: 55 },
+    position: { x: 55, y: 30 },
     section: "COMPLAINT SUBMISSION",
     pulse: true,
   },
@@ -170,7 +170,7 @@ const snap2fixNodes: WorkflowNode[] = [
     description: "Login • Guest Complaint • QR Scan • Upload Image • Track",
     icon: Globe,
     color: "blue",
-    position: { x: 370, y: 55 },
+    position: { x: 370, y: 30 },
   },
   {
     id: "api-validation",
@@ -179,7 +179,7 @@ const snap2fixNodes: WorkflowNode[] = [
     description: "Zod validation • Image upload • Generate tracking token",
     icon: ShieldCheck,
     color: "violet",
-    position: { x: 700, y: 55 },
+    position: { x: 800, y: 30 },
   },
 
   // Right side: AI Routing (dropped down from API Validation)
@@ -190,7 +190,7 @@ const snap2fixNodes: WorkflowNode[] = [
     description: "Analyze description • Find department • Confidence score",
     icon: Brain,
     color: "amber",
-    position: { x: 1050, y: 190 },
+    position: { x: 1150, y: 210 },
     pulse: true,
   },
 
@@ -215,7 +215,7 @@ const snap2fixNodes: WorkflowNode[] = [
     description: "Admin • Technician • Super Admin mobile dashboards",
     icon: Smartphone,
     color: "purple",
-    position: { x: 20, y: 330 },
+    position: { x: 20, y: 320 },
   },
 
   // Center: Realtime Notification
@@ -226,7 +226,7 @@ const snap2fixNodes: WorkflowNode[] = [
     description: "Push updates to Web & Mobile • Live status sync",
     icon: Bell,
     color: "pink",
-    position: { x: 580, y: 340 },
+    position: { x: 700, y: 320 },
   },
 
   // Left-center: Admin Dashboard
@@ -237,7 +237,7 @@ const snap2fixNodes: WorkflowNode[] = [
     description: "View department complaints • Manage assignments",
     icon: LayoutDashboard,
     color: "orange",
-    position: { x: 290, y: 420 },
+    position: { x: 400, y: 430 },
     section: "ADMIN & ASSIGNMENT",
   },
 
@@ -249,7 +249,7 @@ const snap2fixNodes: WorkflowNode[] = [
     description: "Route complaint to available technician • Status → In Progress",
     icon: UserCheck,
     color: "teal",
-    position: { x: 600, y: 465 },
+    position: { x: 800, y: 480 },
   },
 
   // Right side: Complaint Resolved
@@ -260,7 +260,7 @@ const snap2fixNodes: WorkflowNode[] = [
     description: "Status → Completed • User notified • Timeline updated",
     icon: CheckCircle2,
     color: "green",
-    position: { x: 1000, y: 400 },
+    position: { x: 1150, y: 400 },
     pulse: true,
   },
 
@@ -272,7 +272,7 @@ const snap2fixNodes: WorkflowNode[] = [
     description: "Visit location • Diagnose & fix issue • On-site resolution",
     icon: Wrench,
     color: "lime",
-    position: { x: 230, y: 570 },
+    position: { x: 230, y: 580 },
     section: "RESOLUTION",
   },
 
@@ -284,7 +284,7 @@ const snap2fixNodes: WorkflowNode[] = [
     description: "After photo • Completion notes • Before/After comparison",
     icon: Camera,
     color: "sky",
-    position: { x: 960, y: 580 },
+    position: { x: 1150, y: 580 },
   },
 ];
 
@@ -321,9 +321,9 @@ const snap2fixConnections: WorkflowConnection[] = [
 // ─── Section Labels ──────────────────────────────────────────────────────────
 
 const sectionLabels: SectionLabel[] = [
-  { text: "COMPLAINT SUBMISSION", position: { x: 55, y: 25 }, color: "text-cyan-500/60" },
+  { text: "COMPLAINT SUBMISSION", position: { x: 55, y: 1 }, color: "text-cyan-500/60" },
   { text: "BACKEND PROCESSING", position: { x: 310, y: 180 }, color: "text-emerald-500/60" },
-  { text: "ADMIN & ASSIGNMENT", position: { x: 290, y: 393 }, color: "text-orange-500/60" },
+  { text: "ADMIN & ASSIGNMENT", position: { x: 400, y: 400 }, color: "text-orange-500/60" },
   { text: "RESOLUTION", position: { x: 230, y: 542 }, color: "text-lime-500/60" },
 ];
 
