@@ -1,7 +1,9 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, type PanInfo } from "framer-motion";
 import type React from "react";
+import { useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import {
@@ -18,7 +20,6 @@ import {
   Camera,
   CheckCircle2,
   ArrowRight,
-  Workflow,
 } from "lucide-react";
 
 // ─── Interfaces ──────────────────────────────────────────────────────────────
@@ -150,7 +151,7 @@ const colorClasses: Record<
 // ─── Snap2Fix Workflow Nodes ─────────────────────────────────────────────────
 
 const snap2fixNodes: WorkflowNode[] = [
-  // Row 1: User Submission Flow
+  // Top row: Complaint Submission
   {
     id: "end-user",
     type: "trigger",
@@ -158,7 +159,7 @@ const snap2fixNodes: WorkflowNode[] = [
     description: "Student / Staff / Guest submits complaint via Web Portal",
     icon: User,
     color: "cyan",
-    position: { x: 60, y: 60 },
+    position: { x: 55, y: 55 },
     section: "COMPLAINT SUBMISSION",
     pulse: true,
   },
@@ -169,7 +170,7 @@ const snap2fixNodes: WorkflowNode[] = [
     description: "Login • Guest Complaint • QR Scan • Upload Image • Track",
     icon: Globe,
     color: "blue",
-    position: { x: 350, y: 60 },
+    position: { x: 370, y: 55 },
   },
   {
     id: "api-validation",
@@ -178,8 +179,10 @@ const snap2fixNodes: WorkflowNode[] = [
     description: "Zod validation • Image upload • Generate tracking token",
     icon: ShieldCheck,
     color: "violet",
-    position: { x: 640, y: 60 },
+    position: { x: 700, y: 55 },
   },
+
+  // Right side: AI Routing (dropped down from API Validation)
   {
     id: "ai-routing",
     type: "condition",
@@ -187,11 +190,11 @@ const snap2fixNodes: WorkflowNode[] = [
     description: "Analyze description • Find department • Confidence score",
     icon: Brain,
     color: "amber",
-    position: { x: 930, y: 60 },
+    position: { x: 1050, y: 190 },
     pulse: true,
   },
 
-  // Row 2: Backend Processing
+  // Mid-left: Supabase Backend
   {
     id: "supabase",
     type: "action",
@@ -199,19 +202,12 @@ const snap2fixNodes: WorkflowNode[] = [
     description: "PostgreSQL • Auth • Storage • Realtime subscriptions",
     icon: Database,
     color: "emerald",
-    position: { x: 350, y: 260 },
+    position: { x: 310, y: 210 },
     section: "BACKEND PROCESSING",
     pulse: true,
   },
-  {
-    id: "realtime",
-    type: "action",
-    title: "Realtime Notification",
-    description: "Push updates to Web & Mobile • Live status sync",
-    icon: Bell,
-    color: "pink",
-    position: { x: 640, y: 260 },
-  },
+
+  // Far left: React Native App
   {
     id: "mobile-app",
     type: "action",
@@ -219,10 +215,21 @@ const snap2fixNodes: WorkflowNode[] = [
     description: "Admin • Technician • Super Admin mobile dashboards",
     icon: Smartphone,
     color: "purple",
-    position: { x: 930, y: 260 },
+    position: { x: 20, y: 330 },
   },
 
-  // Row 3: Admin & Resolution Flow
+  // Center: Realtime Notification
+  {
+    id: "realtime",
+    type: "action",
+    title: "Realtime Notification",
+    description: "Push updates to Web & Mobile • Live status sync",
+    icon: Bell,
+    color: "pink",
+    position: { x: 580, y: 340 },
+  },
+
+  // Left-center: Admin Dashboard
   {
     id: "admin-dashboard",
     type: "action",
@@ -230,9 +237,11 @@ const snap2fixNodes: WorkflowNode[] = [
     description: "View department complaints • Manage assignments",
     icon: LayoutDashboard,
     color: "orange",
-    position: { x: 350, y: 460 },
+    position: { x: 290, y: 420 },
     section: "ADMIN & ASSIGNMENT",
   },
+
+  // Center: Assign Technician
   {
     id: "assign-tech",
     type: "action",
@@ -240,29 +249,10 @@ const snap2fixNodes: WorkflowNode[] = [
     description: "Route complaint to available technician • Status → In Progress",
     icon: UserCheck,
     color: "teal",
-    position: { x: 640, y: 460 },
+    position: { x: 600, y: 465 },
   },
 
-  // Row 4: Technician Resolution
-  {
-    id: "tech-repairs",
-    type: "action",
-    title: "Technician Repairs",
-    description: "Visit location • Diagnose & fix issue • On-site resolution",
-    icon: Wrench,
-    color: "lime",
-    position: { x: 350, y: 660 },
-    section: "RESOLUTION",
-  },
-  {
-    id: "upload-proof",
-    type: "action",
-    title: "Upload Proof",
-    description: "After photo • Completion notes • Before/After comparison",
-    icon: Camera,
-    color: "sky",
-    position: { x: 640, y: 660 },
-  },
+  // Right side: Complaint Resolved
   {
     id: "resolved",
     type: "output",
@@ -270,8 +260,31 @@ const snap2fixNodes: WorkflowNode[] = [
     description: "Status → Completed • User notified • Timeline updated",
     icon: CheckCircle2,
     color: "green",
-    position: { x: 930, y: 660 },
+    position: { x: 1000, y: 400 },
     pulse: true,
+  },
+
+  // Bottom-left: Technician Repairs
+  {
+    id: "tech-repairs",
+    type: "action",
+    title: "Technician Repairs",
+    description: "Visit location • Diagnose & fix issue • On-site resolution",
+    icon: Wrench,
+    color: "lime",
+    position: { x: 230, y: 570 },
+    section: "RESOLUTION",
+  },
+
+  // Bottom-right: Upload Proof
+  {
+    id: "upload-proof",
+    type: "action",
+    title: "Upload Proof",
+    description: "After photo • Completion notes • Before/After comparison",
+    icon: Camera,
+    color: "sky",
+    position: { x: 960, y: 580 },
   },
 ];
 
@@ -308,10 +321,10 @@ const snap2fixConnections: WorkflowConnection[] = [
 // ─── Section Labels ──────────────────────────────────────────────────────────
 
 const sectionLabels: SectionLabel[] = [
-  { text: "COMPLAINT SUBMISSION", position: { x: 60, y: 30 }, color: "text-cyan-500/60" },
-  { text: "BACKEND PROCESSING", position: { x: 350, y: 230 }, color: "text-emerald-500/60" },
-  { text: "ADMIN & ASSIGNMENT", position: { x: 350, y: 430 }, color: "text-orange-500/60" },
-  { text: "RESOLUTION", position: { x: 350, y: 630 }, color: "text-lime-500/60" },
+  { text: "COMPLAINT SUBMISSION", position: { x: 55, y: 25 }, color: "text-cyan-500/60" },
+  { text: "BACKEND PROCESSING", position: { x: 310, y: 180 }, color: "text-emerald-500/60" },
+  { text: "ADMIN & ASSIGNMENT", position: { x: 290, y: 393 }, color: "text-orange-500/60" },
+  { text: "RESOLUTION", position: { x: 230, y: 542 }, color: "text-lime-500/60" },
 ];
 
 // ─── Connection Line Component ───────────────────────────────────────────────
@@ -497,55 +510,64 @@ function DotGrid() {
 // ─── Main Component ──────────────────────────────────────────────────────────
 
 export function N8nWorkflowBlock() {
-  const nodes = snap2fixNodes;
+  const [nodes, setNodes] = useState<WorkflowNode[]>(snap2fixNodes);
   const connections = snap2fixConnections;
+  const canvasRef = useRef<HTMLDivElement>(null);
+  const dragStartPosition = useRef<{ x: number; y: number } | null>(null);
+  const [draggingNodeId, setDraggingNodeId] = useState<string | null>(null);
+
+  const [contentSize, setContentSize] = useState(() => {
+    const maxX = Math.max(...snap2fixNodes.map((n) => n.position.x + NODE_WIDTH));
+    const maxY = Math.max(...snap2fixNodes.map((n) => n.position.y + NODE_HEIGHT));
+    return { width: Math.max(CANVAS_WIDTH, maxX + 50), height: Math.max(CANVAS_HEIGHT, maxY + 50) };
+  });
+
+  const handleDragStart = (nodeId: string) => {
+    setDraggingNodeId(nodeId);
+    const node = nodes.find((n) => n.id === nodeId);
+    if (node) {
+      dragStartPosition.current = { x: node.position.x, y: node.position.y };
+    }
+  };
+
+  const handleDrag = (nodeId: string, { offset }: PanInfo) => {
+    if (draggingNodeId !== nodeId || !dragStartPosition.current) return;
+    const newX = Math.max(0, dragStartPosition.current.x + offset.x);
+    const newY = Math.max(0, dragStartPosition.current.y + offset.y);
+
+    flushSync(() => {
+      setNodes((prev) =>
+        prev.map((node) =>
+          node.id === nodeId
+            ? { ...node, position: { x: newX, y: newY } }
+            : node
+        )
+      );
+    });
+
+    setContentSize((prev) => ({
+      width: Math.max(prev.width, newX + NODE_WIDTH + 50),
+      height: Math.max(prev.height, newY + NODE_HEIGHT + 50),
+    }));
+  };
+
+  const handleDragEnd = () => {
+    setDraggingNodeId(null);
+    dragStartPosition.current = null;
+  };
 
   return (
-    <div className="relative w-full overflow-hidden rounded-2xl border border-border/40 bg-background/60 backdrop-blur">
-      {/* Header */}
-      <div className="relative z-10 flex flex-wrap items-center justify-between gap-3 border-b border-border/30 px-4 py-3 sm:px-6">
-        <div className="flex items-center gap-3">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/15 border border-emerald-400/30">
-            <Workflow className="h-4 w-4 text-emerald-400" />
-          </div>
-          <div>
-            <h2 className="text-sm font-semibold tracking-tight text-foreground">
-              Snap2Fix Ecosystem
-            </h2>
-            <p className="text-[10px] uppercase tracking-[0.2em] text-foreground/40">
-              Complete Complaint Lifecycle Workflow
-            </p>
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <Badge
-            variant="outline"
-            className="rounded-full border-emerald-400/40 bg-emerald-400/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.25em] text-emerald-400"
-          >
-            <span className="relative mr-1.5 flex h-1.5 w-1.5">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
-            </span>
-            Live
-          </Badge>
-          <Badge
-            variant="outline"
-            className="rounded-full border-border/40 bg-background/60 px-3 py-1 text-[10px] font-medium uppercase tracking-[0.15em] text-foreground/50"
-          >
-            {nodes.length} Nodes
-          </Badge>
-        </div>
-      </div>
+    <div className="relative w-full h-full overflow-hidden bg-background/60 backdrop-blur">
 
       {/* Canvas */}
       <div
-        className="relative w-full overflow-auto"
-        style={{ minHeight: "500px" }}
+        ref={canvasRef}
+        className="relative flex-1 w-full overflow-auto"
         role="region"
         aria-label="Snap2Fix workflow visualization"
         tabIndex={0}
       >
-        <div className="relative" style={{ minWidth: CANVAS_WIDTH, minHeight: CANVAS_HEIGHT }}>
+        <div className="relative" style={{ minWidth: contentSize.width, minHeight: contentSize.height }}>
           {/* Dot grid background */}
           <DotGrid />
 
@@ -553,14 +575,19 @@ export function N8nWorkflowBlock() {
           {sectionLabels.map((label) => (
             <motion.div
               key={label.text}
-              className="absolute pointer-events-none"
-              style={{ left: label.position.x, top: label.position.y }}
-              initial={{ opacity: 0, y: -5 }}
-              animate={{ opacity: 1, y: 0 }}
+              drag
+              dragMomentum={false}
+              dragConstraints={{ left: 0, top: 0, right: 100000, bottom: 100000 }}
+              className="absolute cursor-grab active:cursor-grabbing z-10"
+              style={{ x: label.position.x, y: label.position.y, transformOrigin: "0 0" }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
               transition={{ duration: 0.6, delay: 0.2 }}
+              whileHover={{ scale: 1.05 }}
+              whileDrag={{ scale: 1.1, zIndex: 60 }}
             >
               <span
-                className={`text-[10px] font-bold uppercase tracking-[0.3em] ${label.color}`}
+                className={`text-[10px] font-bold uppercase tracking-[0.3em] ${label.color} select-none`}
               >
                 {label.text}
               </span>
@@ -570,8 +597,8 @@ export function N8nWorkflowBlock() {
           {/* SVG Connections */}
           <svg
             className="absolute top-0 left-0 pointer-events-none"
-            width={CANVAS_WIDTH}
-            height={CANVAS_HEIGHT}
+            width={contentSize.width}
+            height={contentSize.height}
             style={{ overflow: "visible" }}
             aria-hidden="true"
           >
@@ -593,25 +620,32 @@ export function N8nWorkflowBlock() {
             const Icon = node.icon;
             const colors = colorClasses[node.color];
 
+            const isDragging = draggingNodeId === node.id;
+
             return (
               <motion.div
                 key={node.id}
-                className="absolute"
+                drag
+                dragMomentum={false}
+                dragConstraints={{ left: 0, top: 0, right: 100000, bottom: 100000 }}
+                onDragStart={() => handleDragStart(node.id)}
+                onDrag={(_, info) => handleDrag(node.id, info)}
+                onDragEnd={handleDragEnd}
+                className={`absolute cursor-grab ${isDragging ? 'z-50 cursor-grabbing' : ''}`}
                 style={{
-                  left: node.position.x,
-                  top: node.position.y,
+                  x: node.position.x,
+                  y: node.position.y,
                   width: NODE_WIDTH,
+                  transformOrigin: "0 0",
                 }}
-                initial={{ scale: 0.7, opacity: 0, y: 15 }}
-                animate={{ scale: 1, opacity: 1, y: 0 }}
-                transition={{
-                  duration: 0.4,
-                  delay: index * 0.08,
-                  ease: [0.25, 0.46, 0.45, 0.94],
-                }}
+                initial={{ scale: 0.7, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.3, delay: index * 0.06 }}
+                whileHover={{ scale: 1.03 }}
+                whileDrag={{ scale: 1.06, zIndex: 50 }}
               >
                 <Card
-                  className={`group/node relative w-full overflow-hidden rounded-xl border ${colors.border} ${colors.bg} bg-background/80 backdrop-blur-sm transition-all duration-300 hover:shadow-lg hover:${colors.glow} hover:scale-[1.03]`}
+                  className={`group/node relative w-full overflow-hidden rounded-xl border ${colors.border} ${colors.bg} bg-background/80 backdrop-blur-sm transition-all duration-300 hover:shadow-lg hover:${colors.glow} ${isDragging ? 'shadow-xl ring-2 ring-primary/40' : ''}`}
                 >
                   {/* Gradient overlay on hover */}
                   <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover/node:opacity-100" />
@@ -666,39 +700,7 @@ export function N8nWorkflowBlock() {
         </div>
       </div>
 
-      {/* Footer */}
-      <div
-        className="relative z-10 flex flex-wrap items-center justify-between gap-3 border-t border-border/30 px-4 py-2.5 sm:px-6"
-        role="status"
-        aria-live="polite"
-      >
-        <div className="flex flex-wrap items-center gap-4 text-[10px] text-foreground/50">
-          <div className="flex items-center gap-2">
-            <span className="relative flex h-1.5 w-1.5">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
-            </span>
-            <span className="uppercase tracking-[0.2em] font-medium">
-              {nodes.length} Nodes
-            </span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="h-1.5 w-1.5 rounded-full bg-blue-400/60" aria-hidden="true" />
-            <span className="uppercase tracking-[0.2em] font-medium">
-              {connections.length} Connections
-            </span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="h-1.5 w-1.5 rounded-full bg-amber-400/60" aria-hidden="true" />
-            <span className="uppercase tracking-[0.2em] font-medium">
-              4 Sections
-            </span>
-          </div>
-        </div>
-        <p className="text-[9px] uppercase tracking-[0.25em] text-foreground/30 font-medium">
-          Snap2Fix • Automated Complaint Lifecycle
-        </p>
-      </div>
+
     </div>
   );
 }
