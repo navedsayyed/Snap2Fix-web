@@ -21,6 +21,7 @@ import {
   Shield,
   Users,
 } from 'lucide-react';
+import { N8nWorkflowBlock } from '@/components/ui/n8n-workflow-block-shadcnui';
 
 // Animation hook for reveal on scroll
 function useReveal() {
@@ -282,43 +283,23 @@ export function NewHomeLanding() {
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 opacity-5">
-          <div className="absolute inset-0" style={{
-            backgroundImage: `radial-gradient(circle at 2px 2px, rgba(255,255,255,0.15) 1px, transparent 0)`,
-            backgroundSize: '32px 32px'
-          }} />
-        </div>
-        
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 relative z-10">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
-            {stats.map((stat, index) => (
-              <div 
-                key={stat.label} 
-                data-reveal 
-                className="reveal-up text-center group"
-                style={{ animationDelay: `${index * 100}ms` }}
-              >
-                <div className="relative inline-block">
-                  <div className="absolute -inset-1 bg-gradient-to-r from-white/10 via-white/5 to-white/10 rounded-xl opacity-0 group-hover:opacity-100 blur transition-opacity duration-500" />
-                  
-                  <div className="relative bg-[#1A1A1A]/50 backdrop-blur-sm border border-white/5 rounded-xl px-5 py-5 group-hover:border-white/10 transition-all duration-300">
-                    <AnimatedCounter 
-                      value={stat.value} 
-                      duration={stat.duration}
-                      prefix={stat.prefix}
-                      suffix={stat.suffix}
-                    />
-                    <p className="text-[10px] sm:text-xs text-[#808080] group-hover:text-[#A0A0A0] uppercase tracking-widest font-medium transition-colors duration-300">
-                      {stat.label}
-                    </p>
-                    
-                    <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 group-hover:w-3/4 h-[2px] bg-gradient-to-r from-transparent via-white/30 to-transparent transition-all duration-500" />
-                  </div>
-                </div>
-              </div>
-            ))}
+      {/* Complete Workflow Diagram - Hidden on mobile */}
+      <section className="hidden md:block py-16 sm:py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div data-reveal className="reveal-up text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+              Complete{' '}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00BFFF] to-[#0099CC]">
+                Workflow Visualization
+              </span>
+            </h2>
+            <p className="text-[#B0B0B0] max-w-2xl mx-auto">
+              Explore our end-to-end complaint management system with interactive workflow diagram
+            </p>
+          </div>
+          
+          <div data-reveal className="reveal-up h-[700px] rounded-3xl border border-white/10 overflow-hidden bg-[#1A1A1A]/50 backdrop-blur">
+            <N8nWorkflowBlock />
           </div>
         </div>
       </section>
@@ -395,6 +376,27 @@ export function NewHomeLanding() {
               See the complete guide
               <ArrowRight className="w-4 h-4" />
             </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Complete Workflow Diagram - Hidden on mobile */}
+      <section className="hidden md:block py-16 sm:py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div data-reveal className="reveal-up text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+              Complete{' '}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00BFFF] to-[#0099CC]">
+                Workflow Visualization
+              </span>
+            </h2>
+            <p className="text-[#B0B0B0] max-w-2xl mx-auto">
+              Explore our end-to-end complaint management system with interactive workflow diagram
+            </p>
+          </div>
+          
+          <div data-reveal className="reveal-up h-[700px] rounded-3xl border border-white/10 overflow-hidden bg-[#1A1A1A]/50 backdrop-blur">
+            <N8nWorkflowBlock />
           </div>
         </div>
       </section>
