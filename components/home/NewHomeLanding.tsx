@@ -185,7 +185,7 @@ export function NewHomeLanding() {
                 <img 
                   src="/Complaints.svg" 
                   alt="Complaints" 
-                  className="h-12 sm:h-16 lg:h-20 w-auto inline-block relative -translate-y-[0.05em] sm:translate-y-[0.25em] lg:translate-y-[0.35em]" 
+                  className="h-12 sm:h-16 lg:h-20 w-auto inline-block relative translate-y-[0.15em] sm:translate-y-[0.25em] lg:translate-y-[0.35em]" 
                 />
               </span>
               <span className="text-white mt-2">Effortlessly</span>
