@@ -38,7 +38,7 @@ export default function TrackPage() {
     };
 
     return (
-        <div className="min-h-screen bg-[#121212]">
+        <div className="min-h-screen bg-[#121212] dotted-background">
             {/* Header */}
             <header className="sticky top-0 z-50 pt-4 pb-4">
                 <div className="max-w-7xl mx-auto px-6 lg:px-8">

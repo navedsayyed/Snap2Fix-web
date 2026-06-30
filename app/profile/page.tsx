@@ -133,7 +133,7 @@ export default function ProfilePage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-[#121212] flex items-center justify-center">
+            <div className="min-h-screen bg-[#121212] dotted-background flex items-center justify-center">
                 <div className="text-center">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#00BFFF] mx-auto"></div>
                     <p className="mt-4 text-[#B0B0B0]">Loading profile...</p>
@@ -144,7 +144,7 @@ export default function ProfilePage() {
 
     if (error && !user) {
         return (
-            <div className="min-h-screen bg-[#121212] flex items-center justify-center p-4">
+            <div className="min-h-screen bg-[#121212] dotted-background flex items-center justify-center p-4">
                 <div className="bg-[#1E1E1E] border border-[#404040] rounded-lg shadow-lg p-8 max-w-md w-full">
                     <div className="text-center">
                         <h2 className="text-2xl font-bold text-white mb-4">Error</h2>
@@ -167,7 +167,7 @@ export default function ProfilePage() {
         };
 
         return (
-            <div className="min-h-screen bg-gradient-to-br from-[#0A0A0A] via-[#121212] to-[#1A1A1A] flex items-center justify-center p-4">
+            <div className="min-h-screen bg-[#121212] dotted-background flex items-center justify-center p-4">
                 <div className="bg-gradient-to-br from-[#1E1E1E] to-[#252525] border border-[#404040]/50 rounded-2xl shadow-2xl p-6 sm:p-8 max-w-md w-full text-center">
                     {/* Icon */}
                     <div className="mb-5">

@@ -83,7 +83,7 @@ export default function TrackComplaintPage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-[#121212] flex items-center justify-center">
+            <div className="min-h-screen bg-[#121212] dotted-background flex items-center justify-center">
                 <div className="text-center">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#00BFFF] mx-auto mb-4"></div>
                     <p className="text-[#B0B0B0]">Loading complaint details...</p>
@@ -205,7 +205,7 @@ export default function TrackComplaintPage() {
     }
 
     return (
-        <div className="min-h-screen bg-[#121212]">
+        <div className="min-h-screen bg-[#121212] dotted-background">
             {/* Header */}
             <header className="sticky top-0 z-50 pt-4 pb-4">
                 <div className="max-w-7xl mx-auto px-6 lg:px-8">

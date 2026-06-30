@@ -34,7 +34,7 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="min-h-screen bg-[#121212] flex items-center justify-center p-4 overflow-hidden">
+        <div className="min-h-screen bg-[#121212] dotted-background flex items-center justify-center p-4 overflow-hidden">
             <div className={`w-full max-w-md transition-all duration-500 ease-out ${isInputFocused ? '-translate-y-8 sm:translate-y-0' : 'translate-y-0'}`}>
                 {/* Logo and Title */}
                 <div className="text-center mb-6">
