@@ -185,37 +185,66 @@ export function NewHomeLanding() {
           <div className="absolute bottom-10 right-1/4 w-96 h-96 bg-[#DC2626]/8 rounded-full blur-[120px]" />
         </div>
 
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-20">
+          <div className="text-center mb-12 sm:mb-20 animate-fade-in px-2">
+            <h2 className="text-4xl sm:text-6xl lg:text-7xl font-bold text-white mb-5 sm:mb-7 leading-tight tracking-tight flex flex-col items-center justify-center gap-2">
+              <span className="flex items-baseline justify-center gap-3">
+                Manage 
+                <img 
+                  src="/Complaints.svg" 
+                  alt="Complaints" 
+                  className="h-10 sm:h-14 lg:h-16 w-auto inline-block relative" 
+                  style={{top: '0.3em'}} 
+                />
+              </span>
+              <span className="text-white mt-2">Effortlessly</span>
+            </h2>
+            <p className="text-base sm:text-xl text-[#B0B0B0] max-w-3xl mx-auto leading-relaxed font-light">
+              Submit and track complaints about infrastructure, IT equipment, or facilities.
+              <span className="block sm:inline mt-2 sm:mt-0"> </span>
+              <span className="text-[#00BFFF] font-semibold">Real-time updates. Professional support.</span>
+            </p>
+          </div>
+
+          {/* CTA Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
+            <Link
+              href="/contact"
+              className="inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3.5 bg-gradient-to-r from-[#8B0000] to-[#6B0000] hover:from-[#A00000] hover:to-[#7B0000] text-white text-sm font-semibold rounded-full transition-all duration-300 uppercase tracking-wide border border-[#A00000]/30 shadow-lg shadow-[#8B0000]/20 w-full max-w-xs sm:w-auto"
+            >
+              Reach Us
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+            <Link
+              href="/track"
+              className="inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3.5 bg-[#1E1E1E] hover:bg-[#2A2A2A] text-white text-sm font-semibold rounded-full transition-all duration-300 uppercase tracking-wide border border-[#333333] w-full max-w-xs sm:w-auto"
+            >
+              Track Complaint
+            </Link>
+          </div>
+        </main>
+      </section>
+
+      {/* Original Hero Visual Section - Now as Feature Showcase */}
+      <section className="pb-16 lg:pb-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Hero Content */}
+            {/* Left Content */}
             <div data-reveal className="reveal-up text-center lg:text-left">
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6">
-                Report Issues,{' '}
+              <h3 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-[1.1] tracking-tight mb-6">
+                Report the issue,{' '}
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00BFFF] to-[#0099CC]">
-                  Track Solutions
+                  track the solution.
                 </span>
-              </h1>
-              <p className="text-lg text-[#B0B0B0] max-w-xl mx-auto lg:mx-0 mb-8 leading-relaxed">
-                Snap2Fix makes facility management effortless. Submit complaints with QR codes, track progress in real-time, and get issues resolved faster.
+              </h3>
+
+              <p className="text-base sm:text-lg text-[#B0B0B0] max-w-xl mx-auto lg:mx-0 leading-relaxed mb-8">
+                Snap2Fix makes facility complaints effortless — scan a QR code, upload a photo,
+                and follow your issue from submission to resolution in real time.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                <Link
-                  href="/contact"
-                  className="inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3.5 bg-gradient-to-r from-[#8B0000] to-[#6B0000] hover:from-[#A00000] hover:to-[#7B0000] text-white text-sm font-semibold rounded-full transition-all duration-300 uppercase tracking-wide border border-[#A00000]/30 shadow-lg shadow-[#8B0000]/20 w-full max-w-xs sm:w-auto"
-                >
-                  Reach Us
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
-                <Link
-                  href="/track"
-                  className="inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3.5 bg-[#1E1E1E] hover:bg-[#2A2A2A] text-white text-sm font-semibold rounded-full transition-all duration-300 uppercase tracking-wide border border-[#333333] w-full max-w-xs sm:w-auto"
-                >
-                  Track Complaint
-                </Link>
-              </div>
             </div>
 
-            {/* Hero Visual - Complaint Card */}
+            {/* Hero Visual */}
             <div data-reveal className="reveal-up reveal-delay-1 relative">
               <div className="relative mx-auto max-w-md lg:max-w-none">
                 <div className="absolute -inset-4 bg-gradient-to-br from-[#00BFFF]/20 via-transparent to-[#DC2626]/10 rounded-[2rem] blur-2xl" />

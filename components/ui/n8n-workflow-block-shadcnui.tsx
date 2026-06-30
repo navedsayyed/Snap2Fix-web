@@ -519,7 +519,7 @@ export function N8nWorkflowBlock() {
   const [contentSize, setContentSize] = useState(() => {
     const maxX = Math.max(...snap2fixNodes.map((n) => n.position.x + NODE_WIDTH));
     const maxY = Math.max(...snap2fixNodes.map((n) => n.position.y + NODE_HEIGHT));
-    return { width: Math.max(CANVAS_WIDTH, maxX + 50), height: Math.max(CANVAS_HEIGHT, maxY + 50) };
+    return { width: maxX + 30, height: maxY + 30 };
   });
 
   const handleDragStart = (nodeId: string) => {
@@ -558,18 +558,19 @@ export function N8nWorkflowBlock() {
 
   return (
     <div className="relative w-full h-full overflow-hidden bg-background/60 backdrop-blur">
+      {/* Full-screen dot grid background */}
+      <DotGrid />
 
-      {/* Canvas */}
+      {/* Scrollable canvas */}
       <div
         ref={canvasRef}
-        className="relative flex-1 w-full overflow-auto"
+        className="absolute inset-0 overflow-auto flex justify-center"
         role="region"
         aria-label="Snap2Fix workflow visualization"
         tabIndex={0}
       >
-        <div className="relative" style={{ minWidth: contentSize.width, minHeight: contentSize.height }}>
-          {/* Dot grid background */}
-          <DotGrid />
+        {/* Centered content container for nodes */}
+        <div className="relative shrink-0" style={{ width: contentSize.width, minHeight: contentSize.height }}>
 
           {/* Section Labels */}
           {sectionLabels.map((label) => (
@@ -619,7 +620,6 @@ export function N8nWorkflowBlock() {
           {nodes.map((node, index) => {
             const Icon = node.icon;
             const colors = colorClasses[node.color];
-
             const isDragging = draggingNodeId === node.id;
 
             return (
@@ -647,18 +647,13 @@ export function N8nWorkflowBlock() {
                 <Card
                   className={`group/node relative w-full overflow-hidden rounded-xl border ${colors.border} ${colors.bg} bg-background/80 backdrop-blur-sm transition-all duration-300 hover:shadow-lg hover:${colors.glow} ${isDragging ? 'shadow-xl ring-2 ring-primary/40' : ''}`}
                 >
-                  {/* Gradient overlay on hover */}
                   <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover/node:opacity-100" />
-
-                  {/* Pulse ring for key nodes */}
                   {node.pulse && (
                     <div className="absolute -inset-[1px] rounded-xl opacity-0 group-hover/node:opacity-100 transition-opacity duration-500">
                       <div className={`absolute inset-0 rounded-xl border ${colors.border} animate-pulse`} />
                     </div>
                   )}
-
                   <div className="relative p-3.5 space-y-2.5">
-                    {/* Top: Icon + Type Badge */}
                     <div className="flex items-start gap-2.5">
                       <div
                         className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border ${colors.iconBg} backdrop-blur`}
@@ -678,13 +673,9 @@ export function N8nWorkflowBlock() {
                         </h3>
                       </div>
                     </div>
-
-                    {/* Description */}
                     <p className="line-clamp-2 text-[10px] leading-relaxed text-foreground/60">
                       {node.description}
                     </p>
-
-                    {/* Bottom: Connection indicator */}
                     <div className="flex items-center gap-1.5 pt-0.5">
                       <div className={`h-1 w-1 rounded-full ${colors.text} bg-current opacity-60`} />
                       <ArrowRight className={`h-2.5 w-2.5 ${colors.text} opacity-40`} aria-hidden="true" />
@@ -699,8 +690,6 @@ export function N8nWorkflowBlock() {
           })}
         </div>
       </div>
-
-
     </div>
   );
 }
